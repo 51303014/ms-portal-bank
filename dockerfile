@@ -11,4 +11,4 @@ RUN yarn global add @nestjs/cli
 
 COPY . .
 
-CMD [ "yarn", "start:dev" ]
+CMD [ "yarn", "start:prod" ]
