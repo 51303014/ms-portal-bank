@@ -2,8 +2,8 @@ version: '3.8'
 services:
   service:
     build: .
-    container_name: ack
-    hostname: ack
+    container_name: portal
+    hostname: portal
     ports:
       - 3000:3000
     networks:

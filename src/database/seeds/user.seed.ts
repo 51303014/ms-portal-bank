@@ -50,7 +50,7 @@ export class UserSeed {
                 codeEmployee: '13500002',
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
-                mobileNumber: '08111111111',
+                mobileNumber: '08111111112',
                 role: role._id,
                 salt: password.salt,
             });
