@@ -10,34 +10,8 @@ services:
       - app-network
     volumes:
       - ./src/:/app/src/
+      - .env.test/:/app/.env.test
     restart: unless-stopped
-    env_file: .env
-    environment:
-        APP_NAME: ${APP_NAME}
-        APP_ENV: ${APP_ENV}
-        APP_MODE: ${APP_MODE}
-        APP_LANGUAGE: ${APP_LANGUAGE}
-        APP_TZ: ${APP_TZ}
-        APP_HOST: ${APP_HOST}
-        APP_PORT: ${APP_PORT}
-        APP_VERSIONING: ${APP_VERSIONING}
-        APP_DEBUG: ${APP_DEBUG}
-        APP_HTTP_ON: ${APP_HTTP_ON}
-        APP_TASK_ON: ${APP_TASK_ON}
-        DATABASE_HOST: ${DATABASE_HOST}
-        DATABASE_NAME: ${DATABASE_NAME}
-        DATABASE_USER: ${DATABASE_USER}
-        DATABASE_PASSWORD: ${DATABASE_PASSWORD}
-        DATABASE_DEBUG: ${DATABASE_DEBUG}
-        DATABASE_OPTIONS: ${DATABASE_OPTIONS}
-        AUTH_JWT_ACCESS_TOKEN_SECRET_KEY: ${AUTH_JWT_ACCESS_TOKEN_SECRET_KEY}
-        AUTH_JWT_REFRESH_TOKEN_SECRET_KEY: ${AUTH_JWT_REFRESH_TOKEN_SECRET_KEY}
-        AUTH_BASIC_TOKEN_CLIENT_ID: ${AUTH_BASIC_TOKEN_CLIENT_ID}
-        AUTH_BASIC_TOKEN_CLIENT_SECRET: ${AUTH_BASIC_TOKEN_CLIENT_SECRET}
-        AWS_CREDENTIAL_KEY: ${AWS_CREDENTIAL_KEY}
-        AWS_CREDENTIAL_SECRET: ${AWS_CREDENTIAL_SECRET}
-        AWS_S3_REGION: ${AWS_S3_REGION}
-        AWS_S3_BUCKET: ${AWS_S3_BUCKET}
     depends_on:
       - mongodb
   mongodb:

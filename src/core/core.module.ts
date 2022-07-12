@@ -30,7 +30,7 @@ import { DatabaseModule } from 'src/database/database.module';
             ignoreEnvFile: false,
             isGlobal: true,
             cache: true,
-            envFilePath: ['.env'],
+            envFilePath: ['.env.test'],
         }),
         WinstonModule.forRootAsync({
             inject: [DebuggerOptionService],
