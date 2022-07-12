@@ -13,7 +13,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "set NODE_OPTIONS=--max-old-space-size=8192 && nest build",
     "format": "prettier --write '{src,test,e2e,integration}/**/*.ts'",
     "format:src": "prettier --write src/**/*.ts",
     "format:test": "prettier --write test/**/*.ts",
@@ -24,7 +24,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node --max-old-space-size=8192 dist/main",
     "lint": "eslint --ext .ts,.tsx '{src,test,e2e,integration}/**/*.ts' --no-error-on-unmatched-pattern",
     "lint:fix": "eslint --ext .ts,.tsx '{src,test,e2e,integration}/**/*.ts' --fix --no-error-on-unmatched-pattern",
     "lint:test": "eslint --ext .ts,.tsx test/**/*.ts --no-error-on-unmatched-pattern",
