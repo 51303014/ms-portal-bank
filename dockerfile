@@ -8,6 +8,7 @@ RUN touch .env
 
 RUN set -x && yarn
 RUN yarn global add @nestjs/cli
+RUN yarn build
 
 COPY . .
 
