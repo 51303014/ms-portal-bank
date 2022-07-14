@@ -1,6 +1,7 @@
 import {
     DeleteObjectCommand,
     DeleteObjectsCommand,
+    GetObjectCommand,
     ListBucketsCommand,
     ListObjectsV2Command,
     ObjectIdentifier,
@@ -89,6 +90,56 @@ export class AwsS3Service {
             Bucket: this.configService.get<string>('aws.s3.bucket'),
             Key: key
         })
+    }
+
+    async getBufferFromS3(file, callback){
+        const buffers = [];
+        const s3 = new S3({
+            credentials: {
+                accessKeyId:
+                    this.configService.get<string>('aws.credential.key'),
+                secretAccessKey: this.configService.get<string>(
+                    'aws.credential.secret'
+                ),
+            }
+        });
+        const stream = s3.getObject({ Bucket:  this.configService.get<string>('aws.s3.bucket'), Key: file}).createReadStream();
+        stream.on('data', data => buffers.push(data));
+        stream.on('end', () => callback(null, Buffer.concat(buffers)));
+        stream.on('error', error => callback(error));
+    }
+
+    async getBufferFromS3Promise(file) {
+        return new Promise((resolve, reject) => {
+            this.getBufferFromS3(file, (error, s3buffer) => {
+                if (error) return reject(error);
+                return resolve(s3buffer);
+            });
+        });
+    };
+
+    async getItemInBucketBodyData(
+        filename: string,
+        path?: string
+    ): Promise<Record<string, any>> {
+        const streamToString = (stream) =>
+            new Promise((resolve, reject) => {
+                const chunks = [];
+                stream.on("data", (chunk) => chunks.push(chunk));
+                stream.on("error", reject);
+                stream.on("end", () => resolve(Buffer.concat(chunks).toString("utf8")));
+            });
+        if (path)
+            path = path.startsWith('/') ? path.replace('/', '') : `${path}`;
+
+        const key: string = path ? path : filename;
+        const command: GetObjectCommand = new GetObjectCommand({
+            Bucket: this.bucket,
+            Key: key,
+        });
+
+        const item: Record<string, any> = await this.s3Client.send(command);
+        return await streamToString(item.Body);
     }
 
     async getItemInBucket(

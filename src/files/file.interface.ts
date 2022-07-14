@@ -20,4 +20,8 @@ export interface IFileCheckExist {
     user: boolean;
 }
 
-export type TypeFile = 'HDV'
+export type KindOfFile = 'HDV'
+
+export interface TypeFile {
+    type: KindOfFile
+}

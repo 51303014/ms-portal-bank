@@ -8,6 +8,7 @@ import {
     IsOptional,
     ValidateIf,
 } from 'class-validator';
+import {IAwsS3Response} from "../../aws/aws.interface";
 
 export class FileCreateDto {
 
@@ -31,5 +32,5 @@ export class FileCreateDto {
     readonly user: string;
 
     @IsNotEmpty()
-    readonly file: string;
+    readonly file: IAwsS3Response;
 }
