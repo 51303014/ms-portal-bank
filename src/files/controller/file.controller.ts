@@ -19,7 +19,7 @@ import {Response} from 'src/utils/response/response.decorator';
 import {IResponse} from 'src/utils/response/response.interface';
 import {FileService} from '../service/file.service';
 import {GetUser, UserProfileGuard} from '../file.decorator';
-import {IFileDocument, TypeFile} from "../file.interface";
+import {IFileCreate, IFileDocument, TypeFile} from "../file.interface";
 import * as XLSX from 'xlsx';
 import {FileCreateDto} from "../dto/file.create.dto";
 
@@ -55,30 +55,30 @@ export class FileController {
         @Body() fileType: TypeFile,
         @UploadedFile() file: Express.Multer.File,
     ): Promise<void> {
-        const filename: string = file.originalname;
         const content: Buffer = file.buffer;
-        const mime: string = filename
-            .substring(filename.lastIndexOf('.') + 1, filename.length)
-            .toUpperCase();
         const path = await this.fileService.createRandomFilename(file.originalname);
 
-
         try {
+            const fileInfo: IFileCreate = await this.fileService.findOne({user: user._id, type: fileType.type});
+            if (fileInfo) {
+                await this.fileService.updateOneById(fileInfo._id, fileInfo)
+                return;
+            }
             const aws: IAwsS3Response = await this.awsService.putItemInBucket(
-                `${path.filename}.${mime}`,
+                `${path.filename}`,
                 content,
                 {
                     path: `${path.path}/${user._id}`,
                 }
             );
-
             await this.fileService.create({
-                fileName: `${path.filename}.${mime}`,
+                fileName: `${path.filename}`,
                 type: fileType.type,
                 user: user._id,
-                awsFile: aws
+                file: aws
             });
         } catch (err) {
+            console.log(err);
             throw new InternalServerErrorException({
                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                 message: 'http.serverError.internalServerError',
@@ -102,21 +102,35 @@ export class FileController {
         if (fileInfo.length > 0) {
             const workbook = XLSX.utils.book_new();
             try {
-                return await Promise.all(
+                await Promise.all(
                     fileInfo.map(async (file) => {
                         const url = await this.awsService.getBufferFromS3Promise(file.file.pathWithFilename);
                         const wb = XLSX.read(url);
                         let worksheets = {};
                         for (const sheetName of wb.SheetNames) {
-                            worksheets[sheetName] = XLSX.utils.sheet_to_json(wb.Sheets[sheetName])
-                            const ws = XLSX.utils.json_to_sheet(worksheets[sheetName]);
-                            XLSX.utils.book_append_sheet(workbook, ws, file.type);
-                            XLSX.writeFile(workbook, "FormTongHop.xlsx");
-                            return
+                            worksheets[sheetName] = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {
+                                header: "A",
+                                blankrows: true,
+                                defval: ''
+                            })
+                            const worksheet = XLSX.utils.json_to_sheet(worksheets[sheetName], {skipHeader: true});
+                            XLSX.utils.book_append_sheet(workbook, worksheet, file.type);
+                            const fileContent = XLSX.write(workbook, {
+                                type: "buffer",
+                                bookType: "xlsx"
+                            });
+                            await this.awsService.putItemInBucket(
+                                `FormTongHop.xlsx`,
+                                fileContent,
+                            );
                         }
                     })
                 )
+                const url = await this.awsService.generatePreSignedUrl('FormTongHop.xlsx');
+                return {url};
+
             } catch (err) {
+                console.log(err);
                 throw new InternalServerErrorException({
                     statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                     message: 'http.serverError.internalServerError',

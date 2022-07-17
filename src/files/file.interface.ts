@@ -9,11 +9,12 @@ export interface IFileDocument extends Omit<FileDocument, 'user'> {
 export interface IFileCreate {
     fileName: string;
     type?: string;
+    _id?: string;
     user: string;
-    awsFile: IAwsS3Response;
+    file: IAwsS3Response;
 }
 
-export type IFileUpdate = Pick<IFileCreate, 'fileName' | 'type'>;
+export type IFileUpdate = Pick<IFileCreate, 'fileName' | 'type' | 'file'>;
 
 export interface IFileCheckExist {
     file: boolean;

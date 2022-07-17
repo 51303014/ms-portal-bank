@@ -131,17 +131,17 @@ export class FileService {
         fileName,
         type,
         user,
-        awsFile,
+        file,
     }: IFileCreate): Promise<FileDocument> {
-        const file: FileEntity = {
+        const fileEntity: FileEntity = {
             fileName,
             type,
             user: new Types.ObjectId(user),
             isActive: true,
-            file: awsFile
+            file
         };
 
-        const create: FileDocument = new this.fileModel(file);
+        const create: FileDocument = new this.fileModel(fileEntity);
         return create.save();
     }
 
@@ -155,14 +155,14 @@ export class FileService {
 
     async updateOneById(
         _id: string,
-        { fileName, type }: IFileUpdate
+        { fileName, type, file }: IFileUpdate
     ): Promise<FileDocument> {
-        const file: FileDocument = await this.fileModel.findById(_id);
+        const fileModel: FileDocument = await this.fileModel.findById(_id);
 
-        file.fileName = fileName;
-        file.type = type || undefined;
-
-        return file.save();
+        fileModel.fileName = fileName;
+        fileModel.type = type || undefined;
+        fileModel.file = file || undefined;
+        return fileModel.save();
     }
 
     async checkExist(
