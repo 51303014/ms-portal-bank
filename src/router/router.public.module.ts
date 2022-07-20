@@ -8,11 +8,13 @@ import { UserPublicController } from 'src/user/controller/user.public.controller
 import { UserModule } from 'src/user/user.module';
 import {FileModule} from "../files/file.module";
 import {FileController} from "../files/controller/file.controller";
+import {CustomerModule} from "../customers/customer.module";
+import {CustomerController} from "../customers/controller/customer.controller";
 
 @Module({
-    controllers: [UserPublicController,FileController, AuthPublicController],
+    controllers: [UserPublicController,FileController, CustomerController, AuthPublicController],
     providers: [],
     exports: [],
-    imports: [UserModule, FileModule, AwsModule, AuthModule, RoleModule, PermissionModule],
+    imports: [UserModule, FileModule, CustomerModule, AwsModule, AuthModule, RoleModule, PermissionModule],
 })
 export class RouterPublicModule {}

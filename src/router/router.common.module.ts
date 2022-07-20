@@ -10,6 +10,7 @@ import { RoleModule } from 'src/role/role.module';
 import { SettingCommonController } from 'src/setting/controller/setting.common.controller';
 import { UserModule } from 'src/user/user.module';
 import {FileModule} from "../files/file.module";
+import {CustomerModule} from "../customers/customer.module";
 
 @Module({
     controllers: [
@@ -22,6 +23,7 @@ import {FileModule} from "../files/file.module";
     imports: [
         UserModule,
         FileModule,
+        CustomerModule,
         AuthModule,
         RoleModule,
         PermissionModule,

@@ -16,6 +16,12 @@ export class HelperFileService {
         this.appName = this.configService.get<string>('app.name');
     }
 
+    getCellValue (row:  excelJs.Row, cellIndex: number) {
+        const cell = row.getCell(cellIndex);
+
+        return cell.value ? cell.value.toString() : '';
+    };
+
     async writeExcel(
         headers: string[],
         rows: Record<string, string>[]
