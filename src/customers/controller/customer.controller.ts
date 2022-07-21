@@ -4,7 +4,7 @@ import {
     Get,
     HttpCode,
     HttpStatus,
-    InternalServerErrorException,
+    InternalServerErrorException, NotFoundException,
     Post, Query,
     UploadedFile,
 } from '@nestjs/common';
@@ -22,6 +22,7 @@ import {CustomerFile, ICustomerCreate, ICustomerDocument, SheetName} from "../cu
 import {CustomerCreateDto} from "../dto/customer.create.dto";
 import Excel from 'exceljs';
 import {HelperFileService} from "../../utils/helper/service/helper.file.service";
+import {ENUM_USER_STATUS_CODE_ERROR} from "../customer.constant";
 
 @Controller({
     version: '1',
@@ -56,12 +57,18 @@ export class CustomerController {
         @Body() customerFile: CustomerFile,
         @UploadedFile() file: Express.Multer.File,
     ): Promise<void> {
-        console.log(customerFile);
         const workbook = new Excel.Workbook();
         const content = await workbook.xlsx.load(file.buffer);
+        if (!customerFile || !customerFile.fileType) {
+            throw new NotFoundException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                message: 'fileType.error.notFound',
+            });
+        }
         try {
             switch (customerFile.fileType) {
                 case SheetName.InfoCustomerMis:
+                    console.log(2222, customerFile);
                     const worksheet = content.getWorksheet(1);
                     const rowStartIndex = 3;
                     const numberOfRows = worksheet.rowCount - 2;
@@ -72,15 +79,15 @@ export class CustomerController {
                             cif: this.fileHelperService.getCellValue(row, 1),
                             fullName: this.fileHelperService.getCellValue(row, 2),
                             brandCifOpen: +this.fileHelperService.getCellValue(row, 3),
-                            dateCifOpen: new Date(this.fileHelperService.getCellValue(row, 4)),
+                            dateCifOpen: this.fileHelperService.getCellValue(row, 4) ? new Date(this.fileHelperService.getCellValue(row, 4)) : null,
                             nationality: this.fileHelperService.getCellValue(row, 5),
                             address: this.fileHelperService.getCellValue(row, 6),
                             residence: this.fileHelperService.getCellValue(row, 7),
-                            birthday: new Date(this.fileHelperService.getCellValue(row, 8)),
+                            birthday: this.fileHelperService.getCellValue(row, 8) ? new Date(this.fileHelperService.getCellValue(row, 8)) : null,
                             birthPlace: this.fileHelperService.getCellValue(row, 9),
                             customerId: this.fileHelperService.getCellValue(row, 10),
                             numberIdentity: this.fileHelperService.getCellValue(row, 11),
-                            effectiveDate: new Date(this.fileHelperService.getCellValue(row, 12)),
+                            effectiveDate: this.fileHelperService.getCellValue(row, 12) ? new Date(this.fileHelperService.getCellValue(row, 12)) : null,
                             age: +this.fileHelperService.getCellValue(row, 13),
                             email: this.fileHelperService.getCellValue(row, 14),
                             mobile: this.fileHelperService.getCellValue(row, 15),
