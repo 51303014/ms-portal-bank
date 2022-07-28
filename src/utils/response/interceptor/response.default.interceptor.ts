@@ -34,7 +34,6 @@ export function ResponseDefaultInterceptor(
                     options && options.statusCode
                         ? options.statusCode
                         : undefined;
-
                 return next.handle().pipe(
                     map(async (response: Promise<Record<string, any>>) => {
                         const ctx: HttpArgumentsHost = context.switchToHttp();

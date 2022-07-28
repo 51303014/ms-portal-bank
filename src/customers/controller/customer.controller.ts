@@ -23,6 +23,8 @@ import {CustomerCreateDto} from "../dto/customer.create.dto";
 import Excel from 'exceljs';
 import {HelperFileService} from "../../utils/helper/service/helper.file.service";
 import {ENUM_USER_STATUS_CODE_ERROR} from "../customer.constant";
+import {IncomeService} from "../../income/service/income.service";
+import {IIncomeCreate} from "../../income/income.interface";
 
 @Controller({
     version: '1',
@@ -31,6 +33,7 @@ import {ENUM_USER_STATUS_CODE_ERROR} from "../customer.constant";
 export class CustomerController {
     constructor(
         private readonly customerService: CustomerService,
+        private readonly incomeService: IncomeService,
         private readonly awsService: AwsS3Service,
         private readonly fileHelperService: HelperFileService
     ) {
@@ -68,7 +71,6 @@ export class CustomerController {
         try {
             switch (customerFile.fileType) {
                 case SheetName.InfoCustomerMis:
-                    console.log(2222, customerFile);
                     const worksheet = content.getWorksheet(1);
                     const rowStartIndex = 3;
                     const numberOfRows = worksheet.rowCount - 2;
@@ -173,6 +175,395 @@ export class CustomerController {
                         }
                         return await this.customerService.create(infoCustomer);
                     });
+                    break;
+                case SheetName.InfoCustomerIncomeScale:
+                    const worksheetInfoCustomerIncomeScale = content.getWorksheet(1);
+                    const rowStartInfoCustomerIncomeScale = 2;
+                    const numberOfRowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.rowCount - 1;
+                    const rowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.getRows(rowStartInfoCustomerIncomeScale, numberOfRowsInfoCustomerIncomeScale) ?? [];
+                    rowsInfoCustomerIncomeScale.map(async row => {
+                        const infoCustomer: IIncomeCreate = {
+                            user: user._id,
+                            codeDepartmentLevelSix: this.fileHelperService.getCellValue(row, 1),
+                            codeAM: this.fileHelperService.getCellValue(row, 2),
+                            cif: this.fileHelperService.getCellValue(row, 3),
+                            fullName: this.fileHelperService.getCellValue(row, 4),
+                            kindOfMoney: this.fileHelperService.getCellValue(row, 5),
+                            raisingCapitalAtTheEnd: this.fileHelperService.getCellValue(row, 6),
+                            raisingCapitalAtTheEndExchange: this.fileHelperService.getCellValue(row, 7),
+                            raisingCapitalAtTheEndKKH: this.fileHelperService.getCellValue(row, 8),
+                            raisingCapitalAtTheEndKKHExchange: this.fileHelperService.getCellValue(row, 9),
+                            raisingCapitalAtTheEndCKH: this.fileHelperService.getCellValue(row, 10),
+                            raisingCapitalAtTheEndCKHExchange: this.fileHelperService.getCellValue(row, 11),
+                            raisingCapitalAvg: this.fileHelperService.getCellValue(row, 12),
+                            raisingCapitalAvgExchange: this.fileHelperService.getCellValue(row, 13),
+                            raisingCapitalKKHAvg: this.fileHelperService.getCellValue(row, 14),
+                            raisingCapitalKKHAvgExchange: this.fileHelperService.getCellValue(row, 15),
+                            raisingCapitalCKHAvg: this.fileHelperService.getCellValue(row, 16),
+                            raisingCapitalCKHAvgExchange: this.fileHelperService.getCellValue(row, 17),
+                            amountDebtCreditAtTheEnd: this.fileHelperService.getCellValue(row, 18),
+                            amountDebtCreditAtTheEndExchange: this.fileHelperService.getCellValue(row, 19),
+                            amountDebtCreditTDHAtTheEnd: this.fileHelperService.getCellValue(row, 20),
+                            amountDebtCreditTDHAtTheEndExchange: this.fileHelperService.getCellValue(row, 21),
+                            amountDebtCreditAvgAtTheEnd: this.fileHelperService.getCellValue(row, 22),
+                            amountDebtCreditAvgAtTheEndExchange: this.fileHelperService.getCellValue(row, 23),
+                            amountDebtCreditTDHAvgAtTheEnd: this.fileHelperService.getCellValue(row, 24),
+                            amountDebtCreditTDHAvgAtTheEndExchange: this.fileHelperService.getCellValue(row, 25),
+                            amountDebtLoanGTCGAndEndCard: this.fileHelperService.getCellValue(row, 26),
+                            amountDebtLoanGTCGAndAvgCard: this.fileHelperService.getCellValue(row, 27),
+                            incomeFTPBaseMore: this.fileHelperService.getCellValue(row, 28),
+                            incomeFromInterestFTPBaseMore: this.fileHelperService.getCellValue(row, 29),
+                            incomeFromCreditFTPBaseMore: this.fileHelperService.getCellValue(row, 30),
+                            incomeGuaranteeActivities: this.fileHelperService.getCellValue(row, 31),
+                            incomeHDVFTPBaseMore: this.fileHelperService.getCellValue(row, 32),
+                            incomeOtherInterest: this.fileHelperService.getCellValue(row, 33),
+                            incomeExcludeInterest: this.fileHelperService.getCellValue(row, 34),
+                            incomeFromService: this.fileHelperService.getCellValue(row, 35),
+                            incomeFromToolFinance: this.fileHelperService.getCellValue(row, 36),
+                            incomeBuyStock: this.fileHelperService.getCellValue(row, 37),
+                            incomeBuySharesAndContribution: this.fileHelperService.getCellValue(row, 38),
+                            incomeGolden: this.fileHelperService.getCellValue(row, 39),
+                            incomeInterestKDNTPS: this.fileHelperService.getCellValue(row, 40),
+                            incomeExcludeInterestKDNTPS: this.fileHelperService.getCellValue(row, 41),
+                            incomeOtherActivity: this.fileHelperService.getCellValue(row, 42),
+                            incomeFromDebt: this.fileHelperService.getCellValue(row, 43),
+                            incomeFromCardAndInterestService: this.fileHelperService.getCellValue(row, 44)
+                        }
+                        const incomeInfo: IIncomeCreate = await this.incomeService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 3)
+                        });
+                        if (incomeInfo) {
+                            await this.incomeService.updateOneByIdInfoCustomerIncomeScale(incomeInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.incomeService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoCustomerIncomeScaleLastYear:
+                    const worksheetInfoCustomerIncomeScaleLastYear = content.getWorksheet(1);
+                    const rowStartInfoCustomerIncomeScaleLastYear = 2;
+                    const numberOfRowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.rowCount - 1;
+                    const rowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.getRows(rowStartInfoCustomerIncomeScaleLastYear, numberOfRowsInfoCustomerIncomeScaleLastYear) ?? [];
+                    rowsInfoCustomerIncomeScaleLastYear.map(async row => {
+                        const infoCustomer: IIncomeCreate = {
+                            user: user._id,
+                            codeDepartmentLevelSix: this.fileHelperService.getCellValue(row, 1),
+                            codeAM: this.fileHelperService.getCellValue(row, 2),
+                            cif: this.fileHelperService.getCellValue(row, 3),
+                            fullName: this.fileHelperService.getCellValue(row, 4),
+                            kindOfMoney: this.fileHelperService.getCellValue(row, 5),
+                            raisingCapitalAtTheEndLastYear: this.fileHelperService.getCellValue(row, 6),
+                            raisingCapitalAtTheEndExchangeLastYear: this.fileHelperService.getCellValue(row, 7),
+                            raisingCapitalAtTheEndKKHLastYear: this.fileHelperService.getCellValue(row, 8),
+                            raisingCapitalAtTheEndKKHExchangeLastYear: this.fileHelperService.getCellValue(row, 9),
+                            raisingCapitalAtTheEndCKHLastYear: this.fileHelperService.getCellValue(row, 10),
+                            raisingCapitalAtTheEndCKHExchangeLastYear: this.fileHelperService.getCellValue(row, 11),
+                            raisingCapitalAvgLastYear: this.fileHelperService.getCellValue(row, 12),
+                            raisingCapitalAvgExchangeLastYear: this.fileHelperService.getCellValue(row, 13),
+                            raisingCapitalKKHAvgLastYear: this.fileHelperService.getCellValue(row, 14),
+                            raisingCapitalKKHAvgExchangeLastYear: this.fileHelperService.getCellValue(row, 15),
+                            raisingCapitalCKHAvgLastYear: this.fileHelperService.getCellValue(row, 16),
+                            raisingCapitalCKHAvgExchangeLastYear: this.fileHelperService.getCellValue(row, 17),
+                            amountDebtCreditAtTheEndLastYear: this.fileHelperService.getCellValue(row, 18),
+                            amountDebtCreditAtTheEndExchangeLastYear: this.fileHelperService.getCellValue(row, 19),
+                            amountDebtCreditTDHAtTheEndLastYear: this.fileHelperService.getCellValue(row, 20),
+                            amountDebtCreditTDHAtTheEndExchangeLastYear: this.fileHelperService.getCellValue(row, 21),
+                            amountDebtCreditAvgAtTheEndLastYear: this.fileHelperService.getCellValue(row, 22),
+                            amountDebtCreditAvgAtTheEndExchangeLastYear: this.fileHelperService.getCellValue(row, 23),
+                            amountDebtCreditTDHAvgAtTheEndLastYear: this.fileHelperService.getCellValue(row, 24),
+                            amountDebtCreditTDHAvgAtTheEndExchangeLastYear: this.fileHelperService.getCellValue(row, 25),
+                            amountDebtLoanGTCGAndEndCardLastYear: this.fileHelperService.getCellValue(row, 26),
+                            amountDebtLoanGTCGAndAvgCardLastYear: this.fileHelperService.getCellValue(row, 27),
+                            incomeFTPBaseMoreLastYear: this.fileHelperService.getCellValue(row, 28),
+                            incomeFromInterestFTPBaseMoreLastYear: this.fileHelperService.getCellValue(row, 29),
+                            incomeFromCreditFTPBaseMoreLastYear: this.fileHelperService.getCellValue(row, 30),
+                            incomeGuaranteeActivitiesLastYear: this.fileHelperService.getCellValue(row, 31),
+                            incomeHDVFTPBaseMoreLastYear: this.fileHelperService.getCellValue(row, 32),
+                            incomeOtherInterestLastYear: this.fileHelperService.getCellValue(row, 33),
+                            incomeExcludeInterestLastYear: this.fileHelperService.getCellValue(row, 34),
+                            incomeFromServiceLastYear: this.fileHelperService.getCellValue(row, 35),
+                            incomeFromToolFinanceLastYear: this.fileHelperService.getCellValue(row, 36),
+                            incomeBuyStockLastYear: this.fileHelperService.getCellValue(row, 37),
+                            incomeBuySharesAndContributionLastYear: this.fileHelperService.getCellValue(row, 38),
+                            incomeGoldenLastYear: this.fileHelperService.getCellValue(row, 39),
+                            incomeInterestKDNTPSLastYear: this.fileHelperService.getCellValue(row, 40),
+                            incomeExcludeInterestKDNTPSLastYear: this.fileHelperService.getCellValue(row, 41),
+                            incomeOtherActivityLastYear: this.fileHelperService.getCellValue(row, 42),
+                            incomeFromDebtLastYear: this.fileHelperService.getCellValue(row, 43),
+                            incomeFromCardAndInterestServiceLastYear: this.fileHelperService.getCellValue(row, 44)
+                        }
+                        const incomeInfo: IIncomeCreate = await this.incomeService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 3)
+                        });
+                        if (incomeInfo) {
+                            await this.incomeService.updateOneByInfoCustomerIncomeScaleLastYear(incomeInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.incomeService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoCustomerCoreDebt:
+                    const worksheetInfoCustomerCoreDebt = content.getWorksheet(1);
+                    const rowStartInfoCustomerCoreDebt = 2
+                    const numberOfRowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.rowCount - 1;
+                    const rowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.getRows(rowStartInfoCustomerCoreDebt, numberOfRowsInfoCustomerCoreDebt) ?? [];
+                    rowsInfoCustomerCoreDebt.map(async row => {
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 2),
+                            coreDebt: +this.fileHelperService.getCellValue(row, 9) - +this.fileHelperService.getCellValue(row, 8)
+
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 2)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoCustomerCoreDebt(customerInfo.cif, SheetName.InfoCustomerCoreDebt, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
+
+                case SheetName.InfoCustomerCoreDebtLastYear:
+                    const worksheetInfoCustomerCoreDebtLastYear = content.getWorksheet(1);
+                    const rowStartInfoCustomerCoreDebtLastYear = 2
+                    const numberOfRowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.rowCount - 1;
+                    const rowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.getRows(rowStartInfoCustomerCoreDebtLastYear, numberOfRowsInfoCustomerCoreDebtLastYear) ?? [];
+                    rowsInfoCustomerCoreDebtLastYear.map(async row => {
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 3),
+                            coreDebtLastYear: +this.fileHelperService.getCellValue(row, 10) - +this.fileHelperService.getCellValue(row, 9)
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 3)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoCustomerCoreDebt(customerInfo.cif, SheetName.InfoCustomerCoreDebtLastYear, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoDebitDomesticCard:
+                    const worksheetInfoDebitDomesticCard = content.getWorksheet(1);
+                    const rowStartInfoDebitDomesticCard = 2
+                    const numberOfRowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.rowCount - 1;
+                    const rowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.getRows(rowStartInfoDebitDomesticCard, numberOfRowsInfoDebitDomesticCard) ?? [];
+                    rowsInfoDebitDomesticCard.map(async row => {
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 1),
+                            fullName: this.fileHelperService.getCellValue(row, 2),
+                            accountNumberDebitDomestic: this.fileHelperService.getCellValue(row, 3),
+                            cardNumberDebitDomestic: this.fileHelperService.getCellValue(row, 4),
+                            typeProductDebitDomestic: this.fileHelperService.getCellValue(row, 5),
+                            typeChipDebitDomestic: this.fileHelperService.getCellValue(row, 6),
+                            codeDebitDomestic: this.fileHelperService.getCellValue(row, 7),
+                            statusDebitDomestic: this.fileHelperService.getCellValue(row, 8),
+                            formPHTDebitDomestic: this.fileHelperService.getCellValue(row, 9),
+                            codeAM: this.fileHelperService.getCellValue(row, 10)
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 1)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoDebitDomesticCard(customerInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoDebitInternationalCard:
+                    const worksheetInfoDebitInternationalCard = content.getWorksheet(1);
+                    const rowStartInfoDebitInternationalCard = 2
+                    const numberOfRowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.rowCount - 1;
+                    const rowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.getRows(rowStartInfoDebitInternationalCard, numberOfRowsInfoDebitInternationalCard) ?? [];
+                    rowsInfoDebitInternationalCard.map(async row => {
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 1),
+                            fullName: this.fileHelperService.getCellValue(row, 2),
+                            cardNumberDebitInternational: this.fileHelperService.getCellValue(row, 3),
+                            accountNumberDefaultLinkedCard: this.fileHelperService.getCellValue(row, 4),
+                            amountFeeAnnually: this.fileHelperService.getCellValue(row, 5),
+                            statusCardDebitInternational: this.fileHelperService.getCellValue(row, 6),
+                            expiredDateCardDebitInternational: this.fileHelperService.getCellValue(row, 7) ? new Date(this.fileHelperService.getCellValue(row, 7)) : null,
+                            activeDateCardDebitInternational: this.fileHelperService.getCellValue(row, 8) ? new Date(this.fileHelperService.getCellValue(row, 8)) : null,
+                            typeCardDebitInternational: this.fileHelperService.getCellValue(row, 9),
+                            codeCardDebitInternational: this.fileHelperService.getCellValue(row, 10),
+                            codeAM: this.fileHelperService.getCellValue(row, 11)
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 1)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoDebitInternationalCard(customerInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoDetailTSDB:
+                    const worksheetInfoDetailTSDB = content.getWorksheet(1);
+                    const rowStartInfoDetailTSDB = 3
+                    const numberOfRowsInfoDetailTSDB = worksheetInfoDetailTSDB.rowCount - 2;
+                    const rowsInfoDetailTSDB = worksheetInfoDetailTSDB.getRows(rowStartInfoDetailTSDB, numberOfRowsInfoDetailTSDB) ?? [];
+                    rowsInfoDetailTSDB.map(async row => {
+                        const valueTSDB = this.fileHelperService.getCellValue(row, 9)
+                        if (!valueTSDB) return;
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 3),
+                            fullName: this.fileHelperService.getCellValue(row, 4),
+                            totalDebtTSDB: this.fileHelperService.getCellValue(row, 5),
+                            debtShortTSDB: this.fileHelperService.getCellValue(row, 6),
+                            debtMediumTSDB: this.fileHelperService.getCellValue(row, 7),
+                            debtLongTSDB: this.fileHelperService.getCellValue(row, 8),
+                            valueTSDB,
+                            property: this.fileHelperService.getCellValue(row, 10),
+                            saveMoney: this.fileHelperService.getCellValue(row, 13),
+                            otherAsset: this.fileHelperService.getCellValue(row, 14)
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 1)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoDetailTSDB(customerInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoProductServiceBrand:
+                    const worksheetInfoProductServiceBrand = content.getWorksheet(1);
+                    const rowStartInfoProductServiceBrand = 2
+                    const numberOfRowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.rowCount - 1;
+                    const rowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.getRows(rowStartInfoProductServiceBrand, numberOfRowsInfoProductServiceBrand) ?? [];
+                    rowsInfoProductServiceBrand.map(async row => {
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 3),
+                            fullName: this.fileHelperService.getCellValue(row, 4),
+                            productServiceBrandTGCKH: this.fileHelperService.getCellValue(row, 7),
+                            productServiceBrandTGTT: this.fileHelperService.getCellValue(row, 8),
+                            productServiceBrandLOAN: this.fileHelperService.getCellValue(row, 9),
+                            productServiceBrandOverdraft: this.fileHelperService.getCellValue(row, 10),
+                            productServiceBrandTTTM: this.fileHelperService.getCellValue(row, 11),
+                            productServiceBrandVisaCard: this.fileHelperService.getCellValue(row, 12),
+                            productServiceBrandMasterCard: this.fileHelperService.getCellValue(row, 13),
+                            productServiceBrandATMCard: this.fileHelperService.getCellValue(row, 14),
+                            productServiceBrandRegisterSalary: this.fileHelperService.getCellValue(row, 15),
+                            productServiceBrandStock: this.fileHelperService.getCellValue(row, 16),
+                            productServiceBrandSmartBanking: this.fileHelperService.getCellValue(row, 17),
+                            productServiceBrandBSMS: this.fileHelperService.getCellValue(row, 18),
+                            productServiceBrandBANKPlus: this.fileHelperService.getCellValue(row, 19),
+                            productServiceBrandVNTopup: this.fileHelperService.getCellValue(row, 20),
+                            productServiceBrandCollectAndPay: this.fileHelperService.getCellValue(row, 20),
+                            productServiceBrandTCC: this.fileHelperService.getCellValue(row, 21),
+                            productServiceBrandIBank: this.fileHelperService.getCellValue(row, 22),
+                            productServiceBrandBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 23),
+                            productServiceBrandExcludeBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 24),
+                            productServiceBrandTotalProductUse: this.fileHelperService.getCellValue(row, 25),
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 1)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoProductServiceBrand(customerInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoProductServiceSystem:
+                    const worksheetInfoProductServiceSystem = content.getWorksheet(1);
+                    const rowStartInfoProductServiceSystem = 2
+                    const numberOfRowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.rowCount - 1;
+                    const rowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.getRows(rowStartInfoProductServiceSystem, numberOfRowsInfoProductServiceSystem) ?? [];
+                    rowsInfoProductServiceSystem.map(async row => {
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 2),
+                            productServiceSystemTGCKH: this.fileHelperService.getCellValue(row, 7),
+                            productServiceSystemTGTT: this.fileHelperService.getCellValue(row, 8),
+                            productServiceSystemLOAN: this.fileHelperService.getCellValue(row, 9),
+                            productServiceSystemOverdraft: this.fileHelperService.getCellValue(row, 10),
+                            productServiceSystemTTTM: this.fileHelperService.getCellValue(row, 11),
+                            productServiceSystemVisaCard: this.fileHelperService.getCellValue(row, 12),
+                            productServiceSystemMasterCard: this.fileHelperService.getCellValue(row, 13),
+                            productServiceSystemATMCard: this.fileHelperService.getCellValue(row, 14),
+                            productServiceSystemRegisterSalary: this.fileHelperService.getCellValue(row, 15),
+                            productServiceSystemStock: this.fileHelperService.getCellValue(row, 16),
+                            productServiceSystemSmartBanking: this.fileHelperService.getCellValue(row, 17),
+                            productServiceSystemBSMS: this.fileHelperService.getCellValue(row, 18),
+                            productServiceSystemBANKPlus: this.fileHelperService.getCellValue(row, 19),
+                            productServiceSystemVNTopup: this.fileHelperService.getCellValue(row, 20),
+                            productServiceSystemCollectAndPay: this.fileHelperService.getCellValue(row, 20),
+                            productServiceSystemTCC: this.fileHelperService.getCellValue(row, 21),
+                            productServiceSystemIBank: this.fileHelperService.getCellValue(row, 22),
+                            productServiceSystemBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 23),
+                            productServiceSystemExcludeBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 24),
+                            productServiceSystemTotalProductUse: this.fileHelperService.getCellValue(row, 25),
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 1)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoProductServiceSystem(customerInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
+                case SheetName.InfoCreditInternationalCard:
+                    const worksheetInfoCreditInternationalCard = content.getWorksheet(1);
+                    const rowStartInfoCreditInternationalCard = 2
+                    const numberOfRowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.rowCount - 1;
+                    const rowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.getRows(rowStartInfoCreditInternationalCard, numberOfRowsInfoCreditInternationalCard) ?? [];
+                    rowsInfoCreditInternationalCard.map(async row => {
+                        const infoCustomer: ICustomerCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 1),
+                            fullName: this.fileHelperService.getCellValue(row, 2),
+                            department: this.fileHelperService.getCellValue(row, 3),
+                            typeCreditCard: this.fileHelperService.getCellValue(row, 4),
+                            accountNumberCreditCard: this.fileHelperService.getCellValue(row, 5),
+                            accountIdCreditCard: this.fileHelperService.getCellValue(row, 6),
+                            accountCreditCardLink: this.fileHelperService.getCellValue(row, 7),
+                            limitAmountCreditCard: this.fileHelperService.getCellValue(row, 8),
+                            codeAM: this.fileHelperService.getCellValue(row, 9),
+                            statusCreditCard: this.fileHelperService.getCellValue(row, 10),
+                            rateDebtAutoCreditCard: this.fileHelperService.getCellValue(row, 11),
+                            activeDateCreditCard: this.fileHelperService.getCellValue(row, 12) ? new Date(this.fileHelperService.getCellValue(row, 12)) : null,
+                            activeDateAgainCreditCard: this.fileHelperService.getCellValue(row, 13) ? new Date(this.fileHelperService.getCellValue(row, 13)) : null,
+                            expiredDateCreditCard: this.fileHelperService.getCellValue(row, 14) ? new Date(this.fileHelperService.getCellValue(row, 14)) : null,
+                            closedDateCreditCard: this.fileHelperService.getCellValue(row, 15) ? new Date(this.fileHelperService.getCellValue(row, 15)) : null,
+                            activeDateFirstTimeCreditCard: this.fileHelperService.getCellValue(row, 16) ? new Date(this.fileHelperService.getCellValue(row, 16)) : null,
+                            statusChangeDateCreditCard: this.fileHelperService.getCellValue(row, 17) ? new Date(this.fileHelperService.getCellValue(row, 17)) : null,
+                            formIssueCreditCard: this.fileHelperService.getCellValue(row, 18),
+                            transactionAmountCreditCard: this.fileHelperService.getCellValue(row, 19),
+                            transactionAmountWriteCreditCard: this.fileHelperService.getCellValue(row, 20),
+                            transactionAmountDebtCreditCard: this.fileHelperService.getCellValue(row, 21),
+                            amountFeeCreditCard: this.fileHelperService.getCellValue(row, 22),
+                            amountFeeServiceCreditCard: this.fileHelperService.getCellValue(row, 23),
+                            feeServiceCreditCard: this.fileHelperService.getCellValue(row, 24),
+                            numberOfTransactionsCreditCard: this.fileHelperService.getCellValue(row, 25),
+                            numberOfTransactionsWriteCreditCard: this.fileHelperService.getCellValue(row, 26),
+                            numberOfTransactionsDebtCreditCard: this.fileHelperService.getCellValue(row, 27)
+
+                        }
+                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
+                            cif: this.fileHelperService.getCellValue(row, 1)
+                        });
+                        if (customerInfo) {
+                            await this.customerService.updateOneByInfoCreditInternationalCard(customerInfo.cif, infoCustomer)
+                            return;
+                        }
+                        return await this.customerService.create(infoCustomer);
+                    });
+                    break;
             }
         } catch (err) {
             console.log(err);
