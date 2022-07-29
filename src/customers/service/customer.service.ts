@@ -125,13 +125,6 @@ export class CustomerService {
     async create({
                      cif,
                      codeAM,
-                     formPHTDebitDomestic,
-                     statusDebitDomestic,
-                     codeDebitDomestic,
-                     typeChipDebitDomestic,
-                     typeProductDebitDomestic,
-                     accountNumberDebitDomestic,
-                     cardNumberDebitDomestic,
                      customerId,
                      user,
                      address,
@@ -156,38 +149,6 @@ export class CustomerService {
                      fileTypeCustomer,
                      coreDebt,
                      coreDebtLastYear,
-                     cardNumberDebitInternational,
-                     accountNumberDefaultLinkedCard,
-                     amountFeeAnnually,
-                     statusCardDebitInternational,
-                     expiredDateCardDebitInternational,
-                     activeDateCardDebitInternational,
-                     typeCardDebitInternational,
-                     codeCardDebitInternational,
-                     department,
-                     typeCreditCard,
-                     accountNumberCreditCard,
-                     accountIdCreditCard,
-                     accountCreditCardLink,
-                     limitAmountCreditCard,
-                     statusCreditCard,
-                     rateDebtAutoCreditCard,
-                     activeDateCreditCard,
-                     activeDateFirstTimeCreditCard,
-                     activeDateAgainCreditCard,
-                     expiredDateCreditCard,
-                     closedDateCreditCard,
-                     statusChangeDateCreditCard,
-                     formIssueCreditCard,
-                     transactionAmountCreditCard,
-                     transactionAmountDebtCreditCard,
-                     transactionAmountWriteCreditCard,
-                     amountFeeCreditCard,
-                     amountFeeServiceCreditCard,
-                     feeServiceCreditCard,
-                     numberOfTransactionsCreditCard,
-                     numberOfTransactionsDebtCreditCard,
-                     numberOfTransactionsWriteCreditCard,
                      totalDebtTSDB,
                      debtShortTSDB,
                      debtMediumTSDB,
@@ -289,45 +250,6 @@ export class CustomerService {
             coreDebt,
             coreDebtLastYear,
             codeAM,
-            formPHTDebitDomestic,
-            accountNumberDebitDomestic,
-            cardNumberDebitDomestic,
-            typeChipDebitDomestic,
-            typeProductDebitDomestic,
-            codeDebitDomestic,
-            statusDebitDomestic,
-            cardNumberDebitInternational,
-            accountNumberDefaultLinkedCard,
-            amountFeeAnnually,
-            statusCardDebitInternational,
-            expiredDateCardDebitInternational,
-            activeDateCardDebitInternational,
-            typeCardDebitInternational,
-            codeCardDebitInternational,
-            department,
-            typeCreditCard,
-            accountNumberCreditCard,
-            accountIdCreditCard,
-            accountCreditCardLink,
-            limitAmountCreditCard,
-            statusCreditCard,
-            rateDebtAutoCreditCard,
-            activeDateCreditCard,
-            activeDateFirstTimeCreditCard,
-            activeDateAgainCreditCard,
-            expiredDateCreditCard,
-            closedDateCreditCard,
-            statusChangeDateCreditCard,
-            formIssueCreditCard,
-            transactionAmountCreditCard,
-            transactionAmountDebtCreditCard,
-            transactionAmountWriteCreditCard,
-            amountFeeCreditCard,
-            amountFeeServiceCreditCard,
-            feeServiceCreditCard,
-            numberOfTransactionsCreditCard,
-            numberOfTransactionsDebtCreditCard,
-            numberOfTransactionsWriteCreditCard,
             totalDebtTSDB,
             debtShortTSDB,
             debtMediumTSDB,
@@ -513,126 +435,6 @@ export class CustomerService {
         if (type === SheetName.InfoCustomerCoreDebtLastYear) {
             customerModel.coreDebtLastYear = coreDebtLastYear;
         }
-        return customerModel.save();
-    }
-
-    async updateOneByInfoCreditInternationalCard(
-        id: string,
-        {
-            department,
-            fullName,
-            codeAM,
-            typeCreditCard,
-            accountNumberCreditCard,
-            accountIdCreditCard,
-            accountCreditCardLink,
-            limitAmountCreditCard,
-            statusCreditCard,
-            rateDebtAutoCreditCard,
-            activeDateCreditCard,
-            activeDateFirstTimeCreditCard,
-            activeDateAgainCreditCard,
-            expiredDateCreditCard,
-            closedDateCreditCard,
-            statusChangeDateCreditCard,
-            formIssueCreditCard,
-            transactionAmountCreditCard,
-            transactionAmountDebtCreditCard,
-            transactionAmountWriteCreditCard,
-            amountFeeCreditCard,
-            amountFeeServiceCreditCard,
-            feeServiceCreditCard,
-            numberOfTransactionsCreditCard,
-            numberOfTransactionsDebtCreditCard,
-            numberOfTransactionsWriteCreditCard
-        }: ICustomerCreate
-    ): Promise<CustomerDocument> {
-        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
-        customerModel.fullName = fullName;
-        customerModel.codeAM = codeAM;
-        customerModel.department = department;
-        customerModel.typeCreditCard = typeCreditCard;
-        customerModel.accountNumberCreditCard = accountNumberCreditCard;
-        customerModel.accountIdCreditCard = accountIdCreditCard;
-        customerModel.accountCreditCardLink = accountCreditCardLink;
-        customerModel.limitAmountCreditCard = limitAmountCreditCard;
-        customerModel.rateDebtAutoCreditCard = rateDebtAutoCreditCard;
-        customerModel.activeDateCreditCard = activeDateCreditCard;
-        customerModel.activeDateFirstTimeCreditCard = activeDateFirstTimeCreditCard;
-        customerModel.activeDateAgainCreditCard = activeDateAgainCreditCard;
-        customerModel.expiredDateCreditCard = expiredDateCreditCard;
-        customerModel.closedDateCreditCard = closedDateCreditCard;
-        customerModel.statusChangeDateCreditCard = statusChangeDateCreditCard;
-        customerModel.formIssueCreditCard = formIssueCreditCard;
-        customerModel.statusCreditCard = statusCreditCard;
-        customerModel.transactionAmountCreditCard = transactionAmountCreditCard;
-        customerModel.transactionAmountDebtCreditCard = transactionAmountDebtCreditCard;
-        customerModel.transactionAmountWriteCreditCard = transactionAmountWriteCreditCard;
-        customerModel.amountFeeCreditCard = amountFeeCreditCard;
-        customerModel.amountFeeServiceCreditCard = amountFeeServiceCreditCard;
-        customerModel.feeServiceCreditCard = feeServiceCreditCard;
-        customerModel.numberOfTransactionsCreditCard = numberOfTransactionsCreditCard;
-        customerModel.numberOfTransactionsDebtCreditCard = numberOfTransactionsDebtCreditCard;
-        customerModel.numberOfTransactionsWriteCreditCard = numberOfTransactionsWriteCreditCard;
-        return customerModel.save();
-    }
-
-    async updateOneByInfoDebitDomesticCard(
-        id: string,
-        {
-            fullName,
-            accountNumberDebitDomestic,
-            cardNumberDebitDomestic,
-            typeProductDebitDomestic,
-            typeChipDebitDomestic,
-            codeAM,
-            codeDebitDomestic,
-            statusDebitDomestic,
-            formPHTDebitDomestic
-        }: ICustomerCreate
-    ): Promise<CustomerDocument> {
-        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
-        customerModel.fullName = fullName;
-        customerModel.accountNumberDebitDomestic = accountNumberDebitDomestic;
-        customerModel.cardNumberDebitDomestic = cardNumberDebitDomestic;
-        customerModel.typeProductDebitDomestic = typeProductDebitDomestic;
-        customerModel.typeChipDebitDomestic = typeChipDebitDomestic;
-        customerModel.codeDebitDomestic = codeDebitDomestic;
-        customerModel.statusDebitDomestic = statusDebitDomestic;
-        customerModel.formPHTDebitDomestic = formPHTDebitDomestic;
-        customerModel.codeAM = codeAM;
-        return customerModel.save();
-    }
-
-    async updateOneByInfoDebitInternationalCard(
-        id: string,
-        {
-            fullName,
-            cardNumberDebitInternational,
-            accountNumberDefaultLinkedCard,
-            amountFeeAnnually,
-            statusCardDebitInternational,
-            expiredDateCardDebitInternational,
-            activeDateCardDebitInternational,
-            typeCardDebitInternational,
-            codeCardDebitInternational,
-            codeAM
-        }: ICustomerCreate
-    ): Promise<CustomerDocument> {
-        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
-        customerModel.fullName = fullName;
-        customerModel.cardNumberDebitInternational = cardNumberDebitInternational;
-        customerModel.accountNumberDefaultLinkedCard = accountNumberDefaultLinkedCard;
-        customerModel.amountFeeAnnually = amountFeeAnnually;
-        customerModel.statusCardDebitInternational = statusCardDebitInternational;
-        customerModel.expiredDateCardDebitInternational = expiredDateCardDebitInternational;
-        customerModel.activeDateCardDebitInternational = activeDateCardDebitInternational;
-        customerModel.typeCardDebitInternational = typeCardDebitInternational;
-        customerModel.codeCardDebitInternational = codeCardDebitInternational;
-        customerModel.codeAM = codeAM;
         return customerModel.save();
     }
 

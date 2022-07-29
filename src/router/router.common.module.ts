@@ -12,6 +12,7 @@ import { UserModule } from 'src/user/user.module';
 import {FileModule} from "../files/file.module";
 import {CustomerModule} from "../customers/customer.module";
 import {IncomeModule} from "../income/income.module";
+import {CardModule} from "../card/card.module";
 
 @Module({
     controllers: [
@@ -26,6 +27,7 @@ import {IncomeModule} from "../income/income.module";
         FileModule,
         CustomerModule,
         IncomeModule,
+        CardModule,
         AuthModule,
         RoleModule,
         PermissionModule,

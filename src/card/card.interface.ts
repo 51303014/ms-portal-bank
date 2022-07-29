@@ -1,11 +1,11 @@
 import {IUserDocument} from "../user/user.interface";
-import {CustomerDocument} from "./schema/customer.schema";
+import {CardDocument} from "./schema/card.schema";
 
-export interface ICustomerDocument extends Omit<CustomerDocument, 'user'> {
+export interface ICardDocument extends Omit<CardDocument, 'user'> {
     user: IUserDocument;
 }
 
-export interface ICustomerCreate {
+export interface ICardCreate {
     cif?: string;
     typeCard?: string;
     customerId?: string;
@@ -187,36 +187,48 @@ export interface ICustomerCreate {
     incomeInterestKDNTPS?: string;
     incomeFromDebt?: string;
     incomeFromCardAndInterestService?: string;
+    raisingCapitalAtTheEndLastYear?: string;
+    raisingCapitalAtTheEndExchangeLastYear?: string;
+    raisingCapitalAtTheEndKKHLastYear?: string;
+    raisingCapitalAtTheEndKKHExchangeLastYear?: string;
+    raisingCapitalAtTheEndCKHLastYear?: string;
+    raisingCapitalAtTheEndCKHExchangeLastYear?: string;
+    raisingCapitalAvgLastYear?: string;
+    raisingCapitalAvgExchangeLastYear?: string;
+    raisingCapitalKKHAvgLastYear?: string;
+    raisingCapitalKKHAvgExchangeLastYear?: string;
+    raisingCapitalCKHAvgLastYear?: string;
+    raisingCapitalCKHAvgExchangeLastYear?: string;
+    amountDebtCreditAtTheEndLastYear?: string;
+    amountDebtCreditAtTheEndExchangeLastYear?: string;
+    amountDebtCreditTDHAtTheEndLastYear?: string;
+    amountDebtCreditTDHAtTheEndExchangeLastYear?: string;
+    amountDebtCreditAvgAtTheEndLastYear?: string;
+    amountDebtCreditAvgAtTheEndExchangeLastYear?: string;
+    amountDebtCreditTDHAvgAtTheEndLastYear?: string;
+    amountDebtCreditTDHAvgAtTheEndExchangeLastYear?: string;
+    amountDebtLoanGTCGAndEndCardLastYear?: string;
+    amountDebtLoanGTCGAndAvgCardLastYear?: string;
+    incomeFTPBaseMoreLastYear?: string;
+    incomeFromInterestFTPBaseMoreLastYear?: string;
+    incomeGuaranteeActivitiesLastYear?: string;
+    incomeHDVFTPBaseMoreLastYear?: string;
+    incomeOtherInterestLastYear?: string;
+    incomeExcludeInterestLastYear?: string;
+    incomeFromServiceLastYear?: string;
+    incomeFromCreditFTPBaseMoreLastYear?: string;
+    incomeFromToolFinanceLastYear?: string;
+    incomeBuyStockLastYear?: string;
+    incomeBuySharesAndContributionLastYear?: string;
+    incomeGoldenLastYear?: string;
+    incomeInterestKDNTPSLastYear?: string;
+    incomeExcludeInterestKDNTPSLastYear?: string;
+    incomeOtherActivityLastYear?: string;
+    incomeFromDebtLastYear?: string;
+    incomeFromCardAndInterestServiceLastYear?: string;
+
     user: string;
 }
 
-export type ICustomerUpdate = Pick<ICustomerCreate, 'cif' | 'customerId'>;
+export type ICardUpdate = Pick<ICardCreate, 'cif'>;
 
-export interface ICustomerCheckExist {
-    file: boolean;
-    user: boolean;
-}
-
-export type FileName = 'InfoCustomerMis' | 'InfoCustomerMisLastYear' | 'InfoCustomer' | 'InfoCustomerIncomeScale' |
-    'InfoCustomerIncomeScaleLastYear' | 'InfoCustomerCoreDebtLastYear' | 'InfoCustomerCoreDebt' | 'InfoDebitDomesticCard' |
-    'InfoDebitInternationalCard' | 'InfoCreditInternationalCard' | 'InfoDetailTSDB' | 'InfoProductServiceBrand' | 'InfoProductServiceSystem'
-
-export enum SheetName {
-    InfoCustomerMis = 'InfoCustomerMis',
-    InfoCustomerMisLastYear = 'InfoCustomerMisLastYear',
-    InfoCustomerIncomeScaleLastYear = 'InfoCustomerIncomeScaleLastYear',
-    InfoCustomerIncomeScale = 'InfoCustomerIncomeScale',
-    InfoCustomerCoreDebtLastYear = 'InfoCustomerCoreDebtLastYear',
-    InfoCustomerCoreDebt = 'InfoCustomerCoreDebt',
-    InfoCustomer = 'InfoCustomer',
-    InfoDebitDomesticCard = 'InfoDebitDomesticCard',
-    InfoDebitInternationalCard = 'InfoDebitInternationalCard',
-    InfoCreditInternationalCard = 'InfoCreditInternationalCard',
-    InfoDetailTSDB = 'InfoDetailTSDB',
-    InfoProductServiceBrand = 'InfoProductServiceBrand',
-    InfoProductServiceSystem = 'InfoProductServiceSystem',
-}
-
-export interface CustomerFile {
-    fileType: FileName
-}

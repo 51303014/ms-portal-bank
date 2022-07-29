@@ -12,11 +12,13 @@ import {CustomerModule} from "../customers/customer.module";
 import {CustomerController} from "../customers/controller/customer.controller";
 import {IncomeModule} from "../income/income.module";
 import {IncomeController} from "../income/controller/income.controller";
+import {CardController} from "../card/controller/card.controller";
+import {CardModule} from "../card/card.module";
 
 @Module({
-    controllers: [UserPublicController,FileController, CustomerController, IncomeController, AuthPublicController],
+    controllers: [UserPublicController,FileController, CustomerController, IncomeController, CardController, AuthPublicController],
     providers: [],
     exports: [],
-    imports: [UserModule, FileModule, CustomerModule, IncomeModule, AwsModule, AuthModule, RoleModule, PermissionModule],
+    imports: [UserModule, FileModule, CustomerModule, IncomeModule, CardModule, AwsModule, AuthModule, RoleModule, PermissionModule],
 })
 export class RouterPublicModule {}

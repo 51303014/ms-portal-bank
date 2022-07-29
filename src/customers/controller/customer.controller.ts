@@ -25,6 +25,8 @@ import {HelperFileService} from "../../utils/helper/service/helper.file.service"
 import {ENUM_USER_STATUS_CODE_ERROR} from "../customer.constant";
 import {IncomeService} from "../../income/service/income.service";
 import {IIncomeCreate} from "../../income/income.interface";
+import {CardService} from "../../card/service/card.service";
+import {TYPE_CARD} from "../../card/card.constant";
 
 @Controller({
     version: '1',
@@ -34,6 +36,7 @@ export class CustomerController {
     constructor(
         private readonly customerService: CustomerService,
         private readonly incomeService: IncomeService,
+        private readonly cardService: CardService,
         private readonly awsService: AwsS3Service,
         private readonly fileHelperService: HelperFileService
     ) {
@@ -354,6 +357,7 @@ export class CustomerController {
                     rowsInfoDebitDomesticCard.map(async row => {
                         const infoCustomer: ICustomerCreate = {
                             user: user._id,
+                            typeCard: TYPE_CARD.DebitDomesticCard,
                             cif: this.fileHelperService.getCellValue(row, 1),
                             fullName: this.fileHelperService.getCellValue(row, 2),
                             accountNumberDebitDomestic: this.fileHelperService.getCellValue(row, 3),
@@ -365,14 +369,15 @@ export class CustomerController {
                             formPHTDebitDomestic: this.fileHelperService.getCellValue(row, 9),
                             codeAM: this.fileHelperService.getCellValue(row, 10)
                         }
-                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
-                            cif: this.fileHelperService.getCellValue(row, 1)
-                        });
-                        if (customerInfo) {
-                            await this.customerService.updateOneByInfoDebitDomesticCard(customerInfo.cif, infoCustomer)
-                            return;
-                        }
-                        return await this.customerService.create(infoCustomer);
+                        // const customerInfo: ICustomerCreate = await this.cardService.findOne({
+                        //     cif: this.fileHelperService.getCellValue(row, 1),
+                        //     typeCard: TYPE_CARD.DebitDomesticCard,
+                        // });
+                        // if (customerInfo) {
+                        //     await this.cardService.updateOneByInfoDebitDomesticCard(customerInfo.cif, infoCustomer)
+                        //     return;
+                        // }
+                        return await this.cardService.create(infoCustomer);
                     });
                     break;
                 case SheetName.InfoDebitInternationalCard:
@@ -383,6 +388,7 @@ export class CustomerController {
                     rowsInfoDebitInternationalCard.map(async row => {
                         const infoCustomer: ICustomerCreate = {
                             user: user._id,
+                            typeCard: TYPE_CARD.DebitInternationalCard,
                             cif: this.fileHelperService.getCellValue(row, 1),
                             fullName: this.fileHelperService.getCellValue(row, 2),
                             cardNumberDebitInternational: this.fileHelperService.getCellValue(row, 3),
@@ -395,14 +401,15 @@ export class CustomerController {
                             codeCardDebitInternational: this.fileHelperService.getCellValue(row, 10),
                             codeAM: this.fileHelperService.getCellValue(row, 11)
                         }
-                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
-                            cif: this.fileHelperService.getCellValue(row, 1)
-                        });
-                        if (customerInfo) {
-                            await this.customerService.updateOneByInfoDebitInternationalCard(customerInfo.cif, infoCustomer)
-                            return;
-                        }
-                        return await this.customerService.create(infoCustomer);
+                        // const customerInfo: ICustomerCreate = await this.cardService.findOne({
+                        //     cif: this.fileHelperService.getCellValue(row, 1),
+                        //     typeCard: TYPE_CARD.DebitInternationalCard
+                        // });
+                        // if (customerInfo) {
+                        //     await this.cardService.updateOneByInfoDebitInternationalCard(customerInfo.cif, infoCustomer)
+                        //     return;
+                        // }
+                        return await this.cardService.create(infoCustomer);
                     });
                     break;
                 case SheetName.InfoDetailTSDB:
@@ -525,6 +532,7 @@ export class CustomerController {
                     rowsInfoCreditInternationalCard.map(async row => {
                         const infoCustomer: ICustomerCreate = {
                             user: user._id,
+                            typeCard: TYPE_CARD.CreditInternationalCard,
                             cif: this.fileHelperService.getCellValue(row, 1),
                             fullName: this.fileHelperService.getCellValue(row, 2),
                             department: this.fileHelperService.getCellValue(row, 3),
@@ -554,14 +562,15 @@ export class CustomerController {
                             numberOfTransactionsDebtCreditCard: this.fileHelperService.getCellValue(row, 27)
 
                         }
-                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
-                            cif: this.fileHelperService.getCellValue(row, 1)
-                        });
-                        if (customerInfo) {
-                            await this.customerService.updateOneByInfoCreditInternationalCard(customerInfo.cif, infoCustomer)
-                            return;
-                        }
-                        return await this.customerService.create(infoCustomer);
+                        // const customerInfo: ICustomerCreate = await this.cardService.findOne({
+                        //     cif: this.fileHelperService.getCellValue(row, 1),
+                        //     typeCard: TYPE_CARD.CreditInternationalCard
+                        // });
+                        // if (customerInfo) {
+                        //     await this.cardService.updateOneByInfoCreditInternationalCard(customerInfo.cif, infoCustomer)
+                        //     return;
+                        // }
+                        return await this.cardService.create(infoCustomer);
                     });
                     break;
             }
