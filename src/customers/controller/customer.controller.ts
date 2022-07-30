@@ -115,7 +115,7 @@ export class CustomerController {
                             cif: this.fileHelperService.getCellValue(row, 1)
                         });
                         if (customerInfo) {
-                            await this.customerService.updateOneById(customerInfo.cif, infoCustomer)
+                            await this.customerService.updateOneByInfoCustomerMis(customerInfo.cif, infoCustomer)
                             return;
                         }
                         return await this.customerService.create(infoCustomer);
@@ -129,6 +129,7 @@ export class CustomerController {
                     rowsInfoCustomer.map(async row => {
                         const infoCustomer: ICustomerCreate = {
                             user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 1),
                             creditLimitCustomer: this.fileHelperService.getCellValue(row, 2),
                             totalCreditBalanceLastYear: this.fileHelperService.getCellValue(row, 3),
                             totalCreditBalanceEndDay: this.fileHelperService.getCellValue(row, 4),
@@ -434,7 +435,7 @@ export class CustomerController {
                             otherAsset: this.fileHelperService.getCellValue(row, 14)
                         }
                         const customerInfo: ICustomerCreate = await this.customerService.findOne({
-                            cif: this.fileHelperService.getCellValue(row, 1)
+                            cif: this.fileHelperService.getCellValue(row, 3)
                         });
                         if (customerInfo) {
                             await this.customerService.updateOneByInfoDetailTSDB(customerInfo.cif, infoCustomer)
@@ -467,15 +468,15 @@ export class CustomerController {
                             productServiceBrandBSMS: this.fileHelperService.getCellValue(row, 18),
                             productServiceBrandBANKPlus: this.fileHelperService.getCellValue(row, 19),
                             productServiceBrandVNTopup: this.fileHelperService.getCellValue(row, 20),
-                            productServiceBrandCollectAndPay: this.fileHelperService.getCellValue(row, 20),
-                            productServiceBrandTCC: this.fileHelperService.getCellValue(row, 21),
-                            productServiceBrandIBank: this.fileHelperService.getCellValue(row, 22),
-                            productServiceBrandBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 23),
-                            productServiceBrandExcludeBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 24),
-                            productServiceBrandTotalProductUse: this.fileHelperService.getCellValue(row, 25),
+                            productServiceBrandCollectAndPay: this.fileHelperService.getCellValue(row, 21),
+                            productServiceBrandTCC: this.fileHelperService.getCellValue(row, 22),
+                            productServiceBrandIBank: this.fileHelperService.getCellValue(row, 23),
+                            productServiceBrandBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 24),
+                            productServiceBrandExcludeBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 25),
+                            productServiceBrandTotalProductUse: this.fileHelperService.getCellValue(row, 26),
                         }
                         const customerInfo: ICustomerCreate = await this.customerService.findOne({
-                            cif: this.fileHelperService.getCellValue(row, 1)
+                            cif: this.fileHelperService.getCellValue(row, 3)
                         });
                         if (customerInfo) {
                             await this.customerService.updateOneByInfoProductServiceBrand(customerInfo.cif, infoCustomer)
@@ -507,15 +508,15 @@ export class CustomerController {
                             productServiceSystemBSMS: this.fileHelperService.getCellValue(row, 18),
                             productServiceSystemBANKPlus: this.fileHelperService.getCellValue(row, 19),
                             productServiceSystemVNTopup: this.fileHelperService.getCellValue(row, 20),
-                            productServiceSystemCollectAndPay: this.fileHelperService.getCellValue(row, 20),
-                            productServiceSystemTCC: this.fileHelperService.getCellValue(row, 21),
-                            productServiceSystemIBank: this.fileHelperService.getCellValue(row, 22),
-                            productServiceSystemBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 23),
-                            productServiceSystemExcludeBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 24),
-                            productServiceSystemTotalProductUse: this.fileHelperService.getCellValue(row, 25),
+                            productServiceSystemCollectAndPay: this.fileHelperService.getCellValue(row, 21),
+                            productServiceSystemTCC: this.fileHelperService.getCellValue(row, 22),
+                            productServiceSystemIBank: this.fileHelperService.getCellValue(row, 23),
+                            productServiceSystemBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 24),
+                            productServiceSystemExcludeBillElectricUNCAuto: this.fileHelperService.getCellValue(row, 25),
+                            productServiceSystemTotalProductUse: this.fileHelperService.getCellValue(row, 26),
                         }
                         const customerInfo: ICustomerCreate = await this.customerService.findOne({
-                            cif: this.fileHelperService.getCellValue(row, 1)
+                            cif: this.fileHelperService.getCellValue(row, 2)
                         });
                         if (customerInfo) {
                             await this.customerService.updateOneByInfoProductServiceSystem(customerInfo.cif, infoCustomer)

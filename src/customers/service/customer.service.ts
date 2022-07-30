@@ -313,6 +313,72 @@ export class CustomerService {
         return this.customerModel.findOneAndDelete(find);
     }
 
+    async updateOneByInfoCustomerMis(
+        id: string,
+        {
+            fullName,
+            brandCifOpen,
+            dateCifOpen,
+            nationality,
+            address,
+            residence,
+            birthday,
+            birthPlace,
+            customerId,
+            numberIdentity,
+            effectiveDate,
+            age,
+            email,
+            mobile,
+            gender,
+            maritalStatus,
+            job,
+            relationshipBank,
+            currentStatus,
+            previousStatus,
+            statusChangeDate,
+            customerType,
+            customerSegment,
+            creditBalanceSegment,
+            depositBalanceSegment,
+            debtGroup,
+            incomeBrandYearly,
+            incomeTotalYearly,
+        }: ICustomerCreate
+    ): Promise<CustomerDocument> {
+        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
+        customerModel.cif = id;
+        customerModel.fullName = fullName;
+        customerModel.brandCifOpen = brandCifOpen;
+        customerModel.dateCifOpen = dateCifOpen;
+        customerModel.nationality = nationality;
+        customerModel.address = address;
+        customerModel.residence = residence;
+        customerModel.birthday = birthday;
+        customerModel.birthPlace = birthPlace;
+        customerModel.customerId = customerId;
+        customerModel.numberIdentity = numberIdentity;
+        customerModel.effectiveDate = effectiveDate;
+        customerModel.age = age;
+        customerModel.email = email;
+        customerModel.mobile = mobile;
+        customerModel.gender = gender;
+        customerModel.maritalStatus = maritalStatus;
+        customerModel.job = job;
+        customerModel.relationshipBank = relationshipBank;
+        customerModel.currentStatus = currentStatus;
+        customerModel.previousStatus = previousStatus;
+        customerModel.statusChangeDate = statusChangeDate;
+        customerModel.customerType = customerType;
+        customerModel.customerSegment = customerSegment;
+        customerModel.creditBalanceSegment = creditBalanceSegment;
+        customerModel.depositBalanceSegment = depositBalanceSegment;
+        customerModel.debtGroup = debtGroup;
+        customerModel.incomeBrandYearly = incomeBrandYearly;
+        customerModel.incomeTotalYearly = incomeTotalYearly;
+        return customerModel.save();
+    }
+
     async updateOneById(
         id: string,
         {
@@ -338,6 +404,7 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
+        customerModel.cif = id;
         customerModel.creditLimitCustomer = creditLimitCustomer;
         customerModel.totalCreditBalanceLastYear = totalCreditBalanceLastYear;
         customerModel.totalCreditBalanceEndDay = totalCreditBalanceEndDay;
@@ -415,6 +482,7 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
+        customerModel.cif = id;
         customerModel.incomeBrandLastYear = incomeBrandLastYear;
         customerModel.incomeTotalLastYear = incomeTotalLastYear;
         return customerModel.save();
