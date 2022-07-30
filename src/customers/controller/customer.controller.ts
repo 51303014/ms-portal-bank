@@ -75,8 +75,8 @@ export class CustomerController {
             switch (customerFile.fileType) {
                 case SheetName.InfoCustomerMis:
                     const worksheet = content.getWorksheet(1);
-                    const rowStartIndex = 3;
-                    const numberOfRows = worksheet.rowCount - 2;
+                    const rowStartIndex = 2;
+                    const numberOfRows = worksheet.rowCount - 1;
                     const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
                     rows.map(async row => {
                         const infoCustomer: ICustomerCreate = {
@@ -123,8 +123,8 @@ export class CustomerController {
                     break;
                 case SheetName.InfoCustomer:
                     const worksheetInfoCustomer = content.getWorksheet(1);
-                    const rowStartIndexInfoCustomer = 3;
-                    const numberOfRowsInfoCustomer = worksheetInfoCustomer.rowCount - 3;
+                    const rowStartIndexInfoCustomer = 2;
+                    const numberOfRowsInfoCustomer = worksheetInfoCustomer.rowCount - 1;
                     const rowsInfoCustomer = worksheetInfoCustomer.getRows(rowStartIndexInfoCustomer, numberOfRowsInfoCustomer) ?? [];
                     rowsInfoCustomer.map(async row => {
                         const infoCustomer: ICustomerCreate = {
@@ -160,8 +160,8 @@ export class CustomerController {
                     break;
                 case SheetName.InfoCustomerMisLastYear:
                     const worksheetInfoCustomerMisLastYear = content.getWorksheet(1);
-                    const rowStartInfoCustomerMisLastYear = 3;
-                    const numberOfRowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.rowCount - 3;
+                    const rowStartInfoCustomerMisLastYear = 2;
+                    const numberOfRowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.rowCount - 1;
                     const rowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.getRows(rowStartInfoCustomerMisLastYear, numberOfRowsInfoCustomerMisLastYear) ?? [];
                     rowsInfoCustomerMisLastYear.map(async row => {
                         const infoCustomer: ICustomerCreate = {
