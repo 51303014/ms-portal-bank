@@ -65,7 +65,7 @@ export class CustomerController {
     ): Promise<void> {
         const workbook = new Excel.Workbook();
         const content = await workbook.xlsx.load(file.buffer);
-        if (!customerFile || ! SheetName.InfoCustomerMis[customerFile.fileType]) {
+        if (!customerFile || !SheetName[customerFile.fileType]) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
                 message: 'fileType.error.notFound',

@@ -8,9 +8,9 @@ export enum ENUM_USER_STATUS_CODE_ERROR {
 }
 
 export enum TYPE_CARD {
-    DebitDomesticCard = 'DebitDomesticCard',
-    DebitInternationalCard = 'DebitInternationalCard',
-    CreditInternationalCard = 'CreditInternationalCard',
+    DebitDomesticCard = 'InfoDebitDomesticCard',
+    DebitInternationalCard = 'InfoDebitInternationalCard',
+    CreditInternationalCard = 'InfoCreditInternationalCard',
 }
 
 export const USER_ACTIVE_META_KEY = 'UserActiveMetaKey';
