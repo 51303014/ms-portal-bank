@@ -399,8 +399,6 @@ export class CustomerService {
             paymentBalanceDepositEndDay,
             termDepositBalanceLastYear,
             termDepositBalanceEndDay,
-            incomeBrandLastYear,
-            incomeTotalLastYear
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
@@ -422,55 +420,6 @@ export class CustomerService {
         customerModel.paymentBalanceDepositEndDay = paymentBalanceDepositEndDay;
         customerModel.termDepositBalanceLastYear = termDepositBalanceLastYear;
         customerModel.termDepositBalanceEndDay = termDepositBalanceEndDay;
-        customerModel.incomeBrandLastYear = incomeBrandLastYear;
-        customerModel.incomeTotalLastYear = incomeTotalLastYear;
-        return customerModel.save();
-    }
-
-    async updateOneByIdInfoCustomerIncomeScale(
-        id: string,
-        {
-            creditLimitCustomer,
-            totalCreditBalanceLastYear,
-            totalCreditBalanceEndDay,
-            totalCreditBalanceAvgBeginYear,
-            balanceDebtLastYear,
-            balanceDebtEndDay,
-            balanceCreditLastYear,
-            balanceCreditEndDay,
-            overdraftBalanceLastYear,
-            overdraftBalanceEndDay,
-            totalDepositBalanceLastYear,
-            totalDepositBalanceEndDay,
-            totalDepositBalanceAvgBeginYear,
-            paymentBalanceDepositLastYear,
-            paymentBalanceDepositEndDay,
-            termDepositBalanceLastYear,
-            termDepositBalanceEndDay,
-            incomeBrandLastYear,
-            incomeTotalLastYear
-        }: ICustomerCreate
-    ): Promise<CustomerDocument> {
-        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.creditLimitCustomer = creditLimitCustomer;
-        customerModel.totalCreditBalanceLastYear = totalCreditBalanceLastYear;
-        customerModel.totalCreditBalanceEndDay = totalCreditBalanceEndDay;
-        customerModel.totalCreditBalanceAvgBeginYear = totalCreditBalanceAvgBeginYear;
-        customerModel.balanceDebtLastYear = balanceDebtLastYear;
-        customerModel.balanceDebtEndDay = balanceDebtEndDay;
-        customerModel.balanceCreditLastYear = balanceCreditLastYear;
-        customerModel.balanceCreditEndDay = balanceCreditEndDay;
-        customerModel.overdraftBalanceLastYear = overdraftBalanceLastYear;
-        customerModel.overdraftBalanceEndDay = overdraftBalanceEndDay;
-        customerModel.totalDepositBalanceLastYear = totalDepositBalanceLastYear;
-        customerModel.totalDepositBalanceEndDay = totalDepositBalanceEndDay;
-        customerModel.totalDepositBalanceAvgBeginYear = totalDepositBalanceAvgBeginYear;
-        customerModel.paymentBalanceDepositLastYear = paymentBalanceDepositLastYear;
-        customerModel.paymentBalanceDepositEndDay = paymentBalanceDepositEndDay;
-        customerModel.termDepositBalanceLastYear = termDepositBalanceLastYear;
-        customerModel.termDepositBalanceEndDay = termDepositBalanceEndDay;
-        customerModel.incomeBrandLastYear = incomeBrandLastYear;
-        customerModel.incomeTotalLastYear = incomeTotalLastYear;
         return customerModel.save();
     }
 

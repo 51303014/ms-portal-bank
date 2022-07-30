@@ -168,7 +168,6 @@ export class CustomerController {
                             user: user._id,
                             incomeBrandLastYear: this.fileHelperService.getCellValue(row, 2),
                             incomeTotalLastYear: this.fileHelperService.getCellValue(row, 3),
-
                         }
                         const customerInfo: ICustomerCreate = await this.customerService.findOne({
                             cif: this.fileHelperService.getCellValue(row, 1)
