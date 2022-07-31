@@ -201,8 +201,8 @@ export class UserService {
             });
 
         return {
-            codeEmployee: existEmail ? true : false,
-            mobileNumber: existMobileNumber ? true : false,
+            codeEmployee: !!existEmail,
+            mobileNumber: !!existMobileNumber,
         };
     }
 

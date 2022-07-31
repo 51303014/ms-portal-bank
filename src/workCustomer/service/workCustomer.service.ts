@@ -101,12 +101,12 @@ export class WorkCustomerService {
 
     async create({
                      cif,
-        statusFix,
-        result,
-        inProgress,
-        deadline,
-        dateStart,
-        workHandle,
+                     statusFix,
+                     result,
+                     inProgress,
+                     deadline,
+                     dateStart,
+                     workHandle,
                  }: IWorkCustomerCreate
     ):
         Promise<WorkCustomerDocument> {

@@ -11,7 +11,6 @@ export interface ICompanyCreate {
     position?: string;
     nameCompany?: string;
     relationshipOtherCompany?: string;
-    user: string;
 }
 
 export type ICompanyUpdate = Pick<ICompanyCreate, 'cif'>;

@@ -3,12 +3,7 @@ import {
     IsString,
     IsNotEmpty,
     MaxLength,
-    MinLength,
-    IsMongoId,
-    IsOptional,
-    ValidateIf,
 } from 'class-validator';
-import {IAwsS3Response} from "../../aws/aws.interface";
 
 export class ParentCreateDto {
 
@@ -16,21 +11,21 @@ export class ParentCreateDto {
     @IsNotEmpty()
     @MaxLength(100)
     @Type(() => String)
-    readonly fileName: string;
+    readonly cif: string;
 
     @IsString()
-    @IsOptional()
-    @ValidateIf((e) => e.type !== '')
-    @MinLength(1)
-    @MaxLength(30)
+    @IsNotEmpty()
+    @MaxLength(100)
     @Type(() => String)
-    readonly type?: string;
+    readonly cifRelevant: string;
+
+    @IsString()
+    @Type(() => String)
+    readonly fullNameRelevant: string;
+
+    @IsString()
+    @Type(() => String)
+    readonly relationship: string;
 
 
-    @IsNotEmpty()
-    @IsMongoId()
-    readonly user: string;
-
-    @IsNotEmpty()
-    readonly file: IAwsS3Response;
 }

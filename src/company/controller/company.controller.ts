@@ -1,20 +1,24 @@
 import {
+    Body,
     Controller,
     Get,
     HttpCode,
     HttpStatus,
-    InternalServerErrorException,
+    InternalServerErrorException, Post,
     Query
 } from '@nestjs/common';
-import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
+import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {Response} from 'src/utils/response/response.decorator';
-import {IResponse} from 'src/utils/response/response.interface';
 import {CompanyService} from "../service/company.service";
 import {GetUser, UserProfileGuard} from "../company.decorator";
 import {ICompanyCreate, ICompanyDocument} from "../company.interface";
-import {CompanyListDto} from "../dto/company.list.dto";
+import {ENUM_PERMISSIONS} from "../../permission/permission.constant";
+import {ParentCreateDto} from "../../parents/dto/parent.create.dto";
+import {IResponse} from "../../utils/response/response.interface";
+import {IParentCreate} from "../../parents/parent.interface";
+import {CompanyCreateDto} from "../dto/company.create.dto";
 
 @Controller({
     version: '1',
@@ -25,7 +29,6 @@ export class CompanyController {
         private readonly companyService: CompanyService,
     ) {
     }
-
 
     @Response('companies.get.cif')
     @UserProfileGuard()
@@ -50,6 +53,55 @@ export class CompanyController {
                     message: 'http.serverError.internalServerError',
                 });
             }
+        }
+    }
+
+    @Response('companies.create')
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
+    @ErrorMeta(CompanyController.name, 'create')
+    @Post('/create')
+    async create(
+        @Body()
+            bodyCompanies: CompanyCreateDto[]
+    ): Promise<IResponse> {
+        // const exist: boolean = await this.parentService.exists(name);
+        // if (exist) {
+        //     throw new BadRequestException({
+        //         statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
+        //         message: 'role.error.exist',
+        //     });
+        // }
+
+        // for (const permission of permissions) {
+        //     const checkPermission: PermissionDocument =
+        //         await this.permissionService.findOneById(permission);
+        //
+        //     if (!checkPermission) {
+        //         throw new NotFoundException({
+        //             statusCode:
+        //             ENUM_PERMISSION_STATUS_CODE_ERROR.PERMISSION_NOT_FOUND_ERROR,
+        //             message: 'permission.error.notFound',
+        //         });
+        //     }
+        // }
+
+        try {
+            bodyCompanies.map(async info => {
+                const infoCompany: ICompanyCreate = {
+                    cif: info.cif,
+                    nameCompany: info.nameCompany,
+                    cifCompany: info.cifCompany,
+                    position: info.position,
+                    relationshipOtherCompany: info.relationshipOtherCompany
+                }
+                await this.companyService.create(infoCompany)
+            })
+            return;
+        } catch (err: any) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
         }
     }
 }

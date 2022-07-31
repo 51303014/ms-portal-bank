@@ -1,14 +1,10 @@
-import { Type } from 'class-transformer';
+import {Type} from 'class-transformer';
 import {
     IsString,
     IsNotEmpty,
     MaxLength,
-    MinLength,
-    IsMongoId,
     IsOptional,
-    ValidateIf,
 } from 'class-validator';
-import {IAwsS3Response} from "../../aws/aws.interface";
 
 export class CompanyCreateDto {
 
@@ -16,21 +12,27 @@ export class CompanyCreateDto {
     @IsNotEmpty()
     @MaxLength(100)
     @Type(() => String)
-    readonly fileName: string;
+    readonly cif: string;
 
     @IsString()
     @IsOptional()
-    @ValidateIf((e) => e.type !== '')
-    @MinLength(1)
-    @MaxLength(30)
     @Type(() => String)
-    readonly type?: string;
+    readonly nameCompany?: string;
 
 
-    @IsNotEmpty()
-    @IsMongoId()
-    readonly user: string;
+    @IsString()
+    @IsOptional()
+    @Type(() => String)
+    readonly cifCompany?: string;
 
-    @IsNotEmpty()
-    readonly file: IAwsS3Response;
+    @IsString()
+    @IsOptional()
+    @Type(() => String)
+    readonly position?: string;
+
+    @IsString()
+    @IsOptional()
+    @Type(() => String)
+    readonly relationshipOtherCompany?: string;
+
 }

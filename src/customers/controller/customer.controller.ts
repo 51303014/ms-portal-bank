@@ -622,7 +622,6 @@ export class CustomerController {
                     rowsInfoRelevantCompany.map(async row => {
                         if (!this.fileHelperService.getCellValue(row, 1)) return;
                         const infoCompany: ICompanyCreate = {
-                            user: user._id,
                             cif: this.fileHelperService.getCellValue(row, 1),
                             nameCompany: this.fileHelperService.getCellValue(row, 2),
                             cifCompany: this.fileHelperService.getCellValue(row, 3),

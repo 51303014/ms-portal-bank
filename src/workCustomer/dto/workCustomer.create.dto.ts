@@ -1,14 +1,11 @@
-import { Type } from 'class-transformer';
+import {Type} from 'class-transformer';
 import {
     IsString,
     IsNotEmpty,
     MaxLength,
-    MinLength,
-    IsMongoId,
     IsOptional,
-    ValidateIf,
+    ValidateIf, IsDate,
 } from 'class-validator';
-import {IAwsS3Response} from "../../aws/aws.interface";
 
 export class WorkCustomerCreateDto {
 
@@ -16,21 +13,37 @@ export class WorkCustomerCreateDto {
     @IsNotEmpty()
     @MaxLength(100)
     @Type(() => String)
-    readonly fileName: string;
+    readonly cif: string;
 
     @IsString()
+    @Type(() => String)
+    readonly workHandle: string;
+
+    @IsString()
+    @Type(() => String)
+    readonly inProgress: string;
+
+
+    @IsString()
+    @IsNotEmpty()
+    @Type(() => String)
+    readonly result: string;
+
+    @IsString()
+    @IsNotEmpty()
+    @Type(() => String)
+    readonly statusFix: string;
+
+    @IsDate()
     @IsOptional()
     @ValidateIf((e) => e.type !== '')
-    @MinLength(1)
-    @MaxLength(30)
-    @Type(() => String)
-    readonly type?: string;
+    @Type(() => Date)
+    readonly dateStart?: Date;
 
+    @IsDate()
+    @IsOptional()
+    @ValidateIf((e) => e.type !== '')
+    @Type(() => Date)
+    readonly deadline?: Date;
 
-    @IsNotEmpty()
-    @IsMongoId()
-    readonly user: string;
-
-    @IsNotEmpty()
-    readonly file: IAwsS3Response;
 }

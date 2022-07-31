@@ -1,36 +1,48 @@
-import { Type } from 'class-transformer';
+import {Type} from 'class-transformer';
 import {
     IsString,
     IsNotEmpty,
-    MaxLength,
-    MinLength,
-    IsMongoId,
     IsOptional,
-    ValidateIf,
+    ValidateIf, IsDate,
 } from 'class-validator';
-import {IAwsS3Response} from "../../aws/aws.interface";
 
 export class OtherInfoCreateDto {
 
     @IsString()
     @IsNotEmpty()
-    @MaxLength(100)
     @Type(() => String)
-    readonly fileName: string;
+    readonly cif: string;
 
     @IsString()
+    @Type(() => String)
+    readonly productsApply: string;
+
+    @IsString()
+    @Type(() => String)
+    readonly programsApplied: string;
+
+    @IsString()
+    @Type(() => String)
+    readonly priorityKHRegistered: string;
+
+    @IsString()
+    @Type(() => String)
+    readonly expensesPayed: string;
+
+
+    @IsString()
+    @Type(() => String)
+    readonly habitsCustomer: string;
+
+
+    @IsString()
+    @Type(() => String)
+    readonly favouriteCustomer: string;
+
+    @IsDate()
     @IsOptional()
     @ValidateIf((e) => e.type !== '')
-    @MinLength(1)
-    @MaxLength(30)
-    @Type(() => String)
-    readonly type?: string;
+    @Type(() => Date)
+    readonly dateKHCCAdditional?: Date;
 
-
-    @IsNotEmpty()
-    @IsMongoId()
-    readonly user: string;
-
-    @IsNotEmpty()
-    readonly file: IAwsS3Response;
 }
