@@ -1008,6 +1008,13 @@ export class CustomerEntity {
     })
     totalCreditBalanceAvgBeginYear?: string;
 
+
+    @Prop({
+        required: false,
+        trim: true,
+    })
+    totalCreditBalanceAvgLastYear?: string;
+
     @Prop({
         required: false,
         trim: true,
@@ -1061,6 +1068,12 @@ export class CustomerEntity {
         trim: true,
     })
     totalDepositBalanceAvgBeginYear?: string;
+
+    @Prop({
+        required: false,
+        trim: true,
+    })
+    totalDepositBalanceAvgLastYear?: string;
 
     @Prop({
         required: false,

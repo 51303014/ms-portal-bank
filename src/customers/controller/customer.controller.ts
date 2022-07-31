@@ -298,13 +298,16 @@ export class CustomerController {
                             incomeExcludeInterestKDNTPSLastYear: this.fileHelperService.getCellValue(row, 41),
                             incomeOtherActivityLastYear: this.fileHelperService.getCellValue(row, 42),
                             incomeFromDebtLastYear: this.fileHelperService.getCellValue(row, 43),
-                            incomeFromCardAndInterestServiceLastYear: this.fileHelperService.getCellValue(row, 44)
+                            incomeFromCardAndInterestServiceLastYear: this.fileHelperService.getCellValue(row, 44),
+                            totalCreditBalanceAvgLastYear: this.fileHelperService.getCellValue(row, 23),
+                            totalDepositBalanceAvgLastYear: this.fileHelperService.getCellValue(row, 13),
                         }
                         const incomeInfo: IIncomeCreate = await this.incomeService.findOne({
                             cif: this.fileHelperService.getCellValue(row, 3)
                         });
                         if (incomeInfo) {
-                            await this.incomeService.updateOneByInfoCustomerIncomeScaleLastYear(incomeInfo.cif, infoCustomer)
+                            await Promise.all([this.incomeService.updateOneByInfoCustomerIncomeScaleLastYear(incomeInfo.cif, infoCustomer),
+                                this.customerService.updateOneByInfoIncomeLastYear(incomeInfo.cif, infoCustomer)])
                             return;
                         }
                         return await this.incomeService.create(infoCustomer);

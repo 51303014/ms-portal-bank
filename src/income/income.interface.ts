@@ -41,6 +41,7 @@ export interface IIncomeCreate {
     totalCreditBalanceLastYear?: string;
     totalCreditBalanceEndDay?: string;
     totalCreditBalanceAvgBeginYear?: string;
+    totalCreditBalanceAvgLastYear?: string;
     balanceDebtLastYear?: string;
     balanceDebtEndDay?: string;
     balanceCreditLastYear?: string;
@@ -50,6 +51,7 @@ export interface IIncomeCreate {
     totalDepositBalanceLastYear?: string;
     totalDepositBalanceEndDay?: string;
     totalDepositBalanceAvgBeginYear?: string;
+    totalDepositBalanceAvgLastYear?: string;
     paymentBalanceDepositLastYear?: string;
     paymentBalanceDepositEndDay?: string;
     termDepositBalanceLastYear?: string;

@@ -508,6 +508,7 @@ export class IncomeService {
         incomeModel.amountDebtCreditTDHAtTheEndExchangeLastYear = amountDebtCreditTDHAtTheEndExchangeLastYear;
         incomeModel.amountDebtCreditAvgAtTheEndLastYear = amountDebtCreditAvgAtTheEndLastYear;
         incomeModel.amountDebtCreditAvgAtTheEndExchangeLastYear = amountDebtCreditAvgAtTheEndExchangeLastYear;
+        incomeModel.amountDebtLoanGTCGAndEndCardLastYear = amountDebtLoanGTCGAndEndCardLastYear;
         incomeModel.amountDebtCreditTDHAvgAtTheEndLastYear = amountDebtCreditTDHAvgAtTheEndLastYear;
         incomeModel.amountDebtCreditTDHAvgAtTheEndExchangeLastYear = amountDebtCreditTDHAvgAtTheEndExchangeLastYear;
         incomeModel.incomeFTPBaseMoreLastYear = incomeFTPBaseMoreLastYear;

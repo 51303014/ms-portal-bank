@@ -437,6 +437,20 @@ export class CustomerService {
         return customerModel.save();
     }
 
+    async updateOneByInfoIncomeLastYear(
+        id: string,
+        {
+            totalCreditBalanceAvgLastYear,
+            totalDepositBalanceAvgLastYear
+        }: ICustomerCreate
+    ): Promise<CustomerDocument> {
+        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
+        customerModel.cif = id;
+        customerModel.totalCreditBalanceAvgLastYear = totalCreditBalanceAvgLastYear;
+        customerModel.totalDepositBalanceAvgLastYear = totalDepositBalanceAvgLastYear;
+        return customerModel.save();
+    }
+
     async updateOneByTotalTSDB(
         id: string,
         {

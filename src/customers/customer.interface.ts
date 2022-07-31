@@ -42,6 +42,7 @@ export interface ICustomerCreate {
     totalCreditBalanceLastYear?: string;
     totalCreditBalanceEndDay?: string;
     totalCreditBalanceAvgBeginYear?: string;
+    totalCreditBalanceAvgLastYear?: string;
     balanceDebtLastYear?: string;
     balanceDebtEndDay?: string;
     balanceCreditLastYear?: string;
@@ -51,6 +52,7 @@ export interface ICustomerCreate {
     totalDepositBalanceLastYear?: string;
     totalDepositBalanceEndDay?: string;
     totalDepositBalanceAvgBeginYear?: string;
+    totalDepositBalanceAvgLastYear?: string;
     paymentBalanceDepositLastYear?: string;
     paymentBalanceDepositEndDay?: string;
     termDepositBalanceLastYear?: string;
