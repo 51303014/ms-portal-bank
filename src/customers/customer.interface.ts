@@ -202,7 +202,8 @@ export interface ICustomerCheckExist {
 
 export type FileName = 'InfoCustomerMis' | 'InfoCustomerMisLastYear' | 'InfoCustomer' | 'InfoCustomerIncomeScale' |
     'InfoCustomerIncomeScaleLastYear' | 'InfoCustomerCoreDebtLastYear' | 'InfoCustomerCoreDebt' | 'InfoDebitDomesticCard' |
-    'InfoDebitInternationalCard' | 'InfoCreditInternationalCard' | 'InfoDetailTSDB' | 'InfoProductServiceBrand' | 'InfoProductServiceSystem'
+    'InfoDebitInternationalCard' | 'InfoCreditInternationalCard' | 'InfoDetailTSDB' | 'InfoProductServiceBrand' | 'InfoProductServiceSystem' |
+    'InfoRelevantCustomer' | 'InfoRelevantCompany' | 'InfoWorkWithCustomer' | 'InfoOtherCustomer'
 
 export enum SheetName {
     InfoCustomerMis = 'InfoCustomerMis',
@@ -218,6 +219,10 @@ export enum SheetName {
     InfoDetailTSDB = 'InfoDetailTSDB',
     InfoProductServiceBrand = 'InfoProductServiceBrand',
     InfoProductServiceSystem = 'InfoProductServiceSystem',
+    InfoRelevantCustomer = 'InfoRelevantCustomer',
+    InfoRelevantCompany = 'InfoRelevantCompany',
+    InfoWorkWithCustomer = 'InfoWorkWithCustomer',
+    InfoOtherCustomer = 'InfoOtherCustomer',
 }
 
 export interface CustomerFile {

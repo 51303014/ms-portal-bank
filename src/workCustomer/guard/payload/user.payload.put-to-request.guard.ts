@@ -8,6 +8,7 @@ export class UserPayloadPutToRequestGuard implements CanActivate {
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         const request = context.switchToHttp().getRequest();
+
         const { user } = request;
         const check: IUserDocument =
             await this.userService.findOneById<IUserDocument>(user._id, {

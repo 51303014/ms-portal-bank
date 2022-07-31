@@ -30,6 +30,14 @@ import {TYPE_CARD} from "../../card/card.constant";
 import {AssetService} from "../../assetSpecial/service/asset.service";
 import {ICardCreate} from "../../card/card.interface";
 import {IAssetCreate} from "../../assetSpecial/asset.interface";
+import {ParentService} from "../../parents/service/parent.service";
+import {IParentCreate} from "../../parents/parent.interface";
+import {CompanyService} from "../../company/service/company.service";
+import {ICompanyCreate} from "../../company/company.interface";
+import {WorkCustomerService} from "../../workCustomer/service/workCustomer.service";
+import {IWorkCustomerCreate} from "../../workCustomer/workCustomer.interface";
+import {OtherInfoService} from "../../otherInfoCustomer/service/otherInfo.service";
+import {IOtherInfoCustomerCreate} from "../../otherInfoCustomer/otherInfo.interface";
 
 @Controller({
     version: '1',
@@ -39,6 +47,10 @@ export class CustomerController {
     constructor(
         private readonly customerService: CustomerService,
         private readonly assetService: AssetService,
+        private readonly parentService: ParentService,
+        private readonly companyService: CompanyService,
+        private readonly workCustomerService: WorkCustomerService,
+        private readonly otherInfoService: OtherInfoService,
         private readonly incomeService: IncomeService,
         private readonly cardService: CardService,
         private readonly awsService: AwsS3Service,
@@ -582,6 +594,81 @@ export class CustomerController {
                         //     return;
                         // }
                         return await this.cardService.create(infoCard);
+                    });
+                    break;
+                case SheetName.InfoRelevantCustomer:
+                    const worksheetInfoRelevantCustomer = content.getWorksheet(1);
+                    const rowStartInfoRelevantCustomer = 2
+                    const numberOfRowsInfoRelevantCustomer = worksheetInfoRelevantCustomer.rowCount - 1;
+                    const rowsInfoRelevantCustomer = worksheetInfoRelevantCustomer.getRows(rowStartInfoRelevantCustomer, numberOfRowsInfoRelevantCustomer) ?? [];
+                    rowsInfoRelevantCustomer.map(async row => {
+                        if (!this.fileHelperService.getCellValue(row, 1)) return;
+                        const infoParents: IParentCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 1),
+                            fullNameRelevant: this.fileHelperService.getCellValue(row, 2),
+                            cifRelevant: this.fileHelperService.getCellValue(row, 3),
+                            relationship: this.fileHelperService.getCellValue(row, 4)
+                        }
+                        return await this.parentService.create(infoParents);
+                    });
+                    break;
+
+                case SheetName.InfoRelevantCompany:
+                    const worksheetInfoRelevantCompany = content.getWorksheet(1);
+                    const rowStartInfoRelevantCompany = 2
+                    const numberOfRowsInfoRelevantCompany = worksheetInfoRelevantCompany.rowCount - 1;
+                    const rowsInfoRelevantCompany = worksheetInfoRelevantCompany.getRows(rowStartInfoRelevantCompany, numberOfRowsInfoRelevantCompany) ?? [];
+                    rowsInfoRelevantCompany.map(async row => {
+                        if (!this.fileHelperService.getCellValue(row, 1)) return;
+                        const infoCompany: ICompanyCreate = {
+                            user: user._id,
+                            cif: this.fileHelperService.getCellValue(row, 1),
+                            nameCompany: this.fileHelperService.getCellValue(row, 2),
+                            cifCompany: this.fileHelperService.getCellValue(row, 3),
+                            position: this.fileHelperService.getCellValue(row, 4),
+                            relationshipOtherCompany: this.fileHelperService.getCellValue(row, 5)
+                        }
+                        return await this.companyService.create(infoCompany);
+                    });
+                    break;
+                case SheetName.InfoWorkWithCustomer:
+                    const worksheetInfoWorkWithCustomer = content.getWorksheet(1);
+                    const rowStartInfoWorkWithCustomer = 2
+                    const numberOfRowsInfoWorkWithCustomer = worksheetInfoWorkWithCustomer.rowCount - 1;
+                    const rowsInfoWorkWithCustomer = worksheetInfoWorkWithCustomer.getRows(rowStartInfoWorkWithCustomer, numberOfRowsInfoWorkWithCustomer) ?? [];
+                    rowsInfoWorkWithCustomer.map(async row => {
+                        if (!this.fileHelperService.getCellValue(row, 1)) return;
+                        const info: IWorkCustomerCreate = {
+                            cif: this.fileHelperService.getCellValue(row, 1),
+                            workHandle: this.fileHelperService.getCellValue(row, 2),
+                            dateStart: this.fileHelperService.getCellValue(row, 3) ? new Date(this.fileHelperService.getCellValue(row, 3)) : null,
+                            deadline: this.fileHelperService.getCellValue(row, 4) ? new Date(this.fileHelperService.getCellValue(row, 4)) : null,
+                            inProgress: this.fileHelperService.getCellValue(row, 5),
+                            result: this.fileHelperService.getCellValue(row, 6),
+                            statusFix: this.fileHelperService.getCellValue(row, 7)
+                        }
+                        return await this.workCustomerService.create(info);
+                    });
+                    break;
+                case SheetName.InfoOtherCustomer:
+                    const worksheetInfoOtherCustomer= content.getWorksheet(1);
+                    const rowStartInfoOtherCustomer = 2
+                    const numberOfRowsInfoOtherCustomer = worksheetInfoOtherCustomer.rowCount - 1;
+                    const rowsInfoOtherCustomer = worksheetInfoOtherCustomer.getRows(rowStartInfoOtherCustomer, numberOfRowsInfoOtherCustomer) ?? [];
+                    rowsInfoOtherCustomer.map(async row => {
+                        if (!this.fileHelperService.getCellValue(row, 1)) return;
+                        const info: IOtherInfoCustomerCreate = {
+                            cif: this.fileHelperService.getCellValue(row, 1),
+                            dateKHCCAdditional: this.fileHelperService.getCellValue(row, 2) ? new Date(this.fileHelperService.getCellValue(row, 2)) : null,
+                            productsApply: this.fileHelperService.getCellValue(row, 3),
+                            programsApplied: this.fileHelperService.getCellValue(row, 4),
+                            priorityKHRegistered: this.fileHelperService.getCellValue(row, 5),
+                            expensesPayed: this.fileHelperService.getCellValue(row, 6),
+                            habitsCustomer: this.fileHelperService.getCellValue(row, 7),
+                            favouriteCustomer: this.fileHelperService.getCellValue(row, 8)
+                        }
+                        return await this.otherInfoService.create(info);
                     });
                     break;
             }

@@ -14,6 +14,10 @@ import {CustomerModule} from "../customers/customer.module";
 import {IncomeModule} from "../income/income.module";
 import {CardModule} from "../card/card.module";
 import {AssetModule} from "../assetSpecial/asset.module";
+import {CompanyModule} from "../company/company.module";
+import {ParentModule} from "../parents/parent.module";
+import {WorkCustomerModule} from "../workCustomer/workCustomer.module";
+import {OtherInfoModule} from "../otherInfoCustomer/otherInfo.module";
 
 @Module({
     controllers: [
@@ -27,8 +31,12 @@ import {AssetModule} from "../assetSpecial/asset.module";
         UserModule,
         FileModule,
         CustomerModule,
+        ParentModule,
+        OtherInfoModule,
+        WorkCustomerModule,
         IncomeModule,
         AssetModule,
+        CompanyModule,
         CardModule,
         AuthModule,
         RoleModule,

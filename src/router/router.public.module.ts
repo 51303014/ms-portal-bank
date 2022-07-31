@@ -16,11 +16,19 @@ import {CardController} from "../card/controller/card.controller";
 import {CardModule} from "../card/card.module";
 import {AssetModule} from "../assetSpecial/asset.module";
 import {AssetController} from "../assetSpecial/controller/asset.controller";
+import {CompanyModule} from "../company/company.module";
+import {CompanyController} from "../company/controller/company.controller";
+import {ParentModule} from "../parents/parent.module";
+import {ParentController} from "../parents/controller/parent.controller";
+import {WorkCustomerModule} from "../workCustomer/workCustomer.module";
+import {WorkCustomerController} from "../workCustomer/controller/workCustomer.controller";
+import {OtherInfoModule} from "../otherInfoCustomer/otherInfo.module";
+import {OtherInfoController} from "../otherInfoCustomer/controller/otherInfo.controller";
 
 @Module({
-    controllers: [UserPublicController,FileController, CustomerController, AssetController, IncomeController, CardController, AuthPublicController],
+    controllers: [UserPublicController,FileController,WorkCustomerController,OtherInfoController, ParentController, CompanyController, CustomerController, AssetController, IncomeController, CardController, AuthPublicController],
     providers: [],
     exports: [],
-    imports: [UserModule, FileModule, CustomerModule, AssetModule, IncomeModule, CardModule, AwsModule, AuthModule, RoleModule, PermissionModule],
+    imports: [UserModule, FileModule, CustomerModule, OtherInfoModule, WorkCustomerModule, AssetModule,ParentModule, CompanyModule, IncomeModule, CardModule, AwsModule, AuthModule, RoleModule, PermissionModule],
 })
 export class RouterPublicModule {}
