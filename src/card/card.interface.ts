@@ -102,7 +102,6 @@ export interface ICardCreate {
     debtShortTSDB?: string;
     debtMediumTSDB?: string;
     debtLongTSDB?: string;
-    valueTSDB?: string;
     property?: string;
     saveMoney?: string;
     otherAsset?: string;

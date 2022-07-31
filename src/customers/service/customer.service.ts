@@ -437,6 +437,18 @@ export class CustomerService {
         return customerModel.save();
     }
 
+    async updateOneByTotalTSDB(
+        id: string,
+        {
+            totalValueTSDB,
+        }: ICustomerCreate
+    ): Promise<CustomerDocument> {
+        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
+        customerModel.cif = id;
+        customerModel.totalValueTSDB = totalValueTSDB;
+        return customerModel.save();
+    }
+
     async updateOneByInfoCustomerCoreDebt(
         id: string,
         type: SheetName,
@@ -452,34 +464,6 @@ export class CustomerService {
         if (type === SheetName.InfoCustomerCoreDebtLastYear) {
             customerModel.coreDebtLastYear = coreDebtLastYear;
         }
-        return customerModel.save();
-    }
-
-    async updateOneByInfoDetailTSDB(
-        id: string,
-        {
-            fullName,
-            totalDebtTSDB,
-            debtShortTSDB,
-            debtMediumTSDB,
-            debtLongTSDB,
-            valueTSDB,
-            property,
-            saveMoney,
-            otherAsset
-        }: ICustomerCreate
-    ): Promise<CustomerDocument> {
-        const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
-        customerModel.fullName = fullName;
-        customerModel.totalDebtTSDB = totalDebtTSDB;
-        customerModel.debtShortTSDB = debtShortTSDB;
-        customerModel.debtMediumTSDB = debtMediumTSDB;
-        customerModel.debtLongTSDB = debtLongTSDB;
-        customerModel.valueTSDB = valueTSDB;
-        customerModel.property = property;
-        customerModel.saveMoney = saveMoney;
-        customerModel.otherAsset = otherAsset;
         return customerModel.save();
     }
 

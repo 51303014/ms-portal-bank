@@ -102,7 +102,7 @@ export interface ICustomerCreate {
     debtShortTSDB?: string;
     debtMediumTSDB?: string;
     debtLongTSDB?: string;
-    valueTSDB?: string;
+    valueTSDB?: number;
     property?: string;
     saveMoney?: string;
     otherAsset?: string;
@@ -187,7 +187,8 @@ export interface ICustomerCreate {
     incomeInterestKDNTPS?: string;
     incomeFromDebt?: string;
     incomeFromCardAndInterestService?: string;
-    user: string;
+    totalValueTSDB?: number;
+    user?: string;
 }
 
 export type ICustomerUpdate = Pick<ICustomerCreate, 'cif' | 'customerId'>;

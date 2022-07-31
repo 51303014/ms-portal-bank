@@ -297,10 +297,9 @@ export class CustomerEntity {
     debtLongTSDB?: string;
 
     @Prop({
-        required: false,
-        trim: true,
+        required: false
     })
-    valueTSDB?: string;
+    valueTSDB?: number;
 
     @Prop({
         required: false,
@@ -1102,6 +1101,11 @@ export class CustomerEntity {
         trim: true,
     })
     coreDebtLastYear?: number;
+
+    @Prop({
+        required: false,
+    })
+    totalValueTSDB?: number;
 }
 
 export const CustomerDatabaseName = 'customers';

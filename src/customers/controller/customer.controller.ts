@@ -27,6 +27,9 @@ import {IncomeService} from "../../income/service/income.service";
 import {IIncomeCreate} from "../../income/income.interface";
 import {CardService} from "../../card/service/card.service";
 import {TYPE_CARD} from "../../card/card.constant";
+import {AssetService} from "../../assetSpecial/service/asset.service";
+import {ICardCreate} from "../../card/card.interface";
+import {IAssetCreate} from "../../assetSpecial/asset.interface";
 
 @Controller({
     version: '1',
@@ -35,6 +38,7 @@ import {TYPE_CARD} from "../../card/card.constant";
 export class CustomerController {
     constructor(
         private readonly customerService: CustomerService,
+        private readonly assetService: AssetService,
         private readonly incomeService: IncomeService,
         private readonly cardService: CardService,
         private readonly awsService: AwsS3Service,
@@ -79,6 +83,7 @@ export class CustomerController {
                     const numberOfRows = worksheet.rowCount - 1;
                     const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
                     rows.map(async row => {
+                        console.log(this.fileHelperService.getCellValue(row, 4));
                         const infoCustomer: ICustomerCreate = {
                             user: user._id,
                             cif: this.fileHelperService.getCellValue(row, 1),
@@ -355,7 +360,7 @@ export class CustomerController {
                     const numberOfRowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.rowCount - 1;
                     const rowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.getRows(rowStartInfoDebitDomesticCard, numberOfRowsInfoDebitDomesticCard) ?? [];
                     rowsInfoDebitDomesticCard.map(async row => {
-                        const infoCustomer: ICustomerCreate = {
+                        const infoCard: ICardCreate = {
                             user: user._id,
                             typeCard: TYPE_CARD.DebitDomesticCard,
                             cif: this.fileHelperService.getCellValue(row, 1),
@@ -377,7 +382,7 @@ export class CustomerController {
                         //     await this.cardService.updateOneByInfoDebitDomesticCard(customerInfo.cif, infoCustomer)
                         //     return;
                         // }
-                        return await this.cardService.create(infoCustomer);
+                        return await this.cardService.create(infoCard);
                     });
                     break;
                 case SheetName.InfoDebitInternationalCard:
@@ -386,7 +391,7 @@ export class CustomerController {
                     const numberOfRowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.rowCount - 1;
                     const rowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.getRows(rowStartInfoDebitInternationalCard, numberOfRowsInfoDebitInternationalCard) ?? [];
                     rowsInfoDebitInternationalCard.map(async row => {
-                        const infoCustomer: ICustomerCreate = {
+                        const infoCard: ICardCreate = {
                             user: user._id,
                             typeCard: TYPE_CARD.DebitInternationalCard,
                             cif: this.fileHelperService.getCellValue(row, 1),
@@ -409,7 +414,7 @@ export class CustomerController {
                         //     await this.cardService.updateOneByInfoDebitInternationalCard(customerInfo.cif, infoCustomer)
                         //     return;
                         // }
-                        return await this.cardService.create(infoCustomer);
+                        return await this.cardService.create(infoCard);
                     });
                     break;
                 case SheetName.InfoDetailTSDB:
@@ -417,11 +422,10 @@ export class CustomerController {
                     const rowStartInfoDetailTSDB = 3
                     const numberOfRowsInfoDetailTSDB = worksheetInfoDetailTSDB.rowCount - 2;
                     const rowsInfoDetailTSDB = worksheetInfoDetailTSDB.getRows(rowStartInfoDetailTSDB, numberOfRowsInfoDetailTSDB) ?? [];
-                    rowsInfoDetailTSDB.map(async row => {
-                        const valueTSDB = this.fileHelperService.getCellValue(row, 9)
+                    await Promise.all(rowsInfoDetailTSDB.map(async row => {
+                        const valueTSDB = +this.fileHelperService.getCellValue(row, 9)
                         if (!valueTSDB) return;
-                        const infoCustomer: ICustomerCreate = {
-                            user: user._id,
+                        const infoAsset: IAssetCreate = {
                             cif: this.fileHelperService.getCellValue(row, 3),
                             fullName: this.fileHelperService.getCellValue(row, 4),
                             totalDebtTSDB: this.fileHelperService.getCellValue(row, 5),
@@ -433,15 +437,19 @@ export class CustomerController {
                             saveMoney: this.fileHelperService.getCellValue(row, 13),
                             otherAsset: this.fileHelperService.getCellValue(row, 14)
                         }
-                        const customerInfo: ICustomerCreate = await this.customerService.findOne({
-                            cif: this.fileHelperService.getCellValue(row, 3)
-                        });
-                        if (customerInfo) {
-                            await this.customerService.updateOneByInfoDetailTSDB(customerInfo.cif, infoCustomer)
-                            return;
-                        }
-                        return await this.customerService.create(infoCustomer);
-                    });
+                        // const asset: IAssetCreate = await this.assetService.findOne({
+                        //     cif: this.fileHelperService.getCellValue(row, 3)
+                        // });
+                        // if (asset) {
+                        //     await this.assetService.updateOneByInfoDetailTSDB(infoAsset.cif, infoAsset)
+                        //     return;
+                        // }
+                        return await this.assetService.create(infoAsset);
+                    }));
+                    const assetDetail = await this.assetService.findAllBaseField();
+                    assetDetail.map(async (value: any) => {
+                        await this.customerService.updateOneByTotalTSDB(value._id, value)
+                    })
                     break;
                 case SheetName.InfoProductServiceBrand:
                     const worksheetInfoProductServiceBrand = content.getWorksheet(1);
@@ -530,7 +538,7 @@ export class CustomerController {
                     const numberOfRowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.rowCount - 1;
                     const rowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.getRows(rowStartInfoCreditInternationalCard, numberOfRowsInfoCreditInternationalCard) ?? [];
                     rowsInfoCreditInternationalCard.map(async row => {
-                        const infoCustomer: ICustomerCreate = {
+                        const infoCard: ICardCreate = {
                             user: user._id,
                             typeCard: TYPE_CARD.CreditInternationalCard,
                             cif: this.fileHelperService.getCellValue(row, 1),
@@ -570,7 +578,7 @@ export class CustomerController {
                         //     await this.cardService.updateOneByInfoCreditInternationalCard(customerInfo.cif, infoCustomer)
                         //     return;
                         // }
-                        return await this.cardService.create(infoCustomer);
+                        return await this.cardService.create(infoCard);
                     });
                     break;
             }
