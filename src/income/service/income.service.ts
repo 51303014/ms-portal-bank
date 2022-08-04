@@ -23,14 +23,11 @@ export class IncomeService {
         this.uploadPath = 'report';
     }
 
-    async findAll(
+    async findAll<T>(
         find?: Record<string, any>,
         options?: IDatabaseFindAllOptions
-    ): Promise<IncomeDocument[]> {
-        const files = this.incomeModel.find(find).populate({
-            path: 'user',
-            model: UserEntity.name,
-        });
+    ): Promise<T[]> {
+        const files = this.incomeModel.find(find)
 
         if (
             options &&

@@ -1,9 +1,9 @@
 /* istanbul ignore file */
 
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import {Injectable} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
 import excelJs from 'exceljs';
-import { HelperDateService } from './helper.date.service';
+import {HelperDateService} from './helper.date.service';
 
 @Injectable()
 export class HelperFileService {
@@ -16,10 +16,14 @@ export class HelperFileService {
         this.appName = this.configService.get<string>('app.name');
     }
 
-    getCellValue (row:  excelJs.Row, cellIndex: number) {
+    getCellValue(row: excelJs.Row, cellIndex: number) {
         const cell = row.getCell(cellIndex);
-
         return cell.value ? cell.value.toString() : '';
+    };
+
+    getCellFormulaValue(row: excelJs.Row, cellIndex: number) {
+        const value = row.getCell(cellIndex).value as excelJs.CellFormulaValue;
+        return value.result ? value.result.toString() : '';
     };
 
     async writeExcel(
@@ -46,7 +50,7 @@ export class HelperFileService {
 
         // sheet
         const worksheet = workbook.addWorksheet('Sheet 1', {
-            views: [{ state: 'frozen', xSplit: 1 }, { showGridLines: true }],
+            views: [{state: 'frozen', xSplit: 1}, {showGridLines: true}],
         });
 
         worksheet.columns = headers.map((val) => ({

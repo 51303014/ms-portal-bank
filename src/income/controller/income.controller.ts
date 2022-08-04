@@ -13,8 +13,9 @@ import {Response} from 'src/utils/response/response.decorator';
 import {IResponse} from 'src/utils/response/response.interface';
 import {IncomeService} from "../service/income.service";
 import {GetUser, UserProfileGuard} from "../income.decorator";
-import {IIncomeDocument} from "../income.interface";
+import {IIncomeCreate, IIncomeDocument} from "../income.interface";
 import {IncomeListDto} from "../dto/income.list.dto";
+import {IncomeCreateDto} from "../dto/income.create.dto";
 
 @Controller({
     version: '1',
@@ -49,7 +50,7 @@ export class IncomeController {
                 cif
             }
     ): Promise<any> {
-        const incomeInfo: IncomeListDto = await this.incomeService.findOne({cif});
+        const incomeInfo: IIncomeCreate[] = await this.incomeService.findAll({cif});
         if (incomeInfo) {
             try {
                 return incomeInfo

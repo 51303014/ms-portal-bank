@@ -57,15 +57,13 @@ export class CardEntity {
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     expiredDateCardDebitInternational?: Date;
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     activeDateCardDebitInternational?: Date;
 
@@ -171,43 +169,37 @@ export class CardEntity {
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     activeDateCreditCard?: Date;
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     activeDateAgainCreditCard?: Date;
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     expiredDateCreditCard?: Date;
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     closedDateCreditCard?: Date;
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     activeDateFirstTimeCreditCard?: Date;
 
     @Prop({
         type: Date,
-        required: false,
-        trim: true,
+        required: false
     })
     statusChangeDateCreditCard?: Date;
 

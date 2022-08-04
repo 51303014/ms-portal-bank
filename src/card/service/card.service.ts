@@ -213,7 +213,6 @@ export class CardService {
             typeCard,
             user: new Types.ObjectId(user)
         };
-
         const create: CardDocument = new this.cardModel(cardEntity);
         return create.save();
     }
