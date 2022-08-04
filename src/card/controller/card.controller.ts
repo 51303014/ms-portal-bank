@@ -15,6 +15,10 @@ import {GetUser, UserProfileGuard} from "../card.decorator";
 import {ICardCreate, ICardDocument} from "../card.interface";
 import {TYPE_CARD} from "../card.constant";
 import {ENUM_USER_STATUS_CODE_ERROR} from "../../customers/customer.constant";
+import {IResponsePaging} from "../../utils/response/response.interface";
+import {PaginationService} from "../../pagination/service/pagination.service";
+import {CardListSerialization} from "../serialization/card.list.serialization";
+import {CardDocument} from "../schema/card.schema";
 
 @Controller({
     version: '1',
@@ -23,6 +27,7 @@ import {ENUM_USER_STATUS_CODE_ERROR} from "../../customers/customer.constant";
 export class CardController {
     constructor(
         private readonly cardService: CardService,
+        private readonly paginationService: PaginationService,
     ) {
     }
 
@@ -121,6 +126,79 @@ export class CardController {
                     message: 'http.serverError.internalServerError',
                 });
             }
+        }
+    }
+
+
+    @Response('card.list')
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
+    @HttpCode(HttpStatus.OK)
+    @ErrorMeta(CardController.name, 'card-get-list')
+    @Get('/list')
+    async getCards(
+        @GetUser() user: ICardDocument,
+        @Query()
+            {
+                page,
+                perPage,
+                search,
+                typeCard,
+            }
+    ): Promise<IResponsePaging> {
+        try {
+            const skip: number = await this.paginationService.skip(page, perPage);
+            const find: Record<string, any> = {};
+            if (search) {
+                find['$or'] = [
+                    {
+                        cif: {
+                            $regex: new RegExp(search),
+                            $options: 'i',
+                        },
+                    },
+                ];
+            }
+
+            if (typeCard) {
+                find['$and'] = [
+                    {
+                        typeCard
+                    },
+                ];
+            }
+            const cardInfoModel: CardDocument[] = await this.cardService.findAll(find,
+                {
+                    skip: skip,
+                    limit: perPage,
+                });
+
+            if (!cardInfoModel.length) {
+                throw new NotFoundException({
+                    statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                    message: 'cardInfo.error.notFound',
+                });
+            }
+            const totalData: number = await this.cardService.getTotal(find);
+            const totalPage: number = await this.paginationService.totalPage(
+                totalData,
+                perPage
+            );
+            const data: CardListSerialization[] =
+                await this.cardService.serializationList(cardInfoModel);
+
+            return {
+                totalData,
+                totalPage,
+                currentPage: page,
+                perPage,
+                data,
+            };
+        } catch (error) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
         }
     }
 }

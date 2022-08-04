@@ -25,10 +25,7 @@ export class CardService {
         find?: Record<string, any>,
         options?: IDatabaseFindAllOptions
     ): Promise<T[]> {
-        const files = this.cardModel.find(find).populate({
-            path: 'user',
-            model: UserEntity.name,
-        });
+        const files = this.cardModel.find(find);
 
         if (
             options &&
@@ -56,7 +53,7 @@ export class CardService {
     }
 
     async serializationList(
-        data: ICardDocument[]
+        data: CardDocument[]
     ): Promise<CardListSerialization[]> {
         return plainToInstance(CardListSerialization, data);
     }
