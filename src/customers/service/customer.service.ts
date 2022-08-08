@@ -1,4 +1,4 @@
-import {Injectable} from '@nestjs/common';
+import {Injectable, NotFoundException} from '@nestjs/common';
 import {Model, Types} from 'mongoose';
 import {plainToInstance} from 'class-transformer';
 import {DatabaseEntity} from 'src/database/database.decorator';
@@ -11,6 +11,7 @@ import {ICustomerCheckExist, ICustomerCreate, ICustomerDocument, SheetName} from
 import {CustomerUploadSerialization} from "../serialization/customer.upload.serialization";
 import {CustomerListSerialization} from "../serialization/customer.list.serialization";
 import {CustomerGetSerialization} from "../serialization/customer.get.serialization";
+import {ENUM_USER_STATUS_CODE_ERROR} from "../customer.constant";
 
 @Injectable()
 export class CustomerService {
@@ -458,6 +459,9 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
+        if (!customerModel) {
+            return;
+        }
         customerModel.cif = id;
         customerModel.totalValueTSDB = totalValueTSDB;
         return customerModel.save();

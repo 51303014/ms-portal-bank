@@ -535,10 +535,6 @@ export class CustomerController {
                             //     return;
                             // }
                             await this.assetService.create(infoAsset);
-                            const assetDetail = await this.assetService.findAllBaseField();
-                            assetDetail.map(async (value: any) => {
-                                await this.customerService.updateOneByTotalTSDB(value._id, value)
-                            })
                         } catch (error) {
                             throw new InternalServerErrorException({
                                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
@@ -546,6 +542,10 @@ export class CustomerController {
                             });
                         }
                     }));
+                    const assetDetail = await this.assetService.findAllBaseField();
+                    assetDetail.map(async (value: any) => {
+                        await this.customerService.updateOneByTotalTSDB(value._id, value)
+                    })
                     break;
                 case SheetName.InfoProductServiceBrand:
                     const worksheetInfoProductServiceBrand = content.getWorksheet(1);
@@ -670,7 +670,8 @@ export class CustomerController {
                                 rateDebtAutoCreditCard: this.fileHelperService.getCellValue(row, 11),
                                 activeDateCreditCard: this.fileHelperService.getCellFormulaValue(row, 12) ? new Date(this.fileHelperService.getCellFormulaValue(row, 12)) :
                                     this.fileHelperService.getCellValue(row, 12) ? new Date(this.fileHelperService.getCellValue(row, 12)) : null,
-                                activeDateAgainCreditCard: this.fileHelperService.getCellValue(row, 13) ? new Date(this.fileHelperService.getCellValue(row, 13)) : null,
+                                activeDateAgainCreditCard: this.fileHelperService.getCellFormulaValue(row, 13) ? new Date(this.fileHelperService.getCellFormulaValue(row, 13)) :
+                                    this.fileHelperService.getCellValue(row, 13) ? new Date(this.fileHelperService.getCellValue(row, 13)) : null,
                                 expiredDateCreditCard: this.fileHelperService.getCellValue(row, 14) ? new Date(this.fileHelperService.getCellValue(row, 14)) : null,
                                 closedDateCreditCard: this.fileHelperService.getCellValue(row, 15) ? new Date(this.fileHelperService.getCellValue(row, 15)) : null,
                                 activeDateFirstTimeCreditCard: this.fileHelperService.getCellValue(row, 16) ? new Date(this.fileHelperService.getCellValue(row, 16)) : null,
