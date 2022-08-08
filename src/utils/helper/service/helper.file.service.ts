@@ -18,21 +18,22 @@ export class HelperFileService {
 
     getCellValue(row: excelJs.Row, cellIndex: number) {
         const cell = row.getCell(cellIndex);
-        return cell.value ? cell.value.toString() : '';
+        return cell && cell.value ? cell.value.toString() : '';
     };
 
     getCellFormulaValue(row: excelJs.Row, cellIndex: number) {
         const value = row.getCell(cellIndex).value as excelJs.CellFormulaValue;
-        return value.result ? value.result.toString() : '';
+        return value && value.result ? value.result.toString() : '';
     };
 
     getCellValueCommon(row: excelJs.Row, cellIndex: number) {
         const value = row.getCell(cellIndex).value as excelJs.CellFormulaValue;
+        const cell = row.getCell(cellIndex);
+        if (!value || !value.result || !cell || !cell.value) return;
         if (!value) {
-            const cell = row.getCell(cellIndex);
-            return cell.value ? cell.value.toString() : '';
+            return cell && cell.value ? cell.value.toString() : '';
         }
-        return value.result ? value.result.toString() : '';
+        return value && value.result ? value.result.toString() : '';
     }
 
     async writeExcel(

@@ -137,6 +137,7 @@ export class CustomerController {
                             }
                             return await this.customerService.create(infoCustomer);
                         } catch (error) {
+                            console.log(error);
                             throw new InternalServerErrorException({
                                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                                 message: 'http.serverError.internalServerError',
