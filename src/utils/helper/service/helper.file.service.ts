@@ -26,6 +26,15 @@ export class HelperFileService {
         return value.result ? value.result.toString() : '';
     };
 
+    getCellValueCommon(row: excelJs.Row, cellIndex: number) {
+        const value = row.getCell(cellIndex).value as excelJs.CellFormulaValue;
+        if (!value) {
+            const cell = row.getCell(cellIndex);
+            return cell.value ? cell.value.toString() : '';
+        }
+        return value.result ? value.result.toString() : '';
+    }
+
     async writeExcel(
         headers: string[],
         rows: Record<string, string>[]

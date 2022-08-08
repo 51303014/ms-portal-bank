@@ -101,24 +101,24 @@ export class CustomerController {
                                 cif: this.fileHelperService.getCellValue(row, 1),
                                 fullName: this.fileHelperService.getCellValue(row, 2),
                                 brandCifOpen: +this.fileHelperService.getCellValue(row, 3),
-                                dateCifOpen: this.fileHelperService.getCellValue(row, 4) ? new Date(this.fileHelperService.getCellValue(row, 4)) : null,
+                                dateCifOpen: this.fileHelperService.getCellValueCommon(row, 4) ? new Date(this.fileHelperService.getCellValueCommon(row, 4)) : null,
                                 nationality: this.fileHelperService.getCellValue(row, 5),
                                 address: this.fileHelperService.getCellValue(row, 6),
                                 residence: this.fileHelperService.getCellValue(row, 7),
-                                birthday: this.fileHelperService.getCellValue(row, 8) ? new Date(this.fileHelperService.getCellValue(row, 8)) : null,
+                                birthday: this.fileHelperService.getCellValueCommon(row, 8) ? new Date(this.fileHelperService.getCellValueCommon(row, 8)) : null,
                                 birthPlace: this.fileHelperService.getCellValue(row, 9),
                                 customerId: this.fileHelperService.getCellValue(row, 10),
                                 numberIdentity: this.fileHelperService.getCellValue(row, 11),
-                                effectiveDate: this.fileHelperService.getCellValue(row, 12) ? new Date(this.fileHelperService.getCellValue(row, 12)) : null,
+                                effectiveDate: this.fileHelperService.getCellValueCommon(row, 12) ? new Date(this.fileHelperService.getCellValueCommon(row, 12)) : null,
                                 age: +this.fileHelperService.getCellValue(row, 13),
                                 email: this.fileHelperService.getCellValue(row, 14),
                                 mobile: this.fileHelperService.getCellValue(row, 15),
-                                gender: this.fileHelperService.getCellValue(row, 16),
+                                gender: this.fileHelperService.getCellFormulaValue(row, 16) ? this.fileHelperService.getCellFormulaValue(row, 16) : this.fileHelperService.getCellValue(row, 16),
                                 maritalStatus: this.fileHelperService.getCellValue(row, 17),
                                 job: this.fileHelperService.getCellValue(row, 18),
                                 relationshipBank: this.fileHelperService.getCellValue(row, 19),
-                                currentStatus: this.fileHelperService.getCellValue(row, 20),
-                                previousStatus: this.fileHelperService.getCellValue(row, 21),
+                                currentStatus: this.fileHelperService.getCellFormulaValue(row, 20) ? this.fileHelperService.getCellFormulaValue(row, 20) : this.fileHelperService.getCellValue(row, 20),
+                                previousStatus: this.fileHelperService.getCellFormulaValue(row, 21) ? this.fileHelperService.getCellFormulaValue(row, 21) : this.fileHelperService.getCellValue(row, 21),
                                 statusChangeDate: this.fileHelperService.getCellValue(row, 22),
                                 customerType: this.fileHelperService.getCellValue(row, 23),
                                 customerSegment: this.fileHelperService.getCellValue(row, 24),
@@ -126,7 +126,7 @@ export class CustomerController {
                                 depositBalanceSegment: this.fileHelperService.getCellValue(row, 26),
                                 debtGroup: this.fileHelperService.getCellValue(row, 27),
                                 incomeBrandYearly: this.fileHelperService.getCellValue(row, 28),
-                                incomeTotalYearly: this.fileHelperService.getCellValue(row, 29),
+                                incomeTotalYearly: this.fileHelperService.getCellValue(row, 29)
                             }
                             const customerInfo: ICustomerCreate = await this.customerService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 1)
@@ -435,16 +435,16 @@ export class CustomerController {
                             const infoCard: ICardCreate = {
                                 user: user._id,
                                 typeCard: TYPE_CARD.DebitDomesticCard,
-                                cif: this.fileHelperService.getCellValue(row, 1),
+                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
                                 fullName: this.fileHelperService.getCellValue(row, 2),
                                 accountNumberDebitDomestic: this.fileHelperService.getCellValue(row, 3),
                                 cardNumberDebitDomestic: this.fileHelperService.getCellValue(row, 4),
                                 typeProductDebitDomestic: this.fileHelperService.getCellValue(row, 5),
                                 typeChipDebitDomestic: this.fileHelperService.getCellValue(row, 6),
-                                codeDebitDomestic: this.fileHelperService.getCellValue(row, 7),
-                                statusDebitDomestic: this.fileHelperService.getCellValue(row, 8),
+                                codeDebitDomestic: this.fileHelperService.getCellFormulaValue(row, 7) ? this.fileHelperService.getCellFormulaValue(row, 7) : this.fileHelperService.getCellValue(row, 7),
+                                statusDebitDomestic: this.fileHelperService.getCellFormulaValue(row, 8) ? this.fileHelperService.getCellFormulaValue(row, 8) : this.fileHelperService.getCellValue(row, 8),
                                 formPHTDebitDomestic: this.fileHelperService.getCellValue(row, 9),
-                                codeAM: this.fileHelperService.getCellValue(row, 10)
+                                codeAM: this.fileHelperService.getCellFormulaValue(row, 10) ? this.fileHelperService.getCellFormulaValue(row, 10) : this.fileHelperService.getCellValue(row, 10)
                             }
                             // const customerInfo: ICustomerCreate = await this.cardService.findOne({
                             //     cif: this.fileHelperService.getCellValue(row, 1),
@@ -475,7 +475,7 @@ export class CustomerController {
                             const infoCard: ICardCreate = {
                                 user: user._id,
                                 typeCard: TYPE_CARD.DebitInternationalCard,
-                                cif: this.fileHelperService.getCellValue(row, 1),
+                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) :this.fileHelperService.getCellValue(row, 1),
                                 fullName: this.fileHelperService.getCellValue(row, 2),
                                 cardNumberDebitInternational: this.fileHelperService.getCellValue(row, 3),
                                 accountNumberDefaultLinkedCard: this.fileHelperService.getCellValue(row, 4),
@@ -485,7 +485,7 @@ export class CustomerController {
                                 activeDateCardDebitInternational: this.fileHelperService.getCellValue(row, 8) ? new Date(this.fileHelperService.getCellValue(row, 8)) : null,
                                 typeCardDebitInternational: this.fileHelperService.getCellValue(row, 9),
                                 codeCardDebitInternational: this.fileHelperService.getCellValue(row, 10),
-                                codeAM: this.fileHelperService.getCellValue(row, 11)
+                                codeAM: this.fileHelperService.getCellFormulaValue(row, 11) ? this.fileHelperService.getCellFormulaValue(row, 11) : this.fileHelperService.getCellValue(row, 11)
                             }
                             // const customerInfo: ICustomerCreate = await this.cardService.findOne({
                             //     cif: this.fileHelperService.getCellValue(row, 1),
@@ -516,7 +516,7 @@ export class CustomerController {
                             const valueTSDB = +this.fileHelperService.getCellValue(row, 9)
                             if (!valueTSDB) return;
                             const infoAsset: IAssetCreate = {
-                                cif: this.fileHelperService.getCellValue(row, 3),
+                                cif: this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3),
                                 fullName: this.fileHelperService.getCellValue(row, 4),
                                 totalDebtTSDB: this.fileHelperService.getCellValue(row, 5),
                                 debtShortTSDB: this.fileHelperService.getCellValue(row, 6),
@@ -557,7 +557,7 @@ export class CustomerController {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
-                                cif: this.fileHelperService.getCellValue(row, 3),
+                                cif: this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3),
                                 fullName: this.fileHelperService.getCellValue(row, 4),
                                 productServiceBrandTGCKH: this.fileHelperService.getCellValue(row, 7),
                                 productServiceBrandTGTT: this.fileHelperService.getCellValue(row, 8),
@@ -607,7 +607,7 @@ export class CustomerController {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
-                                cif: this.fileHelperService.getCellValue(row, 2),
+                                cif: this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2),
                                 productServiceSystemTGCKH: this.fileHelperService.getCellValue(row, 7),
                                 productServiceSystemTGTT: this.fileHelperService.getCellValue(row, 8),
                                 productServiceSystemLOAN: this.fileHelperService.getCellValue(row, 9),
@@ -665,7 +665,7 @@ export class CustomerController {
                                 accountIdCreditCard: this.fileHelperService.getCellValue(row, 6),
                                 accountCreditCardLink: this.fileHelperService.getCellValue(row, 7),
                                 limitAmountCreditCard: this.fileHelperService.getCellValue(row, 8),
-                                codeAM: this.fileHelperService.getCellValue(row, 9),
+                                codeAM: this.fileHelperService.getCellFormulaValue(row, 9) ? this.fileHelperService.getCellFormulaValue(row, 9) : this.fileHelperService.getCellValue(row, 9),
                                 statusCreditCard: this.fileHelperService.getCellValue(row, 10),
                                 rateDebtAutoCreditCard: this.fileHelperService.getCellValue(row, 11),
                                 activeDateCreditCard: this.fileHelperService.getCellFormulaValue(row, 12) ? new Date(this.fileHelperService.getCellFormulaValue(row, 12)) :
@@ -716,10 +716,10 @@ export class CustomerController {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
                             const infoParents: IParentCreate = {
                                 user: user._id,
-                                cif: this.fileHelperService.getCellValue(row, 1),
-                                fullNameRelevant: this.fileHelperService.getCellValue(row, 2),
-                                cifRelevant: this.fileHelperService.getCellValue(row, 3),
-                                relationship: this.fileHelperService.getCellValue(row, 4)
+                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
+                                fullNameRelevant: this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2),
+                                cifRelevant: this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3),
+                                relationship: this.fileHelperService.getCellFormulaValue(row, 4) ? this.fileHelperService.getCellFormulaValue(row, 4) : this.fileHelperService.getCellValue(row, 4)
                             }
                             return await this.parentService.create(infoParents);
                         } catch (error) {
@@ -741,11 +741,11 @@ export class CustomerController {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
                             const infoCompany: ICompanyCreate = {
-                                cif: this.fileHelperService.getCellValue(row, 1),
-                                nameCompany: this.fileHelperService.getCellValue(row, 2),
-                                cifCompany: this.fileHelperService.getCellValue(row, 3),
-                                position: this.fileHelperService.getCellValue(row, 4),
-                                relationshipOtherCompany: this.fileHelperService.getCellValue(row, 5)
+                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
+                                nameCompany: this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2),
+                                cifCompany: this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3),
+                                position: this.fileHelperService.getCellFormulaValue(row, 4) ? this.fileHelperService.getCellFormulaValue(row, 4) :this.fileHelperService.getCellValue(row, 4),
+                                relationshipOtherCompany: this.fileHelperService.getCellFormulaValue(row, 5) ? this.fileHelperService.getCellFormulaValue(row, 5) : this.fileHelperService.getCellValue(row, 5)
                             }
                             return await this.companyService.create(infoCompany);
                         } catch (error) {
@@ -766,13 +766,13 @@ export class CustomerController {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
                             const info: IWorkCustomerCreate = {
-                                cif: this.fileHelperService.getCellValue(row, 1),
-                                workHandle: this.fileHelperService.getCellValue(row, 2),
-                                dateStart: this.fileHelperService.getCellValue(row, 3) ? new Date(this.fileHelperService.getCellValue(row, 3)) : null,
-                                deadline: this.fileHelperService.getCellValue(row, 4) ? new Date(this.fileHelperService.getCellValue(row, 4)) : null,
-                                inProgress: this.fileHelperService.getCellValue(row, 5),
-                                result: this.fileHelperService.getCellValue(row, 6),
-                                statusFix: this.fileHelperService.getCellValue(row, 7)
+                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
+                                workHandle: this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2),
+                                dateStart: this.fileHelperService.getCellValueCommon(row, 3) ? new Date(this.fileHelperService.getCellValueCommon(row, 3)) : null,
+                                deadline: this.fileHelperService.getCellValueCommon(row, 4) ? new Date(this.fileHelperService.getCellValueCommon(row, 4)) : null,
+                                inProgress: this.fileHelperService.getCellFormulaValue(row, 5) ? this.fileHelperService.getCellFormulaValue(row, 5) : this.fileHelperService.getCellValue(row, 5),
+                                result: this.fileHelperService.getCellFormulaValue(row, 6) ? this.fileHelperService.getCellFormulaValue(row, 6) : this.fileHelperService.getCellValue(row, 6),
+                                statusFix: this.fileHelperService.getCellFormulaValue(row, 7) ? this.fileHelperService.getCellFormulaValue(row, 7) : this.fileHelperService.getCellValue(row, 7)
                             }
                             return await this.workCustomerService.create(info);
                         } catch (error) {
@@ -793,14 +793,14 @@ export class CustomerController {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
                             const info: IOtherInfoCustomerCreate = {
-                                cif: this.fileHelperService.getCellValue(row, 1),
-                                dateKHCCAdditional: this.fileHelperService.getCellValue(row, 2) ? new Date(this.fileHelperService.getCellValue(row, 2)) : null,
-                                productsApply: this.fileHelperService.getCellValue(row, 3),
-                                programsApplied: this.fileHelperService.getCellValue(row, 4),
-                                priorityKHRegistered: this.fileHelperService.getCellValue(row, 5),
-                                expensesPayed: this.fileHelperService.getCellValue(row, 6),
-                                habitsCustomer: this.fileHelperService.getCellValue(row, 7),
-                                favouriteCustomer: this.fileHelperService.getCellValue(row, 8)
+                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
+                                dateKHCCAdditional: this.fileHelperService.getCellValueCommon(row, 2) ? new Date(this.fileHelperService.getCellValueCommon(row, 2)) : null,
+                                productsApply: this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3),
+                                programsApplied: this.fileHelperService.getCellFormulaValue(row, 4) ? this.fileHelperService.getCellFormulaValue(row, 4) : this.fileHelperService.getCellValue(row, 4),
+                                priorityKHRegistered: this.fileHelperService.getCellFormulaValue(row, 5) ? this.fileHelperService.getCellFormulaValue(row, 5) : this.fileHelperService.getCellValue(row, 5),
+                                expensesPayed: this.fileHelperService.getCellFormulaValue(row, 6) ? this.fileHelperService.getCellFormulaValue(row, 6) : this.fileHelperService.getCellValue(row, 6),
+                                habitsCustomer: this.fileHelperService.getCellFormulaValue(row, 7) ? this.fileHelperService.getCellFormulaValue(row, 7) : this.fileHelperService.getCellValue(row, 7),
+                                favouriteCustomer: this.fileHelperService.getCellFormulaValue(row, 8) ? this.fileHelperService.getCellFormulaValue(row, 8) : this.fileHelperService.getCellValue(row, 8)
                             }
                             return await this.otherInfoService.create(info);
                         } catch (error) {
