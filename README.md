@@ -1,8 +1,3 @@
-[![Contributors][ack-contributors-shield]][ack-contributors]
-[![Forks][ack-forks-shield]][ack-forks]
-[![Stargazers][ack-stars-shield]][ack-stars]
-[![Issues][ack-issues-shield]][ack-issues]
-[![MIT License][ack-license-shield]][license]
 
 [![NestJs][nestjs-shield]][ref-nestjs]
 [![NodeJs][nodejs-shield]][ref-nodejs]
@@ -13,11 +8,11 @@
 [![Yarn][yarn-shield]][ref-yarn]
 [![Docker][docker-shield]][ref-docker]
 
-# ACK NestJs Boilerplate Mongoose  🔥 🚀
+# NestJs Boilerplate Mongoose  🔥 🚀
 
 > Best uses for Restful API, Microservice, or SaaS Project
 
-ack-nestjs-boilerplate-mongoose is a [NestJs](http://nestjs.com) Boilerplate with [Mongoose](https://mongoosejs.com) and [MongoDB](https://docs.mongodb.com) as Database.
+nestjs-boilerplate-mongoose is a [NestJs](http://nestjs.com) Boilerplate with [Mongoose](https://mongoosejs.com) and [MongoDB](https://docs.mongodb.com) as Database.
 
 Made with following
 - [nodejs-best-practice](https://github.com/goldbergyoni/nodebestpractices) 
@@ -25,11 +20,7 @@ Made with following
 - [Microservice Architecture](https://microservices.io)
 - NestJs Habit.
 
-*You can [Request Feature][ack-issues] or [Report Bug][ack-issues] with following this link*
-
 ## Important
-
-> ack-nestjs-boilerplate-mongoose still on trial and error phase and the test will base on real projects or cases. So there will be (always) have new update and new features.
 
 If you change env value of `APP_MODE` to `secure` that will trigger more `Middleware` and `Guard`.
 
@@ -57,8 +48,6 @@ Describes which version of the main packages and main tools.
 | Docker Compose | v2.x |
 
 ## Objective
-
-ack-nestjs-boilerplate-mongoose have some objective.
 
 - Simple, scalable and secure
 - Avoid spaghetti code
@@ -132,21 +121,6 @@ Next development
 - [ ] Docker Compose File Mongodb Replication Set (Low Priority)
 - [ ] Swagger (Low Priority)
 
-## Documentation
-
-Let's go into deep ! 🚀
-
-- [Documentation][ack-docs]
-- [Example][ack-docs-example]
-- [Tips][ack-docs-tips]
-
-## Endpoints
-
-Import [endpoints.json][ack-endpoint] into postman or see our [e2e testing][ack-e2e]
-
-## Microservice
-
-Nestjs microservice or Kafka integration will put in separate repo [ack-microservice-nestjs-boilerplate-mongoose][ack-microservice-repo].
 
 ## License
 
@@ -156,51 +130,6 @@ Distributed under [MIT licensed][license].
 
 Thanks goes to these wonderful people
 
-### Boilerplate
-
-<table>
-    <tr>
-        <td align="center">
-            <a href="https://github.com/PSheon">
-                <img src="https://avatars.githubusercontent.com/u/20603727?v=4" width="80px;" alt="PSheon"/>
-                <br />
-                <sub> <b> PSheon </b> </sub>
-            </a>
-            <br />
-        </td>
-        <td align="center">
-            <a href="https://github.com/aallithioo">
-                <img src="https://avatars.githubusercontent.com/u/33598841?v=4" width="80px;" alt="aallithioo"/>
-                <br />
-                <sub> <b> aallithioo </b> </sub>
-            </a>
-            <br />
-        </td>
-    </tr>
-</table>
-
-### Documentation
-
-<table>
-    <tr>
-        <td align="center">
-            <a href="https://github.com/tiaamoo">
-                <img src="https://avatars.githubusercontent.com/u/97380402?v=4" width="80px;" alt="Tiaamoo"/>
-                <br />
-                <sub> <b> Tiaamoo </b> </sub>
-            </a>
-            <br />
-        </td>
-    </tr>
-</table>
-
-## Contact
-
-[Andre Christi kan][author-email]
-
-[![Github][github-shield]][author-github]
-[![LinkedIn][linkedin-shield]][author-linkedin]
-[![Instagram][instagram-shield]][author-instagram]
 
 <!-- BADGE LINKS -->
 [ack-contributors-shield]: https://img.shields.io/github/contributors/andrechristikan/ack-nestjs-boilerplate-mongoose?style=for-the-badge
