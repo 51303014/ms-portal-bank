@@ -1,17 +1,18 @@
-import { Command } from 'nestjs-command';
-import { Injectable } from '@nestjs/common';
-import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
-import { PermissionService } from 'src/permission/service/permission.service';
-import { RoleBulkService } from 'src/role/service/role.bulk.service';
-import { PermissionDocument } from 'src/permission/schema/permission.schema';
-import { ErrorMeta } from 'src/utils/error/error.decorator';
+import {Command} from 'nestjs-command';
+import {Injectable} from '@nestjs/common';
+import {ENUM_PERMISSIONS} from 'src/permission/permission.constant';
+import {PermissionService} from 'src/permission/service/permission.service';
+import {RoleBulkService} from 'src/role/service/role.bulk.service';
+import {PermissionDocument} from 'src/permission/schema/permission.schema';
+import {ErrorMeta} from 'src/utils/error/error.decorator';
 
 @Injectable()
 export class RoleSeed {
     constructor(
         private readonly permissionService: PermissionService,
         private readonly roleBulkService: RoleBulkService
-    ) {}
+    ) {
+    }
 
     @ErrorMeta(RoleSeed.name, 'insert')
     @Command({
@@ -21,7 +22,7 @@ export class RoleSeed {
     async insert(): Promise<void> {
         const permissions: PermissionDocument[] =
             await this.permissionService.findAll({
-                code: { $in: Object.values(ENUM_PERMISSIONS) },
+                code: {$in: Object.values(ENUM_PERMISSIONS)},
             });
 
         try {
@@ -37,6 +38,16 @@ export class RoleSeed {
                     permissions: [],
                     isAdmin: false,
                 },
+                {
+                    name: 'manager',
+                    permissions: [],
+                    isAdmin: false,
+                },
+                {
+                    name: 'leader',
+                    permissions: [],
+                    isAdmin: false,
+                }
             ]);
         } catch (e) {
             throw new Error(e.message);

@@ -1,11 +1,11 @@
-import { Command } from 'nestjs-command';
-import { Injectable } from '@nestjs/common';
-import { UserService } from 'src/user/service/user.service';
-import { UserBulkService } from 'src/user/service/user.bulk.service';
-import { RoleService } from 'src/role/service/role.service';
-import { AuthService } from 'src/auth/service/auth.service';
-import { RoleDocument } from 'src/role/schema/role.schema';
-import { ErrorMeta } from 'src/utils/error/error.decorator';
+import {Command} from 'nestjs-command';
+import {Injectable} from '@nestjs/common';
+import {UserService} from 'src/user/service/user.service';
+import {UserBulkService} from 'src/user/service/user.bulk.service';
+import {RoleService} from 'src/role/service/role.service';
+import {AuthService} from 'src/auth/service/auth.service';
+import {RoleDocument} from 'src/role/schema/role.schema';
+import {ErrorMeta} from 'src/utils/error/error.decorator';
 
 @Injectable()
 export class UserSeed {
@@ -14,7 +14,8 @@ export class UserSeed {
         private readonly userService: UserService,
         private readonly userBulkService: UserBulkService,
         private readonly roleService: RoleService
-    ) {}
+    ) {
+    }
 
     @ErrorMeta(UserSeed.name, 'insert')
     @Command({
@@ -22,9 +23,24 @@ export class UserSeed {
         describe: 'insert users',
     })
     async insert(): Promise<void> {
-        const role: RoleDocument = await this.roleService.findOne<RoleDocument>(
+        const roleAdmin: RoleDocument = await this.roleService.findOne<RoleDocument>(
             {
                 name: 'admin',
+            }
+        );
+        const roleManager: RoleDocument = await this.roleService.findOne<RoleDocument>(
+            {
+                name: 'manager',
+            }
+        );
+        const roleLeader: RoleDocument = await this.roleService.findOne<RoleDocument>(
+            {
+                name: 'leader',
+            }
+        );
+        const roleUser: RoleDocument = await this.roleService.findOne<RoleDocument>(
+            {
+                name: 'user',
             }
         );
 
@@ -36,22 +52,42 @@ export class UserSeed {
             await this.userService.create({
                 firstName: 'admin',
                 lastName: 'test',
-                codeEmployee: '13500001',
+                codeEmployee: '80553',
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
                 mobileNumber: '08111111111',
-                role: role._id,
+                role: roleAdmin._id,
                 salt: password.salt,
             });
 
             await this.userService.create({
-                firstName: 'banker',
-                lastName: 'test',
-                codeEmployee: '13500002',
+                firstName: 'user',
+                lastName: 'user',
+                codeEmployee: '176818',
                 password: password.passwordHash,
                 passwordExpired: password.passwordExpired,
-                mobileNumber: '08111111112',
-                role: role._id,
+                mobileNumber: '08111111113',
+                role: roleUser._id,
+                salt: password.salt,
+            });
+            await this.userService.create({
+                firstName: 'manager',
+                lastName: 'manager',
+                codeEmployee: '133436',
+                password: password.passwordHash,
+                passwordExpired: password.passwordExpired,
+                mobileNumber: '08111111114',
+                role: roleManager._id,
+                salt: password.salt,
+            });
+            await this.userService.create({
+                firstName: 'leader',
+                lastName: 'leader',
+                codeEmployee: '76719',
+                password: password.passwordHash,
+                passwordExpired: password.passwordExpired,
+                mobileNumber: '08111111115',
+                role: roleLeader._id,
                 salt: password.salt,
             });
         } catch (e) {
