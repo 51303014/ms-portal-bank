@@ -42,434 +42,434 @@ export class IncomeEntity {
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEnd?: string;
+    raisingCapitalAtTheEnd?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndLastYear?: string;
+    raisingCapitalAtTheEndLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndExchange?: string;
+    raisingCapitalAtTheEndExchange?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndExchangeLastYear?: string;
+    raisingCapitalAtTheEndExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndKKH?: string;
+    raisingCapitalAtTheEndKKH?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndKKHLastYear?: string;
+    raisingCapitalAtTheEndKKHLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndKKHExchange?: string;
+    raisingCapitalAtTheEndKKHExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndKKHExchangeLastYear?: string;
+    raisingCapitalAtTheEndKKHExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndCKH?: string;
+    raisingCapitalAtTheEndCKH?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndCKHLastYear?: string;
+    raisingCapitalAtTheEndCKHLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndCKHExchange?: string;
+    raisingCapitalAtTheEndCKHExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAtTheEndCKHExchangeLastYear?: string;
+    raisingCapitalAtTheEndCKHExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAvg?: string;
+    raisingCapitalAvg?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAvgLastYear?: string;
+    raisingCapitalAvgLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAvgExchange?: string;
+    raisingCapitalAvgExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalAvgExchangeLastYear?: string;
+    raisingCapitalAvgExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalKKHAvg?: string;
+    raisingCapitalKKHAvg?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalKKHAvgLastYear?: string;
+    raisingCapitalKKHAvgLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalKKHAvgExchange?: string;
+    raisingCapitalKKHAvgExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalKKHAvgExchangeLastYear?: string;
+    raisingCapitalKKHAvgExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalCKHAvg?: string;
+    raisingCapitalCKHAvg?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalCKHAvgLastYear?: string;
+    raisingCapitalCKHAvgLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalCKHAvgExchange?: string;
+    raisingCapitalCKHAvgExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    raisingCapitalCKHAvgExchangeLastYear?: string;
+    raisingCapitalCKHAvgExchangeLastYear?: number;
 
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAtTheEnd?: string;
+    amountDebtCreditAtTheEnd?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAtTheEndLastYear?: string;
+    amountDebtCreditAtTheEndLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAtTheEndExchange?: string;
+    amountDebtCreditAtTheEndExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAtTheEndExchangeLastYear?: string;
+    amountDebtCreditAtTheEndExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAtTheEnd?: string;
+    amountDebtCreditTDHAtTheEnd?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAtTheEndLastYear?: string;
+    amountDebtCreditTDHAtTheEndLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAtTheEndExchange?: string;
+    amountDebtCreditTDHAtTheEndExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAtTheEndExchangeLastYear?: string;
+    amountDebtCreditTDHAtTheEndExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAvgAtTheEnd?: string;
+    amountDebtCreditAvgAtTheEnd?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAvgAtTheEndLastYear?: string;
+    amountDebtCreditAvgAtTheEndLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAvgAtTheEndExchange?: string;
+    amountDebtCreditAvgAtTheEndExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditAvgAtTheEndExchangeLastYear?: string;
+    amountDebtCreditAvgAtTheEndExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAvgAtTheEnd?: string;
+    amountDebtCreditTDHAvgAtTheEnd?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAvgAtTheEndLastYear?: string;
+    amountDebtCreditTDHAvgAtTheEndLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAvgAtTheEndExchange?: string;
+    amountDebtCreditTDHAvgAtTheEndExchange?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtCreditTDHAvgAtTheEndExchangeLastYear?: string;
+    amountDebtCreditTDHAvgAtTheEndExchangeLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtLoanGTCGAndEndCard?: string;
+    amountDebtLoanGTCGAndEndCard?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtLoanGTCGAndEndCardLastYear?: string;
+    amountDebtLoanGTCGAndEndCardLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtLoanGTCGAndAvgCard?: string;
+    amountDebtLoanGTCGAndAvgCard?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    amountDebtLoanGTCGAndAvgCardLastYear?: string;
+    amountDebtLoanGTCGAndAvgCardLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFTPBaseMore?: string;
+    incomeFTPBaseMore?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFTPBaseMoreLastYear?: string;
+    incomeFTPBaseMoreLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromInterestFTPBaseMore?: string;
+    incomeFromInterestFTPBaseMore?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromInterestFTPBaseMoreLastYear?: string;
+    incomeFromInterestFTPBaseMoreLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeGuaranteeActivities?: string;
+    incomeGuaranteeActivities?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeGuaranteeActivitiesLastYear?: string;
+    incomeGuaranteeActivitiesLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeHDVFTPBaseMore?: string;
+    incomeHDVFTPBaseMore?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeHDVFTPBaseMoreLastYear?: string;
+    incomeHDVFTPBaseMoreLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeOtherInterest?: string;
+    incomeOtherInterest?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeOtherInterestLastYear?: string;
+    incomeOtherInterestLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeExcludeInterest?: string;
+    incomeExcludeInterest?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeExcludeInterestLastYear?: string;
+    incomeExcludeInterestLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromService?: string;
+    incomeFromService?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromServiceLastYear?: string;
+    incomeFromServiceLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromCreditFTPBaseMore?: string;
+    incomeFromCreditFTPBaseMore?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromCreditFTPBaseMoreLastYear?: string;
+    incomeFromCreditFTPBaseMoreLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromToolFinance?: string;
+    incomeFromToolFinance?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromToolFinanceLastYear?: string;
+    incomeFromToolFinanceLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeBuyStock?: string;
+    incomeBuyStock?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeBuyStockLastYear?: string;
+    incomeBuyStockLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeBuySharesAndContribution?: string;
+    incomeBuySharesAndContribution?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeBuySharesAndContributionLastYear?: string;
+    incomeBuySharesAndContributionLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeGolden?: string;
+    incomeGolden?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeGoldenLastYear?: string;
+    incomeGoldenLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeInterestKDNTPS?: string;
+    incomeInterestKDNTPS?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeInterestKDNTPSLastYear?: string;
+    incomeInterestKDNTPSLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeExcludeInterestKDNTPS?: string;
+    incomeExcludeInterestKDNTPS?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeExcludeInterestKDNTPSLastYear?: string;
+    incomeExcludeInterestKDNTPSLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeOtherActivity?: string;
+    incomeOtherActivity?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeOtherActivityLastYear?: string;
+    incomeOtherActivityLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromDebt?: string;
+    incomeFromDebt?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromDebtLastYear?: string;
+    incomeFromDebtLastYear?: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromCardAndInterestService?: string;
+    incomeFromCardAndInterestService?: number;
     @Prop({
         required: false,
         trim: true,
     })
-    incomeFromCardAndInterestServiceLastYear?: string;
+    incomeFromCardAndInterestServiceLastYear?: number;
 
     @Prop({
         required: false,

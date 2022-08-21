@@ -7,6 +7,7 @@ import { RoleModule } from 'src/role/role.module';
 import { SettingAdminController } from 'src/setting/controller/setting.admin.controller';
 import { UserAdminController } from 'src/user/controller/user.admin.controller';
 import { UserModule } from 'src/user/user.module';
+import {IncomeModule} from '../income/income.module';
 
 @Module({
     controllers: [
@@ -17,6 +18,6 @@ import { UserModule } from 'src/user/user.module';
     ],
     providers: [],
     exports: [],
-    imports: [AuthModule, RoleModule, UserModule, PermissionModule],
+    imports: [AuthModule, IncomeModule, RoleModule, UserModule, PermissionModule],
 })
 export class RouterAdminModule {}

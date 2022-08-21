@@ -15,7 +15,7 @@ import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
 import {
     GetUser,
     UserDeleteGuard,
-    UserGetGuard,
+    UserGetGuard, UserProfileGuard,
     UserUpdateActiveGuard,
     UserUpdateGuard,
     UserUpdateInactiveGuard,
@@ -44,6 +44,7 @@ import { UserUpdateDto } from '../dto/user.update.dto';
 import { RequestParamGuard } from 'src/utils/request/request.decorator';
 import { UserRequestDto } from '../dto/user.request.dto';
 import { ErrorMeta } from 'src/utils/error/error.decorator';
+import {IncomeService} from '../../income/service/income.service';
 
 @Controller({
     version: '1',
@@ -54,6 +55,7 @@ export class UserAdminController {
         private readonly authService: AuthService,
         private readonly paginationService: PaginationService,
         private readonly userService: UserService,
+        private readonly incomeService: IncomeService,
         private readonly roleService: RoleService
     ) {}
 
@@ -127,6 +129,15 @@ export class UserAdminController {
     @Get('get/:user')
     async get(@GetUser() user: IUserDocument): Promise<IResponse> {
         return this.userService.serializationGet(user);
+    }
+
+    @Response('user.getInfoTotal')
+    @UserProfileGuard()
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
+    @ErrorMeta(UserAdminController.name, 'get')
+    @Get('/getInfoTotal')
+    async getInfoIncome(@GetUser() user: IUserDocument): Promise<IResponse> {
+        return await this.incomeService.findAllIncome();
     }
 
     @Response('user.create')

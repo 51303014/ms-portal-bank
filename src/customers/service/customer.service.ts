@@ -12,6 +12,7 @@ import {CustomerUploadSerialization} from "../serialization/customer.upload.seri
 import {CustomerListSerialization} from "../serialization/customer.list.serialization";
 import {CustomerGetSerialization} from "../serialization/customer.get.serialization";
 import {ENUM_USER_STATUS_CODE_ERROR} from "../customer.constant";
+import {IIncomeCreate} from "../../income/income.interface";
 
 @Injectable()
 export class CustomerService {
@@ -443,7 +444,7 @@ export class CustomerService {
         {
             totalCreditBalanceAvgLastYear,
             totalDepositBalanceAvgLastYear
-        }: ICustomerCreate
+        }: IIncomeCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
         customerModel.cif = id;

@@ -64,6 +64,37 @@ export class IncomeService {
         return plainToInstance(IncomeGetSerialization, data);
     }
 
+
+    async findAllIncome<T>(
+        find?: Record<string, any>,
+    ): Promise<T[]> {
+        return this.incomeModel.aggregate([
+            {
+                $group: {
+                    _id: "$codeAM",
+                    totalIncomeFTP: {
+                        $sum: "$incomeFTPBaseMore"
+                    },
+                    totalIncomeService: {
+                        $sum: "$incomeFromService"
+                    },
+                    totalIncomeInterestKDNTPS: {
+                        $sum: "$incomeInterestKDNTPS"
+                    },
+                    totalIncomeCardService: {
+                        $sum: "$incomeFromCardAndInterestService"
+                    },
+                    totalRaisingCapitalAtTheEndExchange: {
+                        $sum: "$raisingCapitalAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditAtTheEndExchange: {
+                        $sum: "$amountDebtCreditAtTheEndExchange"
+                    },
+                }
+            }
+        ]);
+    }
+
     async findOneById<T>(
         _id: string,
         options?: IDatabaseFindOneOptions

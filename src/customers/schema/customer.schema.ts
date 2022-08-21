@@ -932,25 +932,25 @@ export class CustomerEntity {
         required: false,
         trim: true,
     })
-    incomeBrandYearly: string;
+    incomeBrandYearly: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeBrandLastYear: string;
+    incomeBrandLastYear: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeTotalYearly: string;
+    incomeTotalYearly: number;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeTotalLastYear: string;
+    incomeTotalLastYear: number;
 
     @Prop({
         type: Date,
@@ -1006,14 +1006,14 @@ export class CustomerEntity {
         required: false,
         trim: true,
     })
-    totalCreditBalanceAvgBeginYear?: string;
+    totalCreditBalanceAvgBeginYear?: number;
 
 
     @Prop({
         required: false,
         trim: true,
     })
-    totalCreditBalanceAvgLastYear?: string;
+    totalCreditBalanceAvgLastYear?: number;
 
     @Prop({
         required: false,
@@ -1073,7 +1073,7 @@ export class CustomerEntity {
         required: false,
         trim: true,
     })
-    totalDepositBalanceAvgLastYear?: string;
+    totalDepositBalanceAvgLastYear?: number;
 
     @Prop({
         required: false,
