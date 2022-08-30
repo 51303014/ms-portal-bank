@@ -49,47 +49,47 @@ export class UserSeed {
                 'aaAA@@123444'
             );
 
-            await this.userService.create({
-                firstName: 'admin',
-                lastName: 'test',
-                codeEmployee: '80553',
-                password: password.passwordHash,
-                passwordExpired: password.passwordExpired,
-                mobileNumber: '08111111111',
-                role: roleAdmin._id,
-                salt: password.salt,
-            });
-
-            await this.userService.create({
-                firstName: 'user',
-                lastName: 'user',
-                codeEmployee: '176818',
-                password: password.passwordHash,
-                passwordExpired: password.passwordExpired,
-                mobileNumber: '08111111113',
-                role: roleUser._id,
-                salt: password.salt,
-            });
-            await this.userService.create({
-                firstName: 'manager',
-                lastName: 'manager',
-                codeEmployee: '133436',
-                password: password.passwordHash,
-                passwordExpired: password.passwordExpired,
-                mobileNumber: '08111111114',
-                role: roleManager._id,
-                salt: password.salt,
-            });
-            await this.userService.create({
-                firstName: 'leader',
-                lastName: 'leader',
-                codeEmployee: '76719',
-                password: password.passwordHash,
-                passwordExpired: password.passwordExpired,
-                mobileNumber: '08111111115',
-                role: roleLeader._id,
-                salt: password.salt,
-            });
+            // await this.userService.create({
+            //     firstName: 'admin',
+            //     lastName: 'test',
+            //     codeEmployee: '80553',
+            //     password: password.passwordHash,
+            //     passwordExpired: password.passwordExpired,
+            //     mobileNumber: '08111111111',
+            //     role: roleAdmin._id,
+            //     salt: password.salt,
+            // });
+            //
+            // await this.userService.create({
+            //     firstName: 'user',
+            //     lastName: 'user',
+            //     codeEmployee: '176818',
+            //     password: password.passwordHash,
+            //     passwordExpired: password.passwordExpired,
+            //     mobileNumber: '08111111113',
+            //     role: roleUser._id,
+            //     salt: password.salt,
+            // });
+            // await this.userService.create({
+            //     firstName: 'manager',
+            //     lastName: 'manager',
+            //     codeEmployee: '133436',
+            //     password: password.passwordHash,
+            //     passwordExpired: password.passwordExpired,
+            //     mobileNumber: '08111111114',
+            //     role: roleManager._id,
+            //     salt: password.salt,
+            // });
+            // await this.userService.create({
+            //     firstName: 'leader',
+            //     lastName: 'leader',
+            //     codeEmployee: '76719',
+            //     password: password.passwordHash,
+            //     passwordExpired: password.passwordExpired,
+            //     mobileNumber: '08111111115',
+            //     role: roleLeader._id,
+            //     salt: password.salt,
+            // });
         } catch (e) {
             throw new Error(e.message);
         }

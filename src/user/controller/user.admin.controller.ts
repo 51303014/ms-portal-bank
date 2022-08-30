@@ -140,71 +140,71 @@ export class UserAdminController {
         return await this.incomeService.findAllIncome();
     }
 
-    @Response('user.create')
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
-    @ErrorMeta(UserAdminController.name, 'create')
-    @Post('/create')
-    async create(
-        @Body()
-        body: UserCreateDto
-    ): Promise<IResponse> {
-        const checkExist: IUserCheckExist = await this.userService.checkExist(
-            body.codeEmployee,
-            body.mobileNumber
-        );
-
-        if (checkExist.codeEmployee && checkExist.mobileNumber) {
-            throw new BadRequestException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
-                message: 'user.error.exist',
-            });
-        } else if (checkExist.codeEmployee) {
-            throw new BadRequestException({
-                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
-                message: 'user.error.emailExist',
-            });
-        } else if (checkExist.mobileNumber) {
-            throw new BadRequestException({
-                statusCode:
-                    ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
-                message: 'user.error.mobileNumberExist',
-            });
-        }
-
-        const role = await this.roleService.findOneById(body.role);
-        if (!role) {
-            throw new NotFoundException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
-                message: 'role.error.notFound',
-            });
-        }
-
-        try {
-            const password = await this.authService.createPassword(
-                body.password
-            );
-
-            const create = await this.userService.create({
-                firstName: body.firstName,
-                lastName: body.lastName,
-                codeEmployee: body.codeEmployee,
-                mobileNumber: body.mobileNumber,
-                role: body.role,
-                password: password.passwordHash,
-                passwordExpired: password.passwordExpired,
-                salt: password.salt,
-            });
-
-            return {
-                _id: create._id,
-            };
-        } catch (err: any) {
-            throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                message: 'http.serverError.internalServerError',
-            });
-        }
-    }
+    // @Response('user.create')
+    // @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
+    // @ErrorMeta(UserAdminController.name, 'create')
+    // @Post('/create')
+    // async create(
+    //     @Body()
+    //     body: UserCreateDto
+    // ): Promise<IResponse> {
+    //     const checkExist: IUserCheckExist = await this.userService.checkExist(
+    //         body.codeEmployee,
+    //         body.mobileNumber
+    //     );
+    //
+    //     if (checkExist.codeEmployee && checkExist.mobileNumber) {
+    //         throw new BadRequestException({
+    //             statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
+    //             message: 'user.error.exist',
+    //         });
+    //     } else if (checkExist.codeEmployee) {
+    //         throw new BadRequestException({
+    //             statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
+    //             message: 'user.error.emailExist',
+    //         });
+    //     } else if (checkExist.mobileNumber) {
+    //         throw new BadRequestException({
+    //             statusCode:
+    //                 ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
+    //             message: 'user.error.mobileNumberExist',
+    //         });
+    //     }
+    //
+    //     const role = await this.roleService.findOneById(body.role);
+    //     if (!role) {
+    //         throw new NotFoundException({
+    //             statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+    //             message: 'role.error.notFound',
+    //         });
+    //     }
+    //
+    //     try {
+    //         const password = await this.authService.createPassword(
+    //             body.password
+    //         );
+    //
+    //         const create = await this.userService.create({
+    //             firstName: body.firstName,
+    //             lastName: body.lastName,
+    //             codeEmployee: body.codeEmployee,
+    //             mobileNumber: body.mobileNumber,
+    //             role: body.role,
+    //             password: password.passwordHash,
+    //             passwordExpired: password.passwordExpired,
+    //             salt: password.salt,
+    //         });
+    //
+    //         return {
+    //             _id: create._id,
+    //         };
+    //     } catch (err: any) {
+    //         throw new InternalServerErrorException({
+    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+    //             message: 'http.serverError.internalServerError',
+    //         });
+    //     }
+    // }
 
     @Response('user.delete')
     @UserDeleteGuard()
@@ -225,30 +225,30 @@ export class UserAdminController {
         return;
     }
 
-    @Response('user.update')
-    @UserUpdateGuard()
-    @RequestParamGuard(UserRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)
-    @ErrorMeta(UserAdminController.name, 'update')
-    @Put('/update/:user')
-    async update(
-        @GetUser() user: IUserDocument,
-        @Body()
-        body: UserUpdateDto
-    ): Promise<IResponse> {
-        try {
-            await this.userService.updateOneById(user._id, body);
-        } catch (err: any) {
-            throw new InternalServerErrorException({
-                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                message: 'http.serverError.internalServerError',
-            });
-        }
-
-        return {
-            _id: user._id,
-        };
-    }
+    // @Response('user.update')
+    // @UserUpdateGuard()
+    // @RequestParamGuard(UserRequestDto)
+    // @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)
+    // @ErrorMeta(UserAdminController.name, 'update')
+    // @Put('/update/:user')
+    // async update(
+    //     @GetUser() user: IUserDocument,
+    //     @Body()
+    //     body: UserUpdateDto
+    // ): Promise<IResponse> {
+    //     try {
+    //         await this.userService.updateOneById(user._id, body);
+    //     } catch (err: any) {
+    //         throw new InternalServerErrorException({
+    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+    //             message: 'http.serverError.internalServerError',
+    //         });
+    //     }
+    //
+    //     return {
+    //         _id: user._id,
+    //     };
+    // }
 
     @Response('user.inactive')
     @UserUpdateInactiveGuard()

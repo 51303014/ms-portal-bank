@@ -23,6 +23,8 @@ import {
 import { UserProfileSerialization } from '../serialization/user.profile.serialization';
 import { UserListSerialization } from '../serialization/user.list.serialization';
 import { UserGetSerialization } from '../serialization/user.get.serialization';
+import {HelperHashService} from "../../utils/helper/service/helper.hash.service";
+import {HelperDateService} from "../../utils/helper/service/helper.date.service";
 
 @Injectable()
 export class UserService {
@@ -32,7 +34,9 @@ export class UserService {
         @DatabaseEntity(UserEntity.name)
         private readonly userModel: Model<UserDocument>,
         private readonly helperStringService: HelperStringService,
-        private readonly configService: ConfigService
+        private readonly helperHashService: HelperHashService,
+        private readonly helperDateService: HelperDateService,
+        private readonly configService: ConfigService,
     ) {
         this.uploadPath = this.configService.get<string>('user.uploadPath');
     }
@@ -135,24 +139,64 @@ export class UserService {
         return user.lean();
     }
 
+    async createPassword(password: string): Promise<IAuthPassword> {
+        const saltLength: number = this.configService.get<number>(
+            'auth.password.saltLength'
+        );
+
+        const salt: string = this.helperHashService.randomSalt(saltLength);
+
+        const passwordExpiredInMs: number = this.configService.get<number>(
+            'auth.password.expiredInMs'
+        );
+        const passwordExpired: Date =
+            this.helperDateService.forwardInMilliseconds(passwordExpiredInMs);
+        const passwordHash = this.helperHashService.bcrypt(password, salt);
+        return {
+            passwordHash,
+            passwordExpired,
+            salt,
+        };
+    }
+
     async create({
-        firstName,
-        lastName,
-        password,
+        fullName,
+        codeAM,
+        codeDepartment,
+        codeDepartmentLevelSix,
+        codeBDS,
+        position,
+        birthday,
+        identityCard,
+        email,
+        CRA,
+        department,
         passwordExpired,
         salt,
         codeEmployee,
         mobileNumber,
         role,
     }: IUserCreate): Promise<UserDocument> {
+        const password = await this.createPassword(
+            'aaAA@@123444'
+        );
         const user: UserEntity = {
-            firstName,
+            fullName,
+            codeAM,
+            codeBDS,
+            codeDepartment,
+            codeDepartmentLevelSix,
+            position,
+            birthday,
+            identityCard,
+            email,
+            CRA,
+            department,
             codeEmployee,
             mobileNumber,
-            password,
+            password: password.passwordHash,
             role: new Types.ObjectId(role),
             isActive: true,
-            lastName: lastName || undefined,
             salt,
             passwordExpired,
         };
@@ -170,13 +214,29 @@ export class UserService {
     }
 
     async updateOneById(
-        _id: string,
-        { firstName, lastName }: IUserUpdate
+        codeEmployee: string,
+        { fullName, codeBDS, codeDepartment,
+            codeDepartmentLevelSix,
+            email, CRA, identityCard,
+            department, mobileNumber,
+            birthday, position,
+            codeAM }: IUserUpdate
     ): Promise<UserDocument> {
-        const user: UserDocument = await this.userModel.findById(_id);
+        const user: UserDocument = await this.userModel.findOne({codeEmployee});
 
-        user.firstName = firstName;
-        user.lastName = lastName || undefined;
+        user.fullName = fullName || undefined;
+        user.codeBDS = codeBDS || undefined;
+        user.codeAM = codeAM || undefined;
+        user.codeDepartment = codeDepartment || undefined;
+        user.department = department || undefined;
+        user.codeDepartmentLevelSix = codeDepartmentLevelSix || undefined;
+        user.email = email || undefined;
+        user.CRA = CRA || undefined;
+        user.identityCard = identityCard || undefined;
+        user.mobileNumber = mobileNumber || undefined;
+        user.birthday = birthday || undefined;
+        user.position = position || undefined;
+
 
         return user.save();
     }

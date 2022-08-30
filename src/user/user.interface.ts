@@ -6,17 +6,30 @@ export interface IUserDocument extends Omit<UserDocument, 'role'> {
 }
 
 export interface IUserCreate {
-    firstName: string;
+    firstName?: string;
+    fullName?: string;
     lastName?: string;
-    password: string;
-    passwordExpired: Date;
+    password?: string;
+    passwordExpired?: Date;
     codeEmployee: string;
-    mobileNumber: string;
-    role: string;
-    salt: string;
+    codeAM?: string;
+    codeDepartment?: string;
+    codeDepartmentLevelSix?: string;
+    codeBDS?: string;
+    mobileNumber?: string;
+    position?: string;
+    birthday?: string;
+    identityCard?: string;
+    email?: string;
+    CRA?: string;
+    department?: string;
+    role?: string;
+    salt?: string;
 }
 
-export type IUserUpdate = Pick<IUserCreate, 'firstName' | 'lastName'>;
+export type IUserUpdate = Pick<IUserCreate, 'fullName' | 'codeBDS' | 'codeDepartment'| 'codeDepartmentLevelSix' |
+    'email'| 'CRA' | 'identityCard' | 'department' | 'mobileNumber' | 'birthday' | 'position' |
+    'codeAM'>;
 
 export interface IUserCheckExist {
     codeEmployee: boolean;

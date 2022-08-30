@@ -24,3 +24,12 @@ export const USER_DEFAULT_AVAILABLE_SEARCH = [
     'email',
     'mobileNumber',
 ];
+
+export const ROLE_USER = [
+    'CV',
+    'NV',
+    'NV GDV',
+    'CV QHKH',
+    'NV QHKH',
+    'CV GDV',
+];

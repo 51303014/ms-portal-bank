@@ -1,33 +1,35 @@
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Types, Document } from 'mongoose';
-import { IAwsS3Response } from 'src/aws/aws.interface';
-import { RoleEntity } from 'src/role/schema/role.schema';
+import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
+import {Types, Document} from 'mongoose';
+import {IAwsS3Response} from 'src/aws/aws.interface';
+import {RoleEntity} from 'src/role/schema/role.schema';
 
-@Schema({ timestamps: true, versionKey: false })
+@Schema({timestamps: true, versionKey: false})
 export class UserEntity {
     @Prop({
-        required: true,
-        index: true,
+        required: false,
         lowercase: true,
         trim: true,
     })
-    firstName: string;
+    firstName?: string;
 
     @Prop({
         required: false,
-        index: true,
         lowercase: true,
         trim: true,
     })
     lastName?: string;
 
     @Prop({
-        required: true,
-        index: true,
-        unique: true,
+        required: false,
+        lowercase: true,
         trim: true,
     })
-    mobileNumber: string;
+    fullName?: string;
+
+    @Prop({
+        required: false,
+    })
+    mobileNumber?: string;
 
     @Prop({
         required: true,
@@ -39,6 +41,71 @@ export class UserEntity {
     codeEmployee: string;
 
     @Prop({
+        required: false,
+        lowercase: true,
+        trim: true,
+    })
+    codeAM?: string;
+
+    @Prop({
+        required: false,
+        lowercase: true,
+        trim: true,
+    })
+    codeDepartment?: string;
+
+    @Prop({
+        required: false,
+        lowercase: true,
+        trim: true,
+    })
+    codeDepartmentLevelSix?: string;
+
+    @Prop({
+        required: false,
+        unique: true,
+        lowercase: true,
+        trim: true,
+    })
+    codeBDS?: string;
+
+    @Prop({
+        lowercase: true,
+        trim: true,
+    })
+    position: string;
+
+    @Prop({
+        lowercase: true,
+        trim: true,
+    })
+    birthday: string;
+
+    @Prop({
+        lowercase: true,
+        trim: true,
+    })
+    identityCard: string;
+
+    @Prop({
+        lowercase: true,
+        trim: true,
+    })
+    email: string;
+
+    @Prop({
+        lowercase: true,
+        trim: true,
+    })
+    CRA: string;
+
+    @Prop({
+        lowercase: true,
+        trim: true,
+    })
+    department: string;
+
+    @Prop({
         required: true,
         type: Types.ObjectId,
         ref: RoleEntity.name,
@@ -46,19 +113,19 @@ export class UserEntity {
     role: Types.ObjectId;
 
     @Prop({
-        required: true,
+        required: false,
     })
-    password: string;
+    password?: string;
 
     @Prop({
-        required: true,
+        required: false,
     })
-    passwordExpired: Date;
+    passwordExpired?: Date;
 
     @Prop({
-        required: true,
+        required: false,
     })
-    salt: string;
+    salt?: string;
 
     @Prop({
         required: true,
@@ -88,10 +155,5 @@ export type UserDocument = UserEntity & Document;
 
 // Hooks
 UserSchema.pre<UserDocument>('save', function (next) {
-    this.firstName = this.firstName.toLowerCase();
-
-    if (this.lastName) {
-        this.lastName = this.lastName.toLowerCase();
-    }
     next();
 });
