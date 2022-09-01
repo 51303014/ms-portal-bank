@@ -3,19 +3,23 @@ import {
     Get,
     HttpCode,
     HttpStatus,
-    InternalServerErrorException,
+    InternalServerErrorException, NotFoundException,
     Query
 } from '@nestjs/common';
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {Response} from 'src/utils/response/response.decorator';
-import {IResponse} from 'src/utils/response/response.interface';
+import {IResponse, IResponsePaging} from 'src/utils/response/response.interface';
 import {IncomeService} from "../service/income.service";
 import {GetUser, UserProfileGuard} from "../income.decorator";
 import {IIncomeCreate, IIncomeDocument} from "../income.interface";
-import {IncomeListDto} from "../dto/income.list.dto";
-import {IncomeCreateDto} from "../dto/income.create.dto";
+import {ENUM_USER_STATUS_CODE_ERROR} from "../../customers/customer.constant";
+import {PaginationService} from "../../pagination/service/pagination.service";
+import {IncomeDocument} from "../schema/income.schema";
+import {IncomeListSerialization} from "../serialization/income.list.serialization";
+import {IUserDocument} from "../../user/user.interface";
+import {TYPE_LIST_INCOME} from "../income.constant";
 
 @Controller({
     version: '1',
@@ -24,6 +28,7 @@ import {IncomeCreateDto} from "../dto/income.create.dto";
 export class IncomeController {
     constructor(
         private readonly incomeService: IncomeService,
+        private readonly paginationService: PaginationService
     ) {
     }
 
@@ -32,8 +37,85 @@ export class IncomeController {
     @AuthPublicJwtGuard()
     @ErrorMeta(IncomeController.name, 'profile')
     @Get('/profile')
-    async profile(@GetUser() user: IIncomeDocument): Promise<IResponse> {
+    async profile(@GetUser() user: IUserDocument): Promise<IResponse> {
         return this.incomeService.serializationProfile(user);
+    }
+
+    @Response('income.list')
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
+    @HttpCode(HttpStatus.OK)
+    @ErrorMeta(IncomeController.name, 'income-get-list')
+    @Get('/list')
+    async getIncome(
+        @GetUser() user: IUserDocument,
+        @Query()
+            {
+                type,
+                page,
+                perPage,
+                search,
+            }
+    ): Promise<IResponsePaging> {
+        try {
+            const skip: number = await this.paginationService.skip(page, perPage);
+            const find: Record<string, any> = {};
+            if (search) {
+                find['$or'] = [
+                    {
+                        cif: {
+                            $regex: new RegExp(search),
+                            $options: 'i',
+                        },
+                    },
+                ];
+            }
+
+            if (user?.role?.name === 'user') {
+                find['$and'] = [
+                    {
+                        codeAM: user.codeAM
+                    },
+                ];
+            }
+            const totalBaseAM = type === TYPE_LIST_INCOME.INCOME ?
+                await this.incomeService.findAllIncomeBaseUser(user.codeAM) :
+                await this.incomeService.findAllScaleBaseUser(user.codeAM)
+            ;
+            const incomeInfoModel: IncomeDocument[] = await this.incomeService.findAll(find,
+                {
+                    skip: skip,
+                    limit: perPage,
+                });
+
+            if (!incomeInfoModel.length) {
+                throw new NotFoundException({
+                    statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                    message: 'incomeInfo.error.notFound',
+                });
+            }
+            const totalData: number = await this.incomeService.getTotal(find);
+            const totalPage: number = await this.paginationService.totalPage(
+                totalData,
+                perPage
+            );
+            const data: IncomeListSerialization[] =
+                await this.incomeService.serializationList(incomeInfoModel);
+
+            return {
+                total: totalBaseAM,
+                totalData,
+                totalPage,
+                currentPage: page,
+                perPage,
+                data,
+            };
+        } catch (error) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
     }
 
 

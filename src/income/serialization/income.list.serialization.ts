@@ -6,26 +6,31 @@ export class IncomeListSerialization {
     @Type(() => String)
     readonly _id: string;
 
-    @Exclude()
-    readonly role: Types.ObjectId;
+    @Type(() => String)
+    readonly cif: string;
+    readonly codeAM: string;
+    readonly fullName: string;
+    readonly kindOfMoney: string;
+    readonly incomeFTPBaseMore: string;
+    readonly incomeFromInterestFTPBaseMore: string;
+    readonly incomeFromCreditFTPBaseMore: string;
+    readonly incomeGuaranteeActivities: string;
+    readonly incomeHDVFTPBaseMore: string;
+    readonly incomeOtherInterest: string;
+    readonly incomeExcludeInterest: string;
+    readonly incomeFromService: string;
+    readonly incomeFromToolFinance: string;
+    readonly incomeBuyStock: string;
+    readonly incomeBuySharesAndContribution: string;
+    readonly incomeGolden: string;
+    readonly incomeInterestKDNTPS: string;
+    readonly incomeExcludeInterestKDNTPS: string;
+    readonly incomeFromCardAndInterestService: string;
+    readonly incomeFromDebt: string;
+    readonly incomeOtherActivity: string;
 
-    readonly codeEmployee: string;
-    readonly mobileNumber: string;
-    readonly isActive: boolean;
-    readonly firstName: string;
-    readonly lastName: string;
 
     @Exclude()
-    readonly photo?: IAwsS3Response;
-
-    @Exclude()
-    readonly password: string;
-
-    @Exclude()
-    readonly passwordExpired: Date;
-
-    @Exclude()
-    readonly salt: string;
 
     readonly createdAt: Date;
 

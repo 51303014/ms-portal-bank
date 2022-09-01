@@ -54,7 +54,8 @@ export class CustomerController {
         private readonly incomeService: IncomeService,
         private readonly cardService: CardService,
         private readonly awsService: AwsS3Service,
-        private readonly fileHelperService: HelperFileService
+        private readonly fileHelperService: HelperFileService,
+
     ) {
     }
 

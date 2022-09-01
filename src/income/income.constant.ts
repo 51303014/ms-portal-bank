@@ -24,3 +24,8 @@ export const USER_DEFAULT_AVAILABLE_SEARCH = [
     'email',
     'mobileNumber',
 ];
+
+export enum TYPE_LIST_INCOME {
+    INCOME = 'income',
+    SCALE = 'scale'
+}

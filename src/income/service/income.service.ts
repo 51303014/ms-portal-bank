@@ -11,6 +11,7 @@ import {IncomeUploadSerialization} from "../serialization/income.upload.serializ
 import {IncomeListSerialization} from "../serialization/income.list.serialization";
 import {IncomeGetSerialization} from "../serialization/income.get.serialization";
 import {IIncomeCreate, IIncomeDocument} from "../income.interface";
+import {IUserDocument} from "../../user/user.interface";
 
 @Injectable()
 export class IncomeService {
@@ -49,13 +50,13 @@ export class IncomeService {
     }
 
     async serializationProfile(
-        data: IIncomeDocument
+        data: IUserDocument
     ): Promise<IncomeUploadSerialization> {
         return plainToInstance(IncomeUploadSerialization, data);
     }
 
     async serializationList(
-        data: IIncomeDocument[]
+        data: IncomeDocument[]
     ): Promise<IncomeListSerialization[]> {
         return plainToInstance(IncomeListSerialization, data);
     }
@@ -92,6 +93,159 @@ export class IncomeService {
                     },
                 }
             }
+        ]);
+    }
+
+    async findAllIncomeBaseUser<T>(
+        codeAM: string,
+    ): Promise<T[]> {
+        return this.incomeModel.aggregate([
+            {
+                $match: {"codeAM": codeAM}
+            },
+            {
+                $group: {
+                    _id: {
+                        codeAM: "$codeAM",
+                        kindOfMoney: "$kindOfMoney"
+                    },
+                    totalIncomeFTP: {
+                        $sum: "$incomeFTPBaseMore"
+                    },
+                    totalIncomeInterestFTP: {
+                        $sum: "$incomeFromInterestFTPBaseMore"
+                    },
+                    totalIncomeCreditFTP: {
+                        $sum: "$incomeFromCreditFTPBaseMore"
+                    },
+                    totalIncomeGuaranteeActivities: {
+                        $sum: "$incomeGuaranteeActivities"
+                    },
+                    totalIncomeHDV: {
+                        $sum: "$incomeHDVFTPBaseMore"
+                    },
+                    totalIncomeOtherInterest: {
+                        $sum: "$incomeOtherInterest"
+                    },
+                    totalIncomeExcludeInterest: {
+                        $sum: "$incomeExcludeInterest"
+                    },
+                    totalIncomeService: {
+                        $sum: "$incomeFromService"
+                    },
+                    totalIncomeToolFinance: {
+                        $sum: "$incomeFromToolFinance"
+                    },
+                    totalIncomeBuyStock: {
+                        $sum: "$incomeBuyStock"
+                    },
+                    totalIncomeBuyAndContributionShares: {
+                        $sum: "$incomeBuySharesAndContribution"
+                    },
+                    totalIncomeGolden: {
+                        $sum: "$incomeGolden"
+                    },
+                    totalIncomeInterestKDNTPS: {
+                        $sum: "$incomeInterestKDNTPS"
+                    },
+                    totalIncomeExcludeInterestKDNTPS: {
+                        $sum: "$incomeExcludeInterestKDNTPS"
+                    },
+                    totalIncomeCardAndInterestService: {
+                        $sum: "$incomeFromCardAndInterestService"
+                    },
+                    totalIncomeFromDebt: {
+                        $sum: "$incomeFromDebt"
+                    },
+                    totalIncomeOtherActivity: {
+                        $sum: "$incomeOtherActivity"
+                    }
+                }
+            },
+        ]);
+    }
+
+    async findAllScaleBaseUser<T>(
+        codeAM: string,
+    ): Promise<T[]> {
+        return this.incomeModel.aggregate([
+            {
+                $match: {"codeAM": codeAM}
+            },
+            {
+                $group: {
+                    _id: {
+                        codeAM: "$codeAM",
+                        kindOfMoney: "$kindOfMoney"
+                    },
+                    totalRaisingCapitalAtTheEnd: {
+                        $sum: "$raisingCapitalAtTheEnd"
+                    },
+                    totalRaisingCapitalAtTheEndExchange: {
+                        $sum: "$raisingCapitalAtTheEndExchange"
+                    },
+                    totalRaisingCapitalAtTheEndKKH: {
+                        $sum: "$raisingCapitalAtTheEndKKH"
+                    },
+                    totalRaisingCapitalAtTheEndKKHExchange: {
+                        $sum: "$raisingCapitalAtTheEndKKHExchange"
+                    },
+                    totalRaisingCapitalAtTheEndCKH: {
+                        $sum: "$raisingCapitalAtTheEndCKH"
+                    },
+                    totalRaisingCapitalAtTheEndCKHExchange: {
+                        $sum: "$raisingCapitalAtTheEndCKHExchange"
+                    },
+                    totalRaisingCapitalAvg: {
+                        $sum: "$raisingCapitalAvg"
+                    },
+                    totalRaisingCapitalAvgExchange: {
+                        $sum: "$raisingCapitalAvgExchange"
+                    },
+                    totalRaisingCapitalKKHAvg: {
+                        $sum: "$raisingCapitalKKHAvg"
+                    },
+                    totalRaisingCapitalKKHAvgExchange: {
+                        $sum: "$raisingCapitalKKHAvgExchange"
+                    },
+                    totalRaisingCapitalCKHAvg: {
+                        $sum: "$raisingCapitalCKHAvg"
+                    },
+                    totalRaisingCapitalCKHAvgExchange: {
+                        $sum: "$raisingCapitalCKHAvgExchange"
+                    },
+                    totalAmountDebtCreditAtTheEnd: {
+                        $sum: "$amountDebtCreditAtTheEnd"
+                    },
+                    totalAmountDebtCreditAtTheEndExchange: {
+                        $sum: "$amountDebtCreditAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditTDHAtTheEnd: {
+                        $sum: "$amountDebtCreditTDHAtTheEnd"
+                    },
+                    totalAmountDebtCreditTDHAtTheEndExchange: {
+                        $sum: "$amountDebtCreditTDHAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditAvgAtTheEnd: {
+                        $sum: "$amountDebtCreditAvgAtTheEnd"
+                    },
+                    totalAmountDebtCreditAvgAtTheEndExchange: {
+                        $sum: "$amountDebtCreditAvgAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditTDHAvgAtTheEnd: {
+                        $sum: "$amountDebtCreditTDHAvgAtTheEnd"
+                    },
+                    totalAmountDebtCreditTDHAvgAtTheEndExchange: {
+                        $sum: "$amountDebtCreditTDHAvgAtTheEndExchange"
+                    },
+                    totalAmountDebtLoanGTCGAndEndCard: {
+                        $sum: "$amountDebtLoanGTCGAndEndCard"
+                    },
+                    totalAmountDebtLoanGTCGAndAvgCard: {
+                        $sum: "$amountDebtLoanGTCGAndAvgCard"
+                    },
+                }
+            },
         ]);
     }
 

@@ -5,6 +5,7 @@ export type IResponse = Record<string, any>;
 export interface IResponsePaging {
     totalData: number;
     totalPage?: number;
+    total?: any;
     currentPage?: number;
     perPage?: number;
     availableSearch?: string[];
