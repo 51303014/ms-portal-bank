@@ -9,10 +9,10 @@ export class CustomerListSerialization {
     readonly role: Types.ObjectId;
 
     readonly codeEmployee: string;
+    readonly cif: string;
     readonly mobileNumber: string;
     readonly isActive: boolean;
-    readonly firstName: string;
-    readonly lastName: string;
+    readonly fullName: string;
 
     @Exclude()
     readonly passwordExpired: Date;

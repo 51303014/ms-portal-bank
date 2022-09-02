@@ -15,7 +15,7 @@ import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {ENUM_FILE_TYPE} from 'src/utils/file/file.constant';
 import {UploadFileSingle} from 'src/utils/file/file.decorator';
 import {Response} from 'src/utils/response/response.decorator';
-import {IResponse, IResponsePaging} from 'src/utils/response/response.interface';
+import {IResponse} from 'src/utils/response/response.interface';
 import {CustomerService} from "../service/customer.service";
 import {GetUser, UserProfileGuard} from "../customer.decorator";
 import {CustomerFile, ICustomerCreate, ICustomerDocument, SheetName} from "../customer.interface";
@@ -38,11 +38,10 @@ import {WorkCustomerService} from "../../workCustomer/service/workCustomer.servi
 import {IWorkCustomerCreate} from "../../workCustomer/workCustomer.interface";
 import {OtherInfoService} from "../../otherInfoCustomer/service/otherInfo.service";
 import {IOtherInfoCustomerCreate} from "../../otherInfoCustomer/otherInfo.interface";
-import {CardListSerialization} from "../../card/serialization/card.list.serialization";
 import {PaginationService} from "../../pagination/service/pagination.service";
 import {IUserDocument} from "../../user/user.interface";
 import {CustomerDocument} from "../schema/customer.schema";
-import {CustomerListSerialization} from "../serialization/customer.list.serialization";
+import {IncomeDocument} from "../../income/schema/income.schema";
 
 @Controller({
     version: '1',
@@ -84,13 +83,10 @@ export class CustomerController {
         @GetUser() user: IUserDocument,
         @Query()
             {
-                page,
-                perPage,
                 search
             }
-    ): Promise<IResponsePaging> {
+    ): Promise<any> {
         try {
-            const skip: number = await this.paginationService.skip(page, perPage);
             const find: Record<string, any> = {};
             if (search) {
                 find['$or'] = [
@@ -105,35 +101,24 @@ export class CustomerController {
 
             find['$expr'] = {
                 "$and": [
-                    {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]}
+                    {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
                 ]
             };
-            const customerInfo: CustomerDocument[] = await this.customerService.findAll(find,
-                {
-                    skip: skip,
-                    limit: perPage,
-                });
+            const incomeInfo: IncomeDocument[] = await this.incomeService.findAll({codeAM: user.codeAM});
+            let customerInfo: CustomerDocument[] = await this.customerService.findAll(find);
+            customerInfo = customerInfo.filter(value => {
+                for (const element of incomeInfo) {
+                    if (element.cif === value.cif)
+                        return value
+                }
+            });
             if (!customerInfo.length) {
                 throw new NotFoundException({
                     statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
                     message: 'customerInfo.error.notFound',
                 });
             }
-            const totalData: number = await this.customerService.getTotal(find);
-            const totalPage: number = await this.paginationService.totalPage(
-                totalData,
-                perPage
-            );
-            const data: CustomerListSerialization[] =
-                await this.customerService.serializationList(customerInfo);
-
-            return {
-                totalData,
-                totalPage,
-                currentPage: page,
-                perPage,
-                data,
-            };
+            return customerInfo;
         } catch (error) {
             throw new InternalServerErrorException({
                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
