@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
+import {Injectable} from '@nestjs/common';
+import {ConfigService} from '@nestjs/config';
 import moment from 'moment-timezone';
 import {
     ENUM_HELPER_DATE_DIFF,
@@ -236,12 +236,12 @@ export class HelperDateService {
             options && options.year
                 ? options.year
                 : moment
-                      .tz(
-                          options && options.timezone
-                              ? options.timezone
-                              : this.timezone
-                      )
-                      .year();
+                    .tz(
+                        options && options.timezone
+                            ? options.timezone
+                            : this.timezone
+                    )
+                    .year();
         return moment
             .tz(options && options.timezone ? options.timezone : this.timezone)
             .year(year)
@@ -255,12 +255,12 @@ export class HelperDateService {
             options && options.year
                 ? options.year
                 : moment
-                      .tz(
-                          options && options.timezone
-                              ? options.timezone
-                              : this.timezone
-                      )
-                      .year();
+                    .tz(
+                        options && options.timezone
+                            ? options.timezone
+                            : this.timezone
+                    )
+                    .year();
         return moment
             .tz(options && options.timezone ? options.timezone : this.timezone)
             .year(year)
@@ -283,5 +283,11 @@ export class HelperDateService {
             .year(year)
             .startOf('year')
             .toDate();
+    }
+
+    addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
     }
 }

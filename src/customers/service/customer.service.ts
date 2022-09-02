@@ -26,14 +26,11 @@ export class CustomerService {
         this.uploadPath = 'report';
     }
 
-    async findAll(
+    async findAll<T>(
         find?: Record<string, any>,
         options?: IDatabaseFindAllOptions
-    ): Promise<ICustomerDocument[]> {
-        const files = this.customerModel.find(find).populate({
-            path: 'user',
-            model: UserEntity.name,
-        });
+    ): Promise<T[]> {
+        const files = this.customerModel.find(find);
 
         if (
             options &&
@@ -61,7 +58,7 @@ export class CustomerService {
     }
 
     async serializationList(
-        data: ICustomerDocument[]
+        data: CustomerDocument[]
     ): Promise<CustomerListSerialization[]> {
         return plainToInstance(CustomerListSerialization, data);
     }
@@ -349,7 +346,6 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
         customerModel.fullName = fullName;
         customerModel.brandCifOpen = brandCifOpen;
         customerModel.dateCifOpen = dateCifOpen;
@@ -404,7 +400,6 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
         customerModel.creditLimitCustomer = creditLimitCustomer;
         customerModel.totalCreditBalanceLastYear = totalCreditBalanceLastYear;
         customerModel.totalCreditBalanceEndDay = totalCreditBalanceEndDay;
@@ -463,7 +458,6 @@ export class CustomerService {
         if (!customerModel) {
             return;
         }
-        customerModel.cif = id;
         customerModel.totalValueTSDB = totalValueTSDB;
         return customerModel.save();
     }
@@ -513,7 +507,6 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
         customerModel.fullName = fullName;
         customerModel.productServiceBrandTGCKH = productServiceBrandTGCKH;
         customerModel.productServiceBrandTGTT = productServiceBrandTGTT;
@@ -565,7 +558,6 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.cif = id;
         customerModel.fullName = fullName;
         customerModel.productServiceSystemTGCKH = productServiceSystemTGCKH;
         customerModel.productServiceSystemTGTT = productServiceSystemTGTT;

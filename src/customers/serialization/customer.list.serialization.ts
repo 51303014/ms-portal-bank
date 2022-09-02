@@ -1,6 +1,5 @@
 import { Exclude, Type } from 'class-transformer';
 import { Types } from 'mongoose';
-import { IAwsS3Response } from 'src/aws/aws.interface';
 
 export class CustomerListSerialization {
     @Type(() => String)
@@ -14,12 +13,6 @@ export class CustomerListSerialization {
     readonly isActive: boolean;
     readonly firstName: string;
     readonly lastName: string;
-
-    @Exclude()
-    readonly photo?: IAwsS3Response;
-
-    @Exclude()
-    readonly password: string;
 
     @Exclude()
     readonly passwordExpired: Date;

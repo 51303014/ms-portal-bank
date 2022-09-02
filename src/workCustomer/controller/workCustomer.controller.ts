@@ -4,7 +4,7 @@ import {
     Get,
     HttpCode,
     HttpStatus,
-    InternalServerErrorException, Post,
+    InternalServerErrorException, NotFoundException, Post,
     Query
 } from '@nestjs/common';
 import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
@@ -15,10 +15,12 @@ import {GetUser, UserProfileGuard} from "../../user/user.decorator";
 import {WorkCustomerService} from "../service/workCustomer.service";
 import {IWorkCustomerCreate} from "../workCustomer.interface";
 import {ENUM_PERMISSIONS} from "../../permission/permission.constant";
-import {CompanyCreateDto} from "../../company/dto/company.create.dto";
 import {IResponse} from "../../utils/response/response.interface";
-import {ICompanyCreate} from "../../company/company.interface";
 import {WorkCustomerCreateDto} from "../dto/workCustomer.create.dto";
+import {IUserDocument} from "../../user/user.interface";
+import {ENUM_USER_STATUS_CODE_ERROR} from "../../customers/customer.constant";
+import {WorkCustomerDocument} from "../schema/workCustomer.schema";
+import {HelperDateService} from "../../utils/helper/service/helper.date.service";
 
 class IParentDocument {
 }
@@ -30,6 +32,7 @@ class IParentDocument {
 export class WorkCustomerController {
     constructor(
         private readonly workCustomerService: WorkCustomerService,
+        private readonly helperDateService: HelperDateService,
     ) {
     }
 
@@ -46,7 +49,8 @@ export class WorkCustomerController {
                 cif
             }
     ): Promise<any> {
-        const info: IWorkCustomerCreate[] = await this.workCustomerService.findAll({cif});
+        const cifParams = cif ? cif : '';
+        const info: IWorkCustomerCreate[] = await this.workCustomerService.findAll({cifParams});
         if (info) {
             try {
                 return info
@@ -57,6 +61,34 @@ export class WorkCustomerController {
                 });
             }
         }
+    }
+
+    @Response('workCustomers.list')
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
+    @HttpCode(HttpStatus.OK)
+    @ErrorMeta(WorkCustomerController.name, 'workCustomers-get-list')
+    @Get('/progress')
+    async getWorkCustomers(
+        @GetUser() user: IUserDocument,
+    ): Promise<any> {
+        const find: Record<string, any> = {};
+
+        find['$expr'] = {
+            "$and": [
+                {"$eq": [{"$dayOfMonth": "$deadline"}, {"$dayOfMonth": this.helperDateService.addDays(new Date, 3)}]},
+            ]
+        };
+        const customerInfo: WorkCustomerDocument[] = await this.workCustomerService.findAll(find);
+
+        if (!customerInfo.length) {
+            throw new NotFoundException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                message: 'customerInfo.error.notFound',
+            });
+        }
+
+        return customerInfo;
     }
 
     @Response('workCustomers.create')

@@ -29,11 +29,10 @@ export class HelperFileService {
     getCellValueCommon(row: excelJs.Row, cellIndex: number) {
         const value = row.getCell(cellIndex).value as excelJs.CellFormulaValue;
         const cell = row.getCell(cellIndex);
-        if (!value || !value.result || !cell || !cell.value) return;
         if (!value) {
-            return cell && cell.value ? cell.value.toString() : '';
+            return cell && cell.value ? cell.value.toString() : null;
         }
-        return value && value.result ? value.result.toString() : '';
+        return value ? value.toString() : value.result ? value.result.toString() : null;
     }
 
     async writeExcel(

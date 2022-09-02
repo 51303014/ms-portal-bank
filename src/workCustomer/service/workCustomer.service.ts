@@ -6,6 +6,10 @@ import {IDatabaseFindAllOptions, IDatabaseFindOneOptions,} from 'src/database/da
 import {UserEntity} from "../../user/schema/user.schema";
 import {WorkCustomerDocument, WorkCustomerEntity} from "../schema/workCustomer.schema";
 import {IWorkCustomerCreate} from "../workCustomer.interface";
+import {CustomerDocument} from "../../customers/schema/customer.schema";
+import {CustomerListSerialization} from "../../customers/serialization/customer.list.serialization";
+import {plainToInstance} from "class-transformer";
+import {WorkCustomerListSerialization} from "../serialization/work-customer.list.serialization";
 
 
 @Injectable()
@@ -17,6 +21,25 @@ export class WorkCustomerService {
         private readonly workCustomerModel: Model<WorkCustomerDocument>,
     ) {
         this.uploadPath = 'report';
+    }
+
+    async findAllWorkProgress<T>(
+        find?: Record<string, any>,
+    ): Promise<T[]> {
+        return this.workCustomerModel.aggregate([
+            {
+                $project: {
+                    "year": {$year: "$created_at"},
+                    "month": {$month: "$created_at"},
+                    "day": {$dayOfMonth: "$created_at"}
+                },
+                $match: {
+                    "year": new Date().getFullYear(),
+                    "month": new Date().getMonth() + 1,
+                    "day": new Date().getDate()
+                },
+            }
+        ]);
     }
 
     async findAll<T>(
@@ -143,5 +166,11 @@ export class WorkCustomerService {
             :
             WorkCustomerDocument = await this.workCustomerModel.findOne({cif: id});
         return workCustomerModel.save();
+    }
+
+    async serializationList(
+        data: WorkCustomerDocument[]
+    ): Promise<WorkCustomerListSerialization[]> {
+        return plainToInstance(WorkCustomerListSerialization, data);
     }
 }

@@ -2,7 +2,7 @@ import { Exclude, Transform, Type } from 'class-transformer';
 import { IAwsS3Response } from 'src/aws/aws.interface';
 import { IRoleDocument } from 'src/role/role.interface';
 
-export class ParentGetSerialization {
+export class WorkCustomerGetSerialization {
     @Type(() => String)
     readonly _id: string;
 

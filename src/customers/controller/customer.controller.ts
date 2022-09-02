@@ -15,7 +15,7 @@ import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {ENUM_FILE_TYPE} from 'src/utils/file/file.constant';
 import {UploadFileSingle} from 'src/utils/file/file.decorator';
 import {Response} from 'src/utils/response/response.decorator';
-import {IResponse} from 'src/utils/response/response.interface';
+import {IResponse, IResponsePaging} from 'src/utils/response/response.interface';
 import {CustomerService} from "../service/customer.service";
 import {GetUser, UserProfileGuard} from "../customer.decorator";
 import {CustomerFile, ICustomerCreate, ICustomerDocument, SheetName} from "../customer.interface";
@@ -38,6 +38,11 @@ import {WorkCustomerService} from "../../workCustomer/service/workCustomer.servi
 import {IWorkCustomerCreate} from "../../workCustomer/workCustomer.interface";
 import {OtherInfoService} from "../../otherInfoCustomer/service/otherInfo.service";
 import {IOtherInfoCustomerCreate} from "../../otherInfoCustomer/otherInfo.interface";
+import {CardListSerialization} from "../../card/serialization/card.list.serialization";
+import {PaginationService} from "../../pagination/service/pagination.service";
+import {IUserDocument} from "../../user/user.interface";
+import {CustomerDocument} from "../schema/customer.schema";
+import {CustomerListSerialization} from "../serialization/customer.list.serialization";
 
 @Controller({
     version: '1',
@@ -55,7 +60,7 @@ export class CustomerController {
         private readonly cardService: CardService,
         private readonly awsService: AwsS3Service,
         private readonly fileHelperService: HelperFileService,
-
+        private readonly paginationService: PaginationService,
     ) {
     }
 
@@ -66,6 +71,75 @@ export class CustomerController {
     @Get('/profile')
     async profile(@GetUser() user: ICustomerDocument): Promise<IResponse> {
         return this.customerService.serializationProfile(user);
+    }
+
+
+    @Response('customer.list.birthday')
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
+    @HttpCode(HttpStatus.OK)
+    @ErrorMeta(CustomerController.name, 'customer-get-list-birthday')
+    @Get('/list-birthday')
+    async getCustomerBirthDay(
+        @GetUser() user: IUserDocument,
+        @Query()
+            {
+                page,
+                perPage,
+                search
+            }
+    ): Promise<IResponsePaging> {
+        try {
+            const skip: number = await this.paginationService.skip(page, perPage);
+            const find: Record<string, any> = {};
+            if (search) {
+                find['$or'] = [
+                    {
+                        cif: {
+                            $regex: new RegExp(search),
+                            $options: 'i',
+                        },
+                    },
+                ];
+            }
+
+            find['$expr'] = {
+                "$and": [
+                    {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]}
+                ]
+            };
+            const customerInfo: CustomerDocument[] = await this.customerService.findAll(find,
+                {
+                    skip: skip,
+                    limit: perPage,
+                });
+            if (!customerInfo.length) {
+                throw new NotFoundException({
+                    statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                    message: 'customerInfo.error.notFound',
+                });
+            }
+            const totalData: number = await this.customerService.getTotal(find);
+            const totalPage: number = await this.paginationService.totalPage(
+                totalData,
+                perPage
+            );
+            const data: CustomerListSerialization[] =
+                await this.customerService.serializationList(customerInfo);
+
+            return {
+                totalData,
+                totalPage,
+                currentPage: page,
+                perPage,
+                data,
+            };
+        } catch (error) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
     }
 
     @Response('customer.upload')
@@ -477,7 +551,7 @@ export class CustomerController {
                             const infoCard: ICardCreate = {
                                 user: user._id,
                                 typeCard: TYPE_CARD.DebitInternationalCard,
-                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) :this.fileHelperService.getCellValue(row, 1),
+                                cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
                                 fullName: this.fileHelperService.getCellValue(row, 2),
                                 cardNumberDebitInternational: this.fileHelperService.getCellValue(row, 3),
                                 accountNumberDefaultLinkedCard: this.fileHelperService.getCellValue(row, 4),
@@ -746,7 +820,7 @@ export class CustomerController {
                                 cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
                                 nameCompany: this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2),
                                 cifCompany: this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3),
-                                position: this.fileHelperService.getCellFormulaValue(row, 4) ? this.fileHelperService.getCellFormulaValue(row, 4) :this.fileHelperService.getCellValue(row, 4),
+                                position: this.fileHelperService.getCellFormulaValue(row, 4) ? this.fileHelperService.getCellFormulaValue(row, 4) : this.fileHelperService.getCellValue(row, 4),
                                 relationshipOtherCompany: this.fileHelperService.getCellFormulaValue(row, 5) ? this.fileHelperService.getCellFormulaValue(row, 5) : this.fileHelperService.getCellValue(row, 5)
                             }
                             return await this.companyService.create(infoCompany);
