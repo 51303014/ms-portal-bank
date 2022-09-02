@@ -67,9 +67,12 @@ export class IncomeService {
 
 
     async findAllIncome<T>(
-        find?: Record<string, any>,
+        codeAM: string,
     ): Promise<T[]> {
         return this.incomeModel.aggregate([
+            {
+                $match: {"codeAM": codeAM}
+            },
             {
                 $group: {
                     _id: "$codeAM",

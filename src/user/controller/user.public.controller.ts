@@ -23,6 +23,7 @@ import {HelperFileService} from "../../utils/helper/service/helper.file.service"
 import {RoleDocument} from "../../role/schema/role.schema";
 import {RoleService} from "../../role/service/role.service";
 import {ROLE_USER} from "../user.constant";
+import {IncomeService} from "../../income/service/income.service";
 
 @Controller({
     version: '1',
@@ -32,7 +33,9 @@ export class UserPublicController {
     constructor(
         private readonly userService: UserService,
         private readonly roleService: RoleService,
-        private readonly fileHelperService: HelperFileService
+        private readonly fileHelperService: HelperFileService,
+        private readonly incomeService: IncomeService,
+
     ) {
     }
 
@@ -76,8 +79,8 @@ export class UserPublicController {
     }
 
     @Response('user.upload')
-    // @UserProfileGuard()
-    // @AuthPublicJwtGuard()
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
     @UploadFileSingle('file', ENUM_FILE_TYPE.EXCEL || ENUM_FILE_TYPE.CSV)
     @HttpCode(HttpStatus.OK)
     @ErrorMeta(UserPublicController.name, 'upload')
@@ -145,13 +148,21 @@ export class UserPublicController {
                         return await this.userService.create(bodyUser);
                 }
             } catch (error) {
-                console.log(error);
                 throw new InternalServerErrorException({
                     statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                     message: 'http.serverError.internalServerError',
                 });
             }
         });
+    }
+
+    @Response('user.getInfoTotal')
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
+    @ErrorMeta(UserPublicController.name, 'get')
+    @Get('/getInfoTotal')
+    async getInfoIncome(@GetUser() user: IUserDocument): Promise<IResponse> {
+        return await this.incomeService.findAllIncome(user.codeAM);
     }
 
 }

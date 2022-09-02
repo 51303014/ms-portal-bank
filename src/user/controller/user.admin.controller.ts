@@ -137,7 +137,8 @@ export class UserAdminController {
     @ErrorMeta(UserAdminController.name, 'get')
     @Get('/getInfoTotal')
     async getInfoIncome(@GetUser() user: IUserDocument): Promise<IResponse> {
-        return await this.incomeService.findAllIncome();
+        // return await this.incomeService.findAllIncome();
+        return;
     }
 
     // @Response('user.create')
