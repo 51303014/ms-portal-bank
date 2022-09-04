@@ -26,6 +26,8 @@ export const USER_DEFAULT_AVAILABLE_SEARCH = [
 ];
 
 export enum TYPE_LIST_INCOME {
-    INCOME = 'income',
-    SCALE = 'scale'
+    income = 'income',
+    scale = 'scale'
 }
+
+export const RoleLeaderAndUser = ['user', 'leader']

@@ -1,6 +1,6 @@
 import {
     Body,
-    Controller,
+    Controller, ForbiddenException,
     Get,
     HttpCode,
     HttpStatus,
@@ -104,7 +104,8 @@ export class CustomerController {
                     {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
                 ]
             };
-            const incomeInfo: IncomeDocument[] = await this.incomeService.findAll({codeAM: user.codeAM});
+            const incomeInfo: IncomeDocument[] = user?.role?.name === 'user' ? await this.incomeService.findAll({codeAM: user.codeAM}) :
+                await this.incomeService.findAll({codeDepartmentLevelSix: user.codeDepartmentLevelSix});
             let customerInfo: CustomerDocument[] = await this.customerService.findAll(find);
             customerInfo = customerInfo.filter(value => {
                 for (const element of incomeInfo) {

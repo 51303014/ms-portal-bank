@@ -1,5 +1,5 @@
 import {
-    Controller,
+    Controller, ForbiddenException,
     Get,
     HttpCode,
     HttpStatus,
@@ -19,7 +19,7 @@ import {PaginationService} from "../../pagination/service/pagination.service";
 import {IncomeDocument} from "../schema/income.schema";
 import {IncomeListSerialization} from "../serialization/income.list.serialization";
 import {IUserDocument} from "../../user/user.interface";
-import {TYPE_LIST_INCOME} from "../income.constant";
+import {RoleLeaderAndUser, TYPE_LIST_INCOME} from "../income.constant";
 
 @Controller({
     version: '1',
@@ -57,43 +57,49 @@ export class IncomeController {
                 search,
             }
     ): Promise<IResponsePaging> {
-        try {
-            const skip: number = await this.paginationService.skip(page, perPage);
-            const find: Record<string, any> = {};
-            if (search) {
-                find['$or'] = [
-                    {
-                        cif: {
-                            $regex: new RegExp(search),
-                            $options: 'i',
-                        },
-                    },
-                ];
-            }
-
-            if (user?.role?.name === 'user') {
-                find['$and'] = [
-                    {
-                        codeAM: user.codeAM
-                    },
-                ];
-            }
-            const totalBaseAM = type === TYPE_LIST_INCOME.INCOME ?
-                await this.incomeService.findAllIncomeBaseUser(user.codeAM) :
-                await this.incomeService.findAllScaleBaseUser(user.codeAM)
-            ;
-            const incomeInfoModel: IncomeDocument[] = await this.incomeService.findAll(find,
+        if (!type || !TYPE_LIST_INCOME[type]) {
+            throw new NotFoundException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                message: 'type.error.notFound',
+            });
+        }
+        const skip: number = await this.paginationService.skip(page, perPage);
+        const find: Record<string, any> = {};
+        if (search) {
+            find['$or'] = [
                 {
-                    skip: skip,
-                    limit: perPage,
-                });
+                    cif: {
+                        $regex: new RegExp(search),
+                        $options: 'i',
+                    },
+                },
+            ];
+        }
 
-            if (!incomeInfoModel.length) {
-                throw new NotFoundException({
-                    statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
-                    message: 'incomeInfo.error.notFound',
-                });
-            }
+        if (RoleLeaderAndUser.includes(user?.role?.name)) {
+            find['$and'] = [
+                {
+                    codeAM: user.codeAM
+                },
+            ];
+        }
+        const totalBaseAM = type === TYPE_LIST_INCOME.income ?
+            await this.incomeService.findAllIncomeBaseUser(user.codeAM) :
+            await this.incomeService.findAllScaleBaseUser(user.codeAM)
+        ;
+        const incomeInfoModel: IncomeDocument[] = await this.incomeService.findAll(find,
+            {
+                skip: skip,
+                limit: perPage,
+            });
+
+        if (!incomeInfoModel.length) {
+            throw new NotFoundException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                message: 'incomeInfo.error.notFound',
+            });
+        }
+        try {
             const totalData: number = await this.incomeService.getTotal(find);
             const totalPage: number = await this.paginationService.totalPage(
                 totalData,
@@ -111,6 +117,96 @@ export class IncomeController {
                 data,
             };
         } catch (error) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
+    }
+
+    @Response('income-by-code-department.list')
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
+    @HttpCode(HttpStatus.OK)
+    @ErrorMeta(IncomeController.name, 'income-get-code-department-list')
+    @Get('/list-department')
+    async getIncomeByCodeDepartment(
+        @GetUser() user: IUserDocument,
+        @Query()
+            {
+                type,
+                page,
+                perPage,
+                search,
+            }
+    ): Promise<IResponsePaging> {
+        if (!type || !TYPE_LIST_INCOME[type]) {
+            throw new NotFoundException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                message: 'type.error.notFound',
+            });
+        }
+
+        if (user?.role?.name !== 'leader') {
+            throw new ForbiddenException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
+                message: 'role.error.invalid',
+            });
+        }
+        try {
+            const skip: number = await this.paginationService.skip(page, perPage);
+            const find: Record<string, any> = {};
+            if (search) {
+                find['$or'] = [
+                    {
+                        cif: {
+                            $regex: new RegExp(search),
+                            $options: 'i',
+                        },
+                    },
+                ];
+            }
+
+            if (user?.role?.name === 'leader') {
+                find['$and'] = [
+                    {
+                        codeDepartmentLevelSix: user.codeDepartmentLevelSix
+                    },
+                ];
+            }
+            const totalBaseDepartment = type === TYPE_LIST_INCOME.income ?
+                await this.incomeService.findAllIncomeBaseDepartment(user.codeDepartmentLevelSix) :
+                await this.incomeService.findAllScaleBaseDepartment(user.codeDepartmentLevelSix)
+            ;
+            const incomeInfoModel: IncomeDocument[] = await this.incomeService.findAll(find,
+                {
+                    skip: skip,
+                    limit: perPage,
+                });
+            if (!incomeInfoModel.length) {
+                throw new NotFoundException({
+                    statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                    message: 'incomeInfoDepartment.error.notFound',
+                });
+            }
+            const totalData: number = await this.incomeService.getTotal(find);
+            const totalPage: number = await this.paginationService.totalPage(
+                totalData,
+                perPage
+            );
+            const data: IncomeListSerialization[] =
+                await this.incomeService.serializationList(incomeInfoModel);
+
+            return {
+                total: totalBaseDepartment,
+                totalData,
+                totalPage,
+                currentPage: page,
+                perPage,
+                data,
+            };
+        } catch (error) {
+            console.log(error);
             throw new InternalServerErrorException({
                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                 message: 'http.serverError.internalServerError',

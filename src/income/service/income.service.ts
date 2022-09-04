@@ -168,6 +168,75 @@ export class IncomeService {
         ]);
     }
 
+    async findAllIncomeBaseDepartment<T>(
+        codeDepartment: string,
+    ): Promise<T[]> {
+        return this.incomeModel.aggregate([
+            {
+                $match: {"codeDepartmentLevelSix": codeDepartment}
+            },
+            {
+                $group: {
+                    _id: {
+                        codeDepartmentLevelSix: "$codeDepartmentLevelSix",
+                        kindOfMoney: "$kindOfMoney"
+                    },
+                    totalIncomeFTP: {
+                        $sum: "$incomeFTPBaseMore"
+                    },
+                    totalIncomeInterestFTP: {
+                        $sum: "$incomeFromInterestFTPBaseMore"
+                    },
+                    totalIncomeCreditFTP: {
+                        $sum: "$incomeFromCreditFTPBaseMore"
+                    },
+                    totalIncomeGuaranteeActivities: {
+                        $sum: "$incomeGuaranteeActivities"
+                    },
+                    totalIncomeHDV: {
+                        $sum: "$incomeHDVFTPBaseMore"
+                    },
+                    totalIncomeOtherInterest: {
+                        $sum: "$incomeOtherInterest"
+                    },
+                    totalIncomeExcludeInterest: {
+                        $sum: "$incomeExcludeInterest"
+                    },
+                    totalIncomeService: {
+                        $sum: "$incomeFromService"
+                    },
+                    totalIncomeToolFinance: {
+                        $sum: "$incomeFromToolFinance"
+                    },
+                    totalIncomeBuyStock: {
+                        $sum: "$incomeBuyStock"
+                    },
+                    totalIncomeBuyAndContributionShares: {
+                        $sum: "$incomeBuySharesAndContribution"
+                    },
+                    totalIncomeGolden: {
+                        $sum: "$incomeGolden"
+                    },
+                    totalIncomeInterestKDNTPS: {
+                        $sum: "$incomeInterestKDNTPS"
+                    },
+                    totalIncomeExcludeInterestKDNTPS: {
+                        $sum: "$incomeExcludeInterestKDNTPS"
+                    },
+                    totalIncomeCardAndInterestService: {
+                        $sum: "$incomeFromCardAndInterestService"
+                    },
+                    totalIncomeFromDebt: {
+                        $sum: "$incomeFromDebt"
+                    },
+                    totalIncomeOtherActivity: {
+                        $sum: "$incomeOtherActivity"
+                    }
+                }
+            },
+        ]);
+    }
+
     async findAllScaleBaseUser<T>(
         codeAM: string,
     ): Promise<T[]> {
@@ -179,6 +248,90 @@ export class IncomeService {
                 $group: {
                     _id: {
                         codeAM: "$codeAM",
+                        kindOfMoney: "$kindOfMoney"
+                    },
+                    totalRaisingCapitalAtTheEnd: {
+                        $sum: "$raisingCapitalAtTheEnd"
+                    },
+                    totalRaisingCapitalAtTheEndExchange: {
+                        $sum: "$raisingCapitalAtTheEndExchange"
+                    },
+                    totalRaisingCapitalAtTheEndKKH: {
+                        $sum: "$raisingCapitalAtTheEndKKH"
+                    },
+                    totalRaisingCapitalAtTheEndKKHExchange: {
+                        $sum: "$raisingCapitalAtTheEndKKHExchange"
+                    },
+                    totalRaisingCapitalAtTheEndCKH: {
+                        $sum: "$raisingCapitalAtTheEndCKH"
+                    },
+                    totalRaisingCapitalAtTheEndCKHExchange: {
+                        $sum: "$raisingCapitalAtTheEndCKHExchange"
+                    },
+                    totalRaisingCapitalAvg: {
+                        $sum: "$raisingCapitalAvg"
+                    },
+                    totalRaisingCapitalAvgExchange: {
+                        $sum: "$raisingCapitalAvgExchange"
+                    },
+                    totalRaisingCapitalKKHAvg: {
+                        $sum: "$raisingCapitalKKHAvg"
+                    },
+                    totalRaisingCapitalKKHAvgExchange: {
+                        $sum: "$raisingCapitalKKHAvgExchange"
+                    },
+                    totalRaisingCapitalCKHAvg: {
+                        $sum: "$raisingCapitalCKHAvg"
+                    },
+                    totalRaisingCapitalCKHAvgExchange: {
+                        $sum: "$raisingCapitalCKHAvgExchange"
+                    },
+                    totalAmountDebtCreditAtTheEnd: {
+                        $sum: "$amountDebtCreditAtTheEnd"
+                    },
+                    totalAmountDebtCreditAtTheEndExchange: {
+                        $sum: "$amountDebtCreditAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditTDHAtTheEnd: {
+                        $sum: "$amountDebtCreditTDHAtTheEnd"
+                    },
+                    totalAmountDebtCreditTDHAtTheEndExchange: {
+                        $sum: "$amountDebtCreditTDHAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditAvgAtTheEnd: {
+                        $sum: "$amountDebtCreditAvgAtTheEnd"
+                    },
+                    totalAmountDebtCreditAvgAtTheEndExchange: {
+                        $sum: "$amountDebtCreditAvgAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditTDHAvgAtTheEnd: {
+                        $sum: "$amountDebtCreditTDHAvgAtTheEnd"
+                    },
+                    totalAmountDebtCreditTDHAvgAtTheEndExchange: {
+                        $sum: "$amountDebtCreditTDHAvgAtTheEndExchange"
+                    },
+                    totalAmountDebtLoanGTCGAndEndCard: {
+                        $sum: "$amountDebtLoanGTCGAndEndCard"
+                    },
+                    totalAmountDebtLoanGTCGAndAvgCard: {
+                        $sum: "$amountDebtLoanGTCGAndAvgCard"
+                    },
+                }
+            },
+        ]);
+    }
+
+    async findAllScaleBaseDepartment<T>(
+        codeDepartment: string,
+    ): Promise<T[]> {
+        return this.incomeModel.aggregate([
+            {
+                $match: {"codeDepartmentLevelSix": codeDepartment}
+            },
+            {
+                $group: {
+                    _id: {
+                        codeDepartmentLevelSix: "$codeDepartmentLevelSix",
                         kindOfMoney: "$kindOfMoney"
                     },
                     totalRaisingCapitalAtTheEnd: {
