@@ -33,3 +33,8 @@ export const ROLE_USER = [
     'NV QHKH',
     'CV GDV',
 ];
+
+export const ViceManagerCodeDepartment = ['112100135150', '112100135152', '112100135153', '111100135022'] // 76700
+export const ViceManagerCodeDepartmentSecond = ['112100135121', '112100135122', '112100135123', '111100135021'] // 133436
+
+
