@@ -1,5 +1,7 @@
 export interface IWorkCustomerCreate {
     cif?: string;
+    codeAM?: string;
+    codeDepartmentLevelSix?: string;
     workHandle?: string;
     dateStart?: Date;
     deadline?: Date;

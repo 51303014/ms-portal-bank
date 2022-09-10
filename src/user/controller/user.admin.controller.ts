@@ -39,15 +39,19 @@ import {
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {UserListDto} from '../dto/user.list.dto';
 import {UserListSerialization} from '../serialization/user.list.serialization';
-import {UserCreateDto} from '../dto/user.create.dto';
-import {UserUpdateDto} from '../dto/user.update.dto';
 import {RequestParamGuard} from 'src/utils/request/request.decorator';
 import {UserRequestDto} from '../dto/user.request.dto';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {IncomeService} from '../../income/service/income.service';
 import {TYPE_LIST_INCOME} from "../../income/income.constant";
 import {IncomeDocument} from "../../income/schema/income.schema";
-import {IncomeListSerialization} from "../../income/serialization/income.list.serialization";
+import {CustomerDocument} from "../../customers/schema/customer.schema";
+import {CustomerService} from "../../customers/service/customer.service";
+import {CustomerListSerialization} from "../../customers/serialization/customer.list.serialization";
+import {HelperDateService} from "../../utils/helper/service/helper.date.service";
+import {WorkCustomerDocument} from "../../workCustomer/schema/workCustomer.schema";
+import {WorkCustomerService} from "../../workCustomer/service/workCustomer.service";
+import {WorkCustomerListSerialization} from "../../workCustomer/serialization/work-customer.list.serialization";
 
 @Controller({
     version: '1',
@@ -59,7 +63,9 @@ export class UserAdminController {
         private readonly paginationService: PaginationService,
         private readonly userService: UserService,
         private readonly incomeService: IncomeService,
-        private readonly roleService: RoleService
+        private readonly customerService: CustomerService,
+        private readonly helperDateService: HelperDateService,
+        private readonly workCustomerService: WorkCustomerService,
     ) {
     }
 
@@ -80,7 +86,6 @@ export class UserAdminController {
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
         const find: Record<string, any> = {};
-
         if (search) {
             find['$or'] = [
                 {
@@ -125,6 +130,122 @@ export class UserAdminController {
         };
     }
 
+    @ResponsePaging('customer-birthday.list')
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
+    @ErrorMeta(UserAdminController.name, 'list')
+    @Get('/list-birthday')
+    async getListBirthday(
+        @Query()
+            {
+                page,
+                perPage,
+                search,
+            }: UserListDto
+    ): Promise<IResponsePaging> {
+        const skip: number = await this.paginationService.skip(page, perPage);
+        const find: Record<string, any> = {};
+        const sort: Record<string, any> = {
+            birthday: 1
+        }
+        if (search) {
+            find['$or'] = [
+                {
+                    cif: {
+                        $regex: new RegExp(search),
+                        $options: 'i',
+                    }
+                },
+            ];
+        }
+        find['$expr'] = {
+            "$and": [
+                {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
+            ]
+        };
+        const customerInfo: CustomerDocument[] = await this.customerService.findAll(find, {
+            limit: perPage,
+            skip: skip,
+            sort
+        });
+        const totalData: number = await this.customerService.getTotal(find);
+        const totalPage: number = await this.paginationService.totalPage(
+            totalData,
+            perPage
+        );
+
+        const data: CustomerListSerialization[] =
+            await this.customerService.serializationList(customerInfo);
+
+        return {
+            totalData,
+            totalPage,
+            currentPage: page,
+            perPage,
+            data,
+        };
+    }
+
+
+    @ResponsePaging('work-progress.list')
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
+    @ErrorMeta(UserAdminController.name, 'list')
+    @Get('/list-progress')
+    async getListWorkProgress(
+        @Query()
+            {
+                page,
+                perPage,
+                search,
+            }: UserListDto
+    ): Promise<IResponsePaging> {
+        const skip: number = await this.paginationService.skip(page, perPage);
+        const find: Record<string, any> = {};
+        if (search) {
+            find['$or'] = [
+                {
+                    cif: {
+                        $regex: new RegExp(search),
+                        $options: 'i',
+                    },
+                    codeAM: {
+                        $regex: new RegExp(search),
+                        $options: 'i',
+                    },
+                    codeDepartmentLevelSix: {
+                        $regex: new RegExp(search),
+                        $options: 'i',
+                    },
+                },
+            ];
+        }
+        find['$expr'] = {
+            "$and": [
+                {"$eq": [{"$dayOfMonth": "$deadline"}, {"$dayOfMonth": this.helperDateService.addDays(new Date, 3)}]},
+            ]
+        };
+
+        const customerInfo: WorkCustomerDocument[] = await this.workCustomerService.findAll(find, {
+            limit: perPage,
+            skip: skip
+        });
+        const totalData: number = await this.workCustomerService.getTotal(find);
+        const totalPage: number = await this.paginationService.totalPage(
+            totalData,
+            perPage
+        );
+
+        const data: WorkCustomerListSerialization[] =
+            await this.workCustomerService.serializationList(customerInfo);
+
+        return {
+            totalData,
+            totalPage,
+            currentPage: page,
+            perPage,
+            data,
+        };
+    }
+
     @Response('user.get')
     @UserGetGuard()
     @RequestParamGuard(UserRequestDto)
@@ -163,18 +284,6 @@ export class UserAdminController {
         }
         try {
             const skip: number = await this.paginationService.skip(page, perPage);
-            const find: Record<string, any> = {};
-            if (search) {
-                find['$or'] = [
-                    {
-                        cif: {
-                            $regex: new RegExp(search),
-                            $options: 'i',
-                        },
-                    },
-                ];
-            }
-
             const incomeInfo: IncomeDocument[] = type === TYPE_LIST_INCOME.income ?
                 await this.incomeService.findAllIncomeGroupByDepartment(search, {
                     skip: skip,
@@ -231,18 +340,6 @@ export class UserAdminController {
         }
         try {
             const skip: number = await this.paginationService.skip(page, perPage);
-            const find: Record<string, any> = {};
-            if (search) {
-                find['$or'] = [
-                    {
-                        cif: {
-                            $regex: new RegExp(search),
-                            $options: 'i',
-                        },
-                    },
-                ];
-            }
-
             const incomeInfo: IncomeDocument[] = type === TYPE_LIST_INCOME.income ?
                 await this.incomeService.findAllIncomeGroupByUser(search, {
                     skip: skip,

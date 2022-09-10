@@ -13,6 +13,20 @@ export class WorkCustomerEntity {
     @Prop({
         required: false,
         trim: true,
+        index: true
+    })
+    codeAM?: string;
+
+    @Prop({
+        required: false,
+        trim: true,
+        index: true
+    })
+    codeDepartmentLevelSix?: string;
+
+    @Prop({
+        required: false,
+        trim: true,
     })
     workHandle?: string;
 

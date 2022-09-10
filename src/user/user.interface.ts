@@ -1,8 +1,10 @@
 import { IRoleDocument } from 'src/role/role.interface';
 import { UserDocument } from './schema/user.schema';
+import {ICodeDepartmentLevelSix} from "../codeDepartmentLevelSix/codeDepartmentLevelSix.interface";
 
-export interface IUserDocument extends Omit<UserDocument, 'role'> {
+export interface IUserDocument extends Omit<UserDocument, 'role' | 'codeLevelSix'> {
     role: IRoleDocument;
+    codeLevelSix?: ICodeDepartmentLevelSix;
 }
 
 export interface IUserCreate {
@@ -24,6 +26,7 @@ export interface IUserCreate {
     CRA?: string;
     department?: string;
     role?: string;
+    codeLevelSix?: string;
     salt?: string;
 }
 

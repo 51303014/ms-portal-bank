@@ -2,6 +2,8 @@ import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {Types, Document} from 'mongoose';
 import {IAwsS3Response} from 'src/aws/aws.interface';
 import {RoleEntity} from 'src/role/schema/role.schema';
+import {PermissionEntity} from "../../permission/schema/permission.schema";
+import {CodeDepartmentLevelSixEntity} from "../../codeDepartmentLevelSix/schema/codeDepartmentLevelSix.schema";
 
 @Schema({timestamps: true, versionKey: false})
 export class UserEntity {
@@ -111,6 +113,14 @@ export class UserEntity {
         ref: RoleEntity.name,
     })
     role: Types.ObjectId;
+
+    @Prop({
+        required: false,
+        type: Array,
+        default: [],
+        ref: CodeDepartmentLevelSixEntity.name,
+    })
+    codeLevelSix?: Types.ObjectId[];
 
     @Prop({
         required: false,

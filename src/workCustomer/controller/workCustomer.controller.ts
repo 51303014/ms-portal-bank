@@ -7,14 +7,13 @@ import {
     InternalServerErrorException, NotFoundException, Post,
     Query
 } from '@nestjs/common';
-import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
+import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {Response} from 'src/utils/response/response.decorator';
 import {GetUser, UserProfileGuard} from "../../user/user.decorator";
 import {WorkCustomerService} from "../service/workCustomer.service";
 import {IWorkCustomerCreate} from "../workCustomer.interface";
-import {ENUM_PERMISSIONS} from "../../permission/permission.constant";
 import {IResponse} from "../../utils/response/response.interface";
 import {WorkCustomerCreateDto} from "../dto/workCustomer.create.dto";
 import {IUserDocument} from "../../user/user.interface";
@@ -84,7 +83,7 @@ export class WorkCustomerController {
         if (!customerInfo.length) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
-                message: 'customerInfo.error.notFound',
+                message: 'workProgress.error.notFound',
             });
         }
 
@@ -92,10 +91,12 @@ export class WorkCustomerController {
     }
 
     @Response('workCustomers.create')
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
     @ErrorMeta(WorkCustomerController.name, 'create')
     @Post('/create')
     async create(
+        @GetUser() user: IUserDocument,
         @Body()
             bodyWorkCustomers: WorkCustomerCreateDto[]
     ): Promise<IResponse> {
@@ -124,6 +125,8 @@ export class WorkCustomerController {
             bodyWorkCustomers.map(async (info) => {
                 const infoWorkCus: IWorkCustomerCreate = {
                     cif: info.cif,
+                    codeAM: user.codeAM,
+                    codeDepartmentLevelSix: user.codeDepartmentLevelSix,
                     workHandle: info.workHandle,
                     dateStart: new Date(info.dateStart),
                     deadline: new Date(info.deadline),

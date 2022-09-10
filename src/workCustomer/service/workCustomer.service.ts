@@ -124,6 +124,8 @@ export class WorkCustomerService {
 
     async create({
                      cif,
+                     codeAM,
+                     codeDepartmentLevelSix,
                      statusFix,
                      result,
                      inProgress,
@@ -141,6 +143,8 @@ export class WorkCustomerService {
             statusFix,
             workHandle,
             cif,
+            codeAM,
+            codeDepartmentLevelSix,
         };
 
         const create: WorkCustomerDocument = new this.workCustomerModel(workCustomerEntity);
