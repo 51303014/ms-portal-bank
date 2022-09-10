@@ -1,41 +1,36 @@
 import {
-    Controller,
-    Get,
-    Post,
     Body,
+    Controller,
     Delete,
-    Put,
-    Query,
+    ForbiddenException,
+    Get,
+    HttpCode,
+    HttpStatus,
     InternalServerErrorException,
-    BadRequestException,
+    NotFoundException,
     Patch,
-    NotFoundException, ForbiddenException,
+    Post,
+    Query,
+    UploadedFile,
 } from '@nestjs/common';
 import {ENUM_PERMISSIONS} from 'src/permission/permission.constant';
 import {
     GetUser,
     UserDeleteGuard,
-    UserGetGuard, UserProfileGuard,
+    UserGetGuard,
+    UserProfileGuard,
     UserUpdateActiveGuard,
-    UserUpdateGuard,
     UserUpdateInactiveGuard,
 } from '../user.decorator';
 import {AuthAdminJwtGuard} from 'src/auth/auth.decorator';
-import {ENUM_ROLE_STATUS_CODE_ERROR} from 'src/role/role.constant';
 import {UserService} from '../service/user.service';
 import {RoleService} from 'src/role/service/role.service';
-import {IUserCheckExist, IUserDocument} from '../user.interface';
-import {ENUM_USER_STATUS_CODE_ERROR} from '../user.constant';
+import {IUserCreate, IUserDocument} from '../user.interface';
+import {ENUM_USER_STATUS_CODE_ERROR, ROLE_USER} from '../user.constant';
 import {PaginationService} from 'src/pagination/service/pagination.service';
 import {AuthService} from 'src/auth/service/auth.service';
-import {
-    Response,
-    ResponsePaging,
-} from 'src/utils/response/response.decorator';
-import {
-    IResponse,
-    IResponsePaging,
-} from 'src/utils/response/response.interface';
+import {Response, ResponsePaging,} from 'src/utils/response/response.decorator';
+import {IResponse, IResponsePaging,} from 'src/utils/response/response.interface';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {UserListDto} from '../dto/user.list.dto';
 import {UserListSerialization} from '../serialization/user.list.serialization';
@@ -52,6 +47,13 @@ import {HelperDateService} from "../../utils/helper/service/helper.date.service"
 import {WorkCustomerDocument} from "../../workCustomer/schema/workCustomer.schema";
 import {WorkCustomerService} from "../../workCustomer/service/workCustomer.service";
 import {WorkCustomerListSerialization} from "../../workCustomer/serialization/work-customer.list.serialization";
+import {UploadFileSingle} from "../../utils/file/file.decorator";
+import {ENUM_FILE_TYPE} from "../../utils/file/file.constant";
+import Excel from "exceljs";
+import {RoleDocument} from "../../role/schema/role.schema";
+import {HelperFileService} from "../../utils/helper/service/helper.file.service";
+import {CodeDepartmentLevelSixService} from "../../codeDepartmentLevelSix/service/codeDepartmentLevelSix.service";
+import {CodeDepartmentLevelSixDocument} from "../../codeDepartmentLevelSix/schema/codeDepartmentLevelSix.schema";
 
 @Controller({
     version: '1',
@@ -64,8 +66,11 @@ export class UserAdminController {
         private readonly userService: UserService,
         private readonly incomeService: IncomeService,
         private readonly customerService: CustomerService,
+        private readonly codeLevelSix: CodeDepartmentLevelSixService,
         private readonly helperDateService: HelperDateService,
         private readonly workCustomerService: WorkCustomerService,
+        private readonly roleService: RoleService,
+        private readonly fileHelperService: HelperFileService,
     ) {
     }
 
@@ -78,10 +83,7 @@ export class UserAdminController {
             {
                 page,
                 perPage,
-                sort,
                 search,
-                availableSort,
-                availableSearch,
             }: UserListDto
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
@@ -89,26 +91,24 @@ export class UserAdminController {
         if (search) {
             find['$or'] = [
                 {
-                    firstName: {
+                    codeEmployee: {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
-                    lastName: {
+                    fullName: {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
-                    email: {
+                    codeDepartmentLevelSix: {
                         $regex: new RegExp(search),
                         $options: 'i',
-                    },
-                    mobileNumber: search,
+                    }
                 },
             ];
         }
         const users: IUserDocument[] = await this.userService.findAll(find, {
             limit: perPage,
             skip: skip,
-            sort,
         });
         const totalData: number = await this.userService.getTotal(find);
         const totalPage: number = await this.paginationService.totalPage(
@@ -124,8 +124,6 @@ export class UserAdminController {
             totalPage,
             currentPage: page,
             perPage,
-            availableSearch,
-            availableSort,
             data,
         };
     }
@@ -256,6 +254,125 @@ export class UserAdminController {
         return this.userService.serializationGet(user);
     }
 
+    async handleRole(bodyUser) {
+        if (bodyUser.position === 'Giám đốc') {
+            return await this.roleService.findOne<RoleDocument>(
+                {
+                    name: 'admin',
+                }
+            );
+        }
+
+        if (bodyUser.position === 'Phó Giám đốc' && bodyUser.department === 'Ban Giám đốc') {
+            return await this.roleService.findOne<RoleDocument>(
+                {
+                    name: 'manager',
+                }
+            );
+        }
+        if (ROLE_USER.includes(bodyUser.position)) {
+            return await this.roleService.findOne<RoleDocument>(
+                {
+                    name: 'user',
+                }
+            );
+        }
+        return await this.roleService.findOne<RoleDocument>(
+            {
+                name: 'leader',
+            }
+        );
+    }
+
+    @Response('user.upload')
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_CREATE)
+    @UploadFileSingle('file', ENUM_FILE_TYPE.EXCEL || ENUM_FILE_TYPE.CSV)
+    @HttpCode(HttpStatus.OK)
+    @ErrorMeta(UserAdminController.name, 'upload')
+    @Post('/upload')
+    async upload(
+        @Body() userFile: any,
+        @UploadedFile() file: Express.Multer.File,
+    ): Promise<void> {
+        const workbook = new Excel.Workbook();
+        const content = await workbook.xlsx.load(file.buffer);
+        const worksheet = content.getWorksheet(1);
+        const rowStartIndex = 2;
+        const numberOfRows = worksheet.rowCount - 1;
+        const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
+        rows.map(async row => {
+            try {
+                switch (userFile.fileType) {
+                    case 'InfoUser':
+                        const userInfo: IUserCreate = await this.userService.findOne({
+                            codeEmployee: this.fileHelperService.getCellValue(row, 1),
+                            fullName: this.fileHelperService.getCellValue(row, 2),
+                            position: this.fileHelperService.getCellValue(row, 3),
+                            birthday: this.fileHelperService.getCellValue(row, 4),
+                            mobileNumber: this.fileHelperService.getCellValue(row, 5),
+                            identityCard: this.fileHelperService.getCellValue(row, 6),
+                            email: this.fileHelperService.getCellValue(row, 7),
+                            CRA: this.fileHelperService.getCellValue(row, 8)
+                        });
+                        const info: IUserCreate = await this.userService.findOne({
+                            codeEmployee: this.fileHelperService.getCellValue(row, 2)
+                        });
+                        if (info) {
+                            await this.userService.updateOneById(info.codeEmployee, userInfo)
+                            return;
+                        }
+                        return await this.userService.create(userInfo);
+                    case 'InfoListAM':
+                        if (!this.fileHelperService.getCellValue(row, 2)) {
+                            return;
+                        }
+                        let bodyUser: IUserCreate = {
+                            codeEmployee: this.fileHelperService.getCellValue(row, 2),
+                            fullName: this.fileHelperService.getCellValue(row, 3),
+                            position: this.fileHelperService.getCellValue(row, 4),
+                            codeBDS: this.fileHelperService.getCellValue(row, 5),
+                            codeAM: this.fileHelperService.getCellValue(row, 6),
+                            codeDepartment: this.fileHelperService.getCellValue(row, 8),
+                            department: this.fileHelperService.getCellValue(row, 9),
+                            codeDepartmentLevelSix: this.fileHelperService.getCellValue(row, 11)
+                        };
+                        const role = await this.handleRole(bodyUser);
+                        let codeLevelSix: CodeDepartmentLevelSixDocument[] = await this.codeLevelSix.findAll({
+                            code: this.fileHelperService.getCellValue(row, 11)
+                        });
+                        if (role) {
+                            bodyUser = {
+                                ...bodyUser,
+                                role: role._id
+                            }
+                        }
+
+                        if (codeLevelSix) {
+                            bodyUser = {
+                                ...bodyUser,
+                                codeLevelSix: codeLevelSix
+                            }
+                        }
+                        const infoUser: IUserCreate = await this.userService.findOne({
+                            codeEmployee: this.fileHelperService.getCellValue(row, 2)
+                        });
+                        if (infoUser) {
+                            return await this.userService.checkExistCodeEmployee(infoUser.codeEmployee) ?
+                                await this.userService.updateUserByCodeAM(infoUser.codeEmployee, bodyUser)
+                                : await this.userService.updateOneById(infoUser.codeEmployee, bodyUser);
+                        }
+                        return await this.userService.create(bodyUser);
+                }
+            } catch (error) {
+                console.log(error);
+                throw new InternalServerErrorException({
+                    statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                    message: 'http.serverError.internalServerError',
+                });
+            }
+        });
+    }
+
     @Response('admin.getInfoIncome')
     @UserProfileGuard()
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
@@ -325,6 +442,7 @@ export class UserAdminController {
                                 perPage,
                                 search,
                             }): Promise<IResponse> {
+        console.log(user);
         if (!type || !TYPE_LIST_INCOME[type]) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,

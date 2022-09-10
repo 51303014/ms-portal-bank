@@ -86,7 +86,7 @@ export class RoleService {
             _id: { $nin: new Types.ObjectId(_id) },
         });
 
-        return exist ? true : false;
+        return !!exist;
     }
 
     async create({

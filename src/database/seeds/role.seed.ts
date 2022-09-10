@@ -1,6 +1,6 @@
 import {Command} from 'nestjs-command';
 import {Injectable} from '@nestjs/common';
-import {ENUM_PERMISSIONS} from 'src/permission/permission.constant';
+import {ENUM_PERMISSIONS, ENUM_PERMISSIONS_MANAGER} from 'src/permission/permission.constant';
 import {PermissionService} from 'src/permission/service/permission.service';
 import {RoleBulkService} from 'src/role/service/role.bulk.service';
 import {PermissionDocument} from 'src/permission/schema/permission.schema';
@@ -25,6 +25,11 @@ export class RoleSeed {
                 code: {$in: Object.values(ENUM_PERMISSIONS)},
             });
 
+        const permissionsManager: PermissionDocument[] =
+            await this.permissionService.findAll({
+                code: {$in: Object.values(ENUM_PERMISSIONS_MANAGER)},
+            });
+
         try {
             const permissionsMap = permissions.map((val) => val._id);
             await this.roleBulkService.createMany([
@@ -40,7 +45,7 @@ export class RoleSeed {
                 },
                 {
                     name: 'manager',
-                    permissions: [],
+                    permissions: permissionsManager.map((val) => val._id),
                     isAdmin: false,
                 },
                 {

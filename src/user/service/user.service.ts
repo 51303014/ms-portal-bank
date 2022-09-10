@@ -163,6 +163,7 @@ export class UserService {
         fullName,
         codeAM,
         codeDepartment,
+        codeLevelSix,
         codeDepartmentLevelSix,
         codeBDS,
         position,
@@ -196,6 +197,7 @@ export class UserService {
             mobileNumber,
             password: password.passwordHash,
             role: new Types.ObjectId(role),
+            codeLevelSix: codeLevelSix.map((val) => new Types.ObjectId(val._id)),
             isActive: true,
             salt,
             passwordExpired,
@@ -211,6 +213,15 @@ export class UserService {
 
     async deleteOne(find: Record<string, any>): Promise<UserDocument> {
         return this.userModel.findOneAndDelete(find);
+    }
+
+    async updateUserByCodeAM(
+        codeEmployee: string,
+        { codeAM }: IUserUpdate
+    ): Promise<UserDocument> {
+        const user: UserDocument = await this.userModel.findOne({codeEmployee});
+        user.codeAMForUserMultiple = [...user.codeAMForUserMultiple, codeAM];
+        return user.save();
     }
 
     async updateOneById(
@@ -241,12 +252,26 @@ export class UserService {
         return user.save();
     }
 
+    async checkExistCodeEmployee(
+        code: string,
+        _id?: string
+    ): Promise<boolean> {
+        const existCodeEmployee: Record<string, any> = await this.userModel.exists({
+            codeEmployee: {
+                $regex: new RegExp(code),
+                $options: 'i',
+            },
+            _id: {$nin: [new Types.ObjectId(_id)]},
+        });
+        return !!existCodeEmployee
+    }
+
     async checkExist(
         email: string,
         mobileNumber: string,
         _id?: string
     ): Promise<IUserCheckExist> {
-        const existEmail: Record<string, any> = await this.userModel.exists({
+        const existCodeEmployee: Record<string, any> = await this.userModel.exists({
             codeEmployee: {
                 $regex: new RegExp(email),
                 $options: 'i',
@@ -261,7 +286,7 @@ export class UserService {
             });
 
         return {
-            codeEmployee: !!existEmail,
+            codeEmployee: !!existCodeEmployee,
             mobileNumber: !!existMobileNumber,
         };
     }

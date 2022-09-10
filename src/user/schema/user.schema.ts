@@ -44,10 +44,18 @@ export class UserEntity {
 
     @Prop({
         required: false,
-        lowercase: true,
-        trim: true,
+        // type: Array,
+        // default: [],
     })
     codeAM?: string;
+
+
+    @Prop({
+        required: false,
+        type: Array,
+        default: [],
+    })
+    codeAMForUserMultiple?: string[];
 
     @Prop({
         required: false,

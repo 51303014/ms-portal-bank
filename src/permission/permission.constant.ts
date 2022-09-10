@@ -13,6 +13,14 @@ export enum ENUM_PERMISSIONS {
     SETTING_UPDATE = 'SETTING_UPDATE',
 }
 
+export enum ENUM_PERMISSIONS_MANAGER {
+    USER_CREATE = 'USER_CREATE',
+    USER_READ = 'USER_READ',
+    ROLE_READ = 'ROLE_READ',
+    PERMISSION_READ = 'PERMISSION_READ',
+    SETTING_READ = 'SETTING_READ',
+}
+
 export const PERMISSION_META_KEY = 'PermissionMetaKey';
 
 export const PERMISSION_ACTIVE_META_KEY = 'PermissionActiveMetaKey';
