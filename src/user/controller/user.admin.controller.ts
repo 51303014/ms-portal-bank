@@ -26,7 +26,7 @@ import {AuthAdminJwtGuard} from 'src/auth/auth.decorator';
 import {UserService} from '../service/user.service';
 import {RoleService} from 'src/role/service/role.service';
 import {IUserCreate, IUserDocument} from '../user.interface';
-import {ENUM_USER_STATUS_CODE_ERROR, ROLE_USER} from '../user.constant';
+import {ADMIN_USER, ENUM_USER_STATUS_CODE_ERROR, ROLE_USER} from '../user.constant';
 import {PaginationService} from 'src/pagination/service/pagination.service';
 import {AuthService} from 'src/auth/service/auth.service';
 import {Response, ResponsePaging,} from 'src/utils/response/response.decorator';
@@ -350,7 +350,7 @@ export class UserAdminController {
                         if (codeLevelSix) {
                             bodyUser = {
                                 ...bodyUser,
-                                codeLevelSix: codeLevelSix
+                                codeLevelSix: codeLevelSix.map(v => v.code)
                             }
                         }
                         const infoUser: IUserCreate = await this.userService.findOne({
@@ -393,7 +393,7 @@ export class UserAdminController {
             });
         }
 
-        if (user?.role?.name !== 'admin') {
+        if (!ADMIN_USER.includes(user?.role?.name)) {
             throw new ForbiddenException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
                 message: 'role.error.invalid',
@@ -406,7 +406,7 @@ export class UserAdminController {
                     skip: skip,
                     limit: +perPage,
                     currentPage: +page,
-                }) : await this.incomeService.findAllScaleGroupByDepartment(search, {
+                }, user) : await this.incomeService.findAllScaleGroupByDepartment(search, {
                     skip: skip,
                     limit: +perPage,
                     currentPage: +page,
@@ -418,7 +418,7 @@ export class UserAdminController {
                     message: 'incomeInfoDepartment.error.notFound',
                 });
             }
-            return incomeInfo
+            return incomeInfo[0];
         } catch (error) {
             console.log(error);
             throw new InternalServerErrorException({
@@ -442,7 +442,6 @@ export class UserAdminController {
                                 perPage,
                                 search,
                             }): Promise<IResponse> {
-        console.log(user);
         if (!type || !TYPE_LIST_INCOME[type]) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
@@ -450,7 +449,7 @@ export class UserAdminController {
             });
         }
 
-        if (user?.role?.name !== 'admin') {
+        if (!ADMIN_USER.includes(user?.role?.name)) {
             throw new ForbiddenException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
                 message: 'role.error.invalid',
@@ -475,7 +474,7 @@ export class UserAdminController {
                     message: 'incomeInfoDepartment.error.notFound',
                 });
             }
-            return incomeInfo
+            return incomeInfo[0];
         } catch (error) {
             console.log(error);
             throw new InternalServerErrorException({

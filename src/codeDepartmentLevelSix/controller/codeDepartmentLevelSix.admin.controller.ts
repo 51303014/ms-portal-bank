@@ -31,14 +31,16 @@ import {GetCodeLevelSix} from "../codeDepartmentLevelSix.decorator";
 export class CodeDepartmentLevelSixAdminController {
     constructor(
         private readonly codeLevelSixService: CodeDepartmentLevelSixService,
-    ) {}
+    ) {
+    }
 
     @ResponsePaging('codeDepartmentLevelSix.list')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ)
     @ErrorMeta(CodeDepartmentLevelSixAdminController.name, 'list')
     @Get('/list')
-    async list(): Promise<IResponse> {
-        return await this.codeLevelSixService.findAll()
+    async getList(): Promise<IResponse> {
+        const data = await this.codeLevelSixService.findAll();
+        return { data };
     }
 
     @Response('codeDepartmentLevelSix.create')
@@ -47,7 +49,7 @@ export class CodeDepartmentLevelSixAdminController {
     @Post('/create')
     async create(
         @Body()
-        { name, code }: CodeDepartmentLevelSixCreateDto
+            {name, code}: CodeDepartmentLevelSixCreateDto
     ): Promise<IResponse> {
         const exist: boolean = await this.codeLevelSixService.exists(code);
         if (exist) {
@@ -82,7 +84,7 @@ export class CodeDepartmentLevelSixAdminController {
     async update(
         @GetCodeLevelSix() codeLevelSix: CodeDepartmentLevelSixDocument,
         @Body()
-        { name, code }: CodeDepartmentLevelSixUpdateDto
+            {name, code}: CodeDepartmentLevelSixUpdateDto
     ): Promise<IResponse> {
         const check: boolean = await this.codeLevelSixService.exists(code, codeLevelSix._id);
         if (check) {

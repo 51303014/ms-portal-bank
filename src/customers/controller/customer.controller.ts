@@ -87,7 +87,6 @@ export class CustomerController {
             }
     ): Promise<any> {
         try {
-            console.log(user);
             const find: Record<string, any> = {};
             if (search) {
                 find['$or'] = [

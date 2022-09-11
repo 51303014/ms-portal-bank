@@ -28,7 +28,7 @@ export interface IUserCreate {
     CRA?: string;
     department?: string;
     role?: string;
-    codeLevelSix?: CodeDepartmentLevelSixDocument[];
+    codeLevelSix?: string[];
     salt?: string;
 }
 

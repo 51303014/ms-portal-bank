@@ -14,54 +14,54 @@ import {CodeDepartmentLevelSixUpdateDto} from "../dto/codeDepartmentLevelSix.upd
 export class CodeDepartmentLevelSixService {
     constructor(
         @DatabaseEntity(CodeDepartmentLevelSixEntity.name)
-        private readonly CodeDepartmentLevelSixModel: Model<CodeDepartmentLevelSixDocument>
+        private readonly codeDepartmentLevelSixModel: Model<CodeDepartmentLevelSixDocument>
     ) {}
 
     async findAll(
         find?: Record<string, any>,
         options?: IDatabaseFindAllOptions
     ): Promise<CodeDepartmentLevelSixDocument[]> {
-        const roles = this.CodeDepartmentLevelSixModel.find(find);
+        const codeLevelSix = this.codeDepartmentLevelSixModel.find(find);
         if (
             options &&
             options.limit !== undefined &&
             options.skip !== undefined
         ) {
-            roles.limit(options.limit).skip(options.skip);
+            codeLevelSix.limit(options.limit).skip(options.skip);
         }
 
         if (options && options.sort) {
-            roles.sort(options.sort);
+            codeLevelSix.sort(options.sort);
         }
 
-        return roles.lean();
+        return codeLevelSix.lean();
     }
 
     async getTotal(find?: Record<string, any>): Promise<number> {
-        return this.CodeDepartmentLevelSixModel.countDocuments(find);
+        return this.codeDepartmentLevelSixModel.countDocuments(find);
     }
 
     async findOneById<T>(
         _id: string,
         options?: IDatabaseFindOneOptions
     ): Promise<T> {
-        const roles = this.CodeDepartmentLevelSixModel.findById(_id);
+        const codeLevelSix = this.codeDepartmentLevelSixModel.findById(_id);
 
         if (options && options.populate && options.populate.permission) {
-            roles.populate({
+            codeLevelSix.populate({
                 path: 'permissions',
                 model: PermissionEntity.name,
             });
         }
 
-        return roles.lean();
+        return codeLevelSix.lean();
     }
 
     async findOne<T>(
         find?: Record<string, any>,
         options?: IDatabaseFindOneOptions
     ): Promise<T> {
-        const role = this.CodeDepartmentLevelSixModel.findOne(find);
+        const role = this.codeDepartmentLevelSixModel.findOne(find);
 
         if (options && options.populate && options.populate.permission) {
             role.populate({
@@ -74,7 +74,7 @@ export class CodeDepartmentLevelSixService {
     }
 
     async exists(code: string, _id?: string): Promise<boolean> {
-        const exist = await this.CodeDepartmentLevelSixModel.exists({
+        const exist = await this.codeDepartmentLevelSixModel.exists({
             code: {
                 $regex: new RegExp(code),
                 $options: 'i',
@@ -89,7 +89,7 @@ export class CodeDepartmentLevelSixService {
         name,
         code,
     }: CodeDepartmentLevelSixCreateDto): Promise<CodeDepartmentLevelSixDocument> {
-        const create: CodeDepartmentLevelSixDocument = new this.CodeDepartmentLevelSixModel({
+        const create: CodeDepartmentLevelSixDocument = new this.codeDepartmentLevelSixModel({
             name: name,
             code: code,
             isActive: true,
@@ -102,7 +102,7 @@ export class CodeDepartmentLevelSixService {
         _id: string,
         { name, code }: CodeDepartmentLevelSixUpdateDto
     ): Promise<CodeDepartmentLevelSixDocument> {
-        const update: CodeDepartmentLevelSixDocument = await this.CodeDepartmentLevelSixModel.findById(_id);
+        const update: CodeDepartmentLevelSixDocument = await this.codeDepartmentLevelSixModel.findById(_id);
         update.name = name;
         update.code = code
 
@@ -110,21 +110,21 @@ export class CodeDepartmentLevelSixService {
     }
 
     async inactive(_id: string): Promise<CodeDepartmentLevelSixDocument> {
-        const role: CodeDepartmentLevelSixDocument = await this.CodeDepartmentLevelSixModel.findById(_id);
+        const role: CodeDepartmentLevelSixDocument = await this.codeDepartmentLevelSixModel.findById(_id);
 
         role.isActive = false;
         return role.save();
     }
 
     async active(_id: string): Promise<CodeDepartmentLevelSixDocument> {
-        const role: CodeDepartmentLevelSixDocument = await this.CodeDepartmentLevelSixModel.findById(_id);
+        const role: CodeDepartmentLevelSixDocument = await this.codeDepartmentLevelSixModel.findById(_id);
 
         role.isActive = true;
         return role.save();
     }
 
     async deleteOneById(_id: string): Promise<CodeDepartmentLevelSixDocument> {
-        return this.CodeDepartmentLevelSixModel.findByIdAndDelete(_id);
+        return this.codeDepartmentLevelSixModel.findByIdAndDelete(_id);
     }
 
 }

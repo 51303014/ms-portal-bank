@@ -197,7 +197,7 @@ export class UserService {
             mobileNumber,
             password: password.passwordHash,
             role: new Types.ObjectId(role),
-            codeLevelSix: codeLevelSix.map((val) => new Types.ObjectId(val._id)),
+            codeLevelSix,
             isActive: true,
             salt,
             passwordExpired,

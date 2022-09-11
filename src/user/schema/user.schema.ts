@@ -126,9 +126,8 @@ export class UserEntity {
         required: false,
         type: Array,
         default: [],
-        ref: CodeDepartmentLevelSixEntity.name,
     })
-    codeLevelSix?: Types.ObjectId[];
+    codeLevelSix?: string[];
 
     @Prop({
         required: false,
