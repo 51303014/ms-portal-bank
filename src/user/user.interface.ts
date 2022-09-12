@@ -36,5 +36,4 @@ export type IUserUpdate = Pick<IUserCreate, 'fullName' | 'codeBDS' | 'codeDepart
 
 export interface IUserCheckExist {
     codeEmployee: boolean;
-    mobileNumber: boolean;
 }

@@ -1,4 +1,5 @@
 import {
+    BadRequestException,
     Body,
     Controller,
     Delete,
@@ -25,7 +26,7 @@ import {
 import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {UserService} from '../service/user.service';
 import {RoleService} from 'src/role/service/role.service';
-import {IUserCreate, IUserDocument} from '../user.interface';
+import {IUserCheckExist, IUserCreate, IUserDocument} from '../user.interface';
 import {ADMIN_USER, ENUM_USER_STATUS_CODE_ERROR, ROLE_USER} from '../user.constant';
 import {PaginationService} from 'src/pagination/service/pagination.service';
 import {AuthService} from 'src/auth/service/auth.service';
@@ -38,7 +39,7 @@ import {RequestParamGuard} from 'src/utils/request/request.decorator';
 import {UserRequestDto} from '../dto/user.request.dto';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {IncomeService} from '../../income/service/income.service';
-import {RoleLeaderAndUser, TYPE_LIST_INCOME} from "../../income/income.constant";
+import {TYPE_LIST_INCOME} from "../../income/income.constant";
 import {IncomeDocument} from "../../income/schema/income.schema";
 import {CustomerDocument} from "../../customers/schema/customer.schema";
 import {CustomerService} from "../../customers/service/customer.service";
@@ -55,6 +56,7 @@ import {HelperFileService} from "../../utils/helper/service/helper.file.service"
 import {CodeDepartmentLevelSixService} from "../../codeDepartmentLevelSix/service/codeDepartmentLevelSix.service";
 import {CodeDepartmentLevelSixDocument} from "../../codeDepartmentLevelSix/schema/codeDepartmentLevelSix.schema";
 import {IncomeListSerialization} from "../../income/serialization/income.list.serialization";
+import {UserResetPassDto} from "../dto/user.reset-pass.dto";
 
 @Controller({
     version: '1',
@@ -689,76 +691,47 @@ export class UserAdminController {
         }
     }
 
-    // @Response('user.create')
-    // @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
-    // @ErrorMeta(UserAdminController.name, 'create')
-    // @Post('/create')
-    // async create(
-    //     @Body()
-    //     body: UserCreateDto
-    // ): Promise<IResponse> {
-    //     const checkExist: IUserCheckExist = await this.userService.checkExist(
-    //         body.codeEmployee,
-    //         body.mobileNumber
-    //     );
-    //
-    //     if (checkExist.codeEmployee && checkExist.mobileNumber) {
-    //         throw new BadRequestException({
-    //             statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
-    //             message: 'user.error.exist',
-    //         });
-    //     } else if (checkExist.codeEmployee) {
-    //         throw new BadRequestException({
-    //             statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EMAIL_EXIST_ERROR,
-    //             message: 'user.error.emailExist',
-    //         });
-    //     } else if (checkExist.mobileNumber) {
-    //         throw new BadRequestException({
-    //             statusCode:
-    //                 ENUM_USER_STATUS_CODE_ERROR.USER_MOBILE_NUMBER_EXIST_ERROR,
-    //             message: 'user.error.mobileNumberExist',
-    //         });
-    //     }
-    //
-    //     const role = await this.roleService.findOneById(body.role);
-    //     if (!role) {
-    //         throw new NotFoundException({
-    //             statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
-    //             message: 'role.error.notFound',
-    //         });
-    //     }
-    //
-    //     try {
-    //         const password = await this.authService.createPassword(
-    //             body.password
-    //         );
-    //
-    //         const create = await this.userService.create({
-    //             firstName: body.firstName,
-    //             lastName: body.lastName,
-    //             codeEmployee: body.codeEmployee,
-    //             mobileNumber: body.mobileNumber,
-    //             role: body.role,
-    //             password: password.passwordHash,
-    //             passwordExpired: password.passwordExpired,
-    //             salt: password.salt,
-    //         });
-    //
-    //         return {
-    //             _id: create._id,
-    //         };
-    //     } catch (err: any) {
-    //         throw new InternalServerErrorException({
-    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-    //             message: 'http.serverError.internalServerError',
-    //         });
-    //     }
-    // }
+    @Response('user.reset-password')
+    @UserProfileGuard()
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.SETTING_READ, ENUM_PERMISSIONS.SETTING_UPDATE)
+    @ErrorMeta(UserAdminController.name, 'reset')
+    @Post('/reset-password')
+    async create(
+        @GetUser() user: IUserDocument,
+        @Body()
+            body: UserResetPassDto
+    ): Promise<IResponse> {
+        const checkExist: IUserCheckExist = await this.userService.checkExist(
+            body.codeEmployee,
+        );
+
+        if (!checkExist.codeEmployee) {
+            throw new BadRequestException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
+                message: 'user.error.not-exist',
+            });
+        }
+
+        try {
+            const password = await this.authService.createPassword(
+                body.password
+            );
+            const create = await this.userService.updatePassword(user._id, password);
+            return {
+                _id: create._id,
+            };
+        } catch (err: any) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
+    }
 
     @Response('user.delete')
     @UserDeleteGuard()
     @RequestParamGuard(UserRequestDto)
-    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_DELETE)
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.SETTING_READ, ENUM_PERMISSIONS.SETTING_UPDATE, ENUM_PERMISSIONS.USER_DELETE)
     @ErrorMeta(UserAdminController.name, 'delete')
     @Delete('/delete/:user')
     async delete(@GetUser() user: IUserDocument): Promise<void> {
