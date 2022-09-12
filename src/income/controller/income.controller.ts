@@ -57,6 +57,7 @@ export class IncomeController {
                 search,
             }
     ): Promise<IResponsePaging> {
+        let totalBaseAM;
         if (!type || !TYPE_LIST_INCOME[type]) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
@@ -68,25 +69,37 @@ export class IncomeController {
         if (search) {
             find['$or'] = [
                 {
-                    cif: {
+                    codeAM: {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
                 },
             ];
         }
-
-        if (RoleLeaderAndUser.includes(user?.role?.name)) {
+        if (user?.role?.name === 'user') {
             find['$and'] = [
                 {
                     codeAM: user.codeAM
                 },
             ];
+            totalBaseAM = type === TYPE_LIST_INCOME.income ?
+                await this.incomeService.findAllIncomeBaseUser(user.codeAM) :
+                await this.incomeService.findAllScaleBaseUser(user.codeAM)
+            ;
         }
-        const totalBaseAM = type === TYPE_LIST_INCOME.income ?
-            await this.incomeService.findAllIncomeBaseUser(user.codeAM) :
-            await this.incomeService.findAllScaleBaseUser(user.codeAM)
-        ;
+
+        if (user?.role?.name === 'leader') {
+            find['$and'] = [
+                {
+                    codeDepartmentLevelSix: user.codeDepartmentLevelSix
+                },
+            ];
+            totalBaseAM = type === TYPE_LIST_INCOME.income ?
+                await this.incomeService.findAllIncomeByCodeDepartmentLeader(user.codeDepartmentLevelSix) :
+                await this.incomeService.findAllScaleByCodeDepartmentLeader(user.codeDepartmentLevelSix)
+            ;
+        }
+
         const incomeInfoModel: IncomeDocument[] = await this.incomeService.findAll(find,
             {
                 skip: skip,
