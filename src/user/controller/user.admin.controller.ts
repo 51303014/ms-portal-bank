@@ -10,7 +10,7 @@ import {
     InternalServerErrorException,
     NotFoundException,
     Patch,
-    Post,
+    Post, Put,
     Query,
     UploadedFile,
 } from '@nestjs/common';
@@ -20,7 +20,7 @@ import {
     UserDeleteGuard,
     UserGetGuard,
     UserProfileGuard,
-    UserUpdateActiveGuard,
+    UserUpdateActiveGuard, UserUpdateGuard,
     UserUpdateInactiveGuard,
 } from '../user.decorator';
 import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
@@ -57,6 +57,9 @@ import {CodeDepartmentLevelSixService} from "../../codeDepartmentLevelSix/servic
 import {CodeDepartmentLevelSixDocument} from "../../codeDepartmentLevelSix/schema/codeDepartmentLevelSix.schema";
 import {IncomeListSerialization} from "../../income/serialization/income.list.serialization";
 import {UserResetPassDto} from "../dto/user.reset-pass.dto";
+import {UserUpdateCodeDto} from "../dto/user.update-code.dto";
+import {UserCreateDto} from "../dto/user.create.dto";
+import {ENUM_ROLE_STATUS_CODE_ERROR} from "../../role/role.constant";
 
 @Controller({
     version: '1',
@@ -696,7 +699,7 @@ export class UserAdminController {
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.SETTING_READ, ENUM_PERMISSIONS.SETTING_UPDATE)
     @ErrorMeta(UserAdminController.name, 'reset')
     @Post('/reset-password')
-    async create(
+    async resetPassword(
         @GetUser() user: IUserDocument,
         @Body()
             body: UserResetPassDto
@@ -747,30 +750,85 @@ export class UserAdminController {
         return;
     }
 
-    // @Response('user.update')
-    // @UserUpdateGuard()
-    // @RequestParamGuard(UserRequestDto)
-    // @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)
-    // @ErrorMeta(UserAdminController.name, 'update')
-    // @Put('/update/:user')
-    // async update(
-    //     @GetUser() user: IUserDocument,
-    //     @Body()
-    //     body: UserUpdateDto
-    // ): Promise<IResponse> {
-    //     try {
-    //         await this.userService.updateOneById(user._id, body);
-    //     } catch (err: any) {
-    //         throw new InternalServerErrorException({
-    //             statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-    //             message: 'http.serverError.internalServerError',
-    //         });
-    //     }
-    //
-    //     return {
-    //         _id: user._id,
-    //     };
-    // }
+    @Response('user.create')
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.SETTING_READ, ENUM_PERMISSIONS.SETTING_UPDATE, ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
+    @ErrorMeta(UserAdminController.name, 'create')
+    @Post('/create')
+    async createUser(
+        @Body()
+            body: UserCreateDto
+    ): Promise<IResponse> {
+        const checkExist: IUserCheckExist = await this.userService.checkExist(
+            body.codeEmployee,
+        );
+
+        if (checkExist.codeEmployee) {
+            throw new BadRequestException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_EXISTS_ERROR,
+                message: 'user.error.exist',
+            });
+        }
+        const role = await this.roleService.findOneById(body.role);
+        if (!role) {
+            throw new NotFoundException({
+                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
+                message: 'role.error.notFound',
+            });
+        }
+
+        try {
+            const password = await this.authService.createPassword(
+                body.password
+            );
+
+            const create = await this.userService.create({
+                fullName: body.fullName,
+                codeAM: body.codeAM,
+                codeDepartmentLevelSix: body.codeDepartmentLevelSix,
+                codeLevelSix: body.codeLevelSix,
+                position: body.position,
+                department: body.department,
+                codeEmployee: body.codeEmployee,
+                role: body.role,
+                password: password.passwordHash,
+                passwordExpired: password.passwordExpired,
+                salt: password.salt,
+            });
+
+            return {
+                _id: create._id,
+            };
+        } catch (err: any) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
+    }
+
+    @Response('user.update')
+    @UserUpdateGuard()
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE, ENUM_PERMISSIONS.SETTING_UPDATE)
+    @ErrorMeta(UserAdminController.name, 'update')
+    @Put('/update')
+    async update(
+        @GetUser() user: IUserDocument,
+        @Body()
+            body: UserUpdateCodeDto
+    ): Promise<IResponse> {
+        try {
+            await this.userService.updateUserByCodeEmployee(body.codeEmployee, body);
+        } catch (err: any) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
+
+        return {
+            _id: user._id,
+        };
+    }
 
     @Response('user.inactive')
     @UserUpdateInactiveGuard()

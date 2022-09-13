@@ -32,7 +32,7 @@ export interface IUserCreate {
 
 export type IUserUpdate = Pick<IUserCreate, 'fullName' | 'codeBDS' | 'codeDepartment'| 'codeDepartmentLevelSix' |
     'email'| 'CRA' | 'identityCard' | 'department' | 'mobileNumber' | 'birthday' | 'position' |
-    'codeAM' | 'codeAMForUserMultiple'>;
+    'role' | 'codeAM' | 'codeAMForUserMultiple' | 'codeLevelSix'>;
 
 export interface IUserCheckExist {
     codeEmployee: boolean;

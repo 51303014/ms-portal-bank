@@ -27,7 +27,7 @@ export function UserDeleteGuard(): any {
 }
 
 export function UserUpdateGuard(): any {
-    return applyDecorators(UseGuards(UserPutToRequestGuard, UserNotFoundGuard));
+    return applyDecorators(UseGuards(UserPayloadPutToRequestGuard, UserNotFoundGuard));
 }
 
 export function UserProfileGuard(): any {

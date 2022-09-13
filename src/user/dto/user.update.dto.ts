@@ -8,6 +8,10 @@ import {
 } from 'class-validator';
 
 export class UserUpdateDto {
+    @IsNotEmpty()
+    @MaxLength(100)
+    @Type(() => String)
+    readonly codeEmployee: string;
     @IsString()
     @IsNotEmpty()
     @MaxLength(30)

@@ -254,6 +254,39 @@ export class UserService {
         return user.save();
     }
 
+    async updateUserByCodeEmployee(
+        codeEmployee: string,
+        {
+            codeDepartmentLevelSix,
+            codeLevelSix,
+            role,
+            position,
+            codeAM
+        }: IUserUpdate
+    ): Promise<UserDocument> {
+        const user: UserDocument = await this.userModel.findOne({codeEmployee});
+
+        if (codeAM) {
+            user.codeAM = codeAM;
+        }
+        if (codeDepartmentLevelSix) {
+            user.codeDepartmentLevelSix = codeDepartmentLevelSix;
+        }
+
+        if (position) {
+            user.position = position;
+        }
+
+        if (codeLevelSix.length > 0) {
+            user.codeLevelSix = codeLevelSix;
+        }
+        if (role) {
+            user.role = new Types.ObjectId(role)
+        }
+
+        return user.save();
+    }
+
     async checkExistCodeEmployee(
         code: string,
         _id?: string
