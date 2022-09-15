@@ -122,7 +122,7 @@ export class UserAdminController {
         if (search) {
             find['$or'] = [
                 {
-                    codeDepartmentLevelSix: {
+                    cif: {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
@@ -216,7 +216,7 @@ export class UserAdminController {
         if (search) {
             find['$or'] = [
                 {
-                    codeAM: {
+                    cif: {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
