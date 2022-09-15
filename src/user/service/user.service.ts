@@ -277,7 +277,7 @@ export class UserService {
             user.position = position;
         }
 
-        if (codeLevelSix.length > 0) {
+        if (codeLevelSix && codeLevelSix.length > 0) {
             user.codeLevelSix = codeLevelSix;
         }
         if (role) {

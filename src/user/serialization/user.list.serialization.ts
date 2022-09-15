@@ -6,7 +6,6 @@ export class UserListSerialization {
     @Type(() => String)
     readonly _id: string;
 
-    @Exclude()
     readonly role: Types.ObjectId;
 
     readonly codeEmployee: string;
@@ -15,8 +14,6 @@ export class UserListSerialization {
     readonly firstName: string;
     readonly lastName: string;
 
-    @Exclude()
-    readonly photo?: IAwsS3Response;
 
     @Exclude()
     readonly password: string;
