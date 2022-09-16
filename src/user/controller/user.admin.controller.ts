@@ -288,14 +288,6 @@ export class UserAdminController {
                     codeEmployee: {
                         $regex: new RegExp(search),
                         $options: 'i',
-                    },
-                    fullName: {
-                        $regex: new RegExp(search),
-                        $options: 'i',
-                    },
-                    codeDepartmentLevelSix: {
-                        $regex: new RegExp(search),
-                        $options: 'i',
                     }
                 },
             ];
@@ -734,12 +726,11 @@ export class UserAdminController {
                 message: 'user.error.not-exist',
             });
         }
-
         try {
             const password = await this.authService.createPassword(
                 body.password
             );
-            const create = await this.userService.updatePassword(user._id, password);
+            const create = await this.userService.updatePasswordByCodeEmployee(body.codeEmployee, password);
             return {
                 _id: create._id,
             };
@@ -805,7 +796,7 @@ export class UserAdminController {
                 fullName: body.fullName,
                 codeAM: body.codeAM,
                 codeDepartmentLevelSix: body.codeDepartmentLevelSix,
-                codeLevelSix: body.codeLevelSix,
+                codeLevelSix: body?.codeLevelSix.length > 0 ? body.codeLevelSix : [],
                 position: body.position,
                 department: body.department,
                 codeEmployee: body.codeEmployee,

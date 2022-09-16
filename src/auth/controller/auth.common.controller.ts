@@ -50,12 +50,12 @@ export class AuthCommonController {
     @Response('auth.login', {
         statusCode: ENUM_AUTH_STATUS_CODE_SUCCESS.AUTH_LOGIN_SUCCESS,
     })
-    @Logger(ENUM_LOGGER_ACTION.LOGIN, { tags: ['login', 'withEmail'] })
+    @Logger(ENUM_LOGGER_ACTION.LOGIN, { tags: ['login', 'codeEmployee'] })
     @HttpCode(HttpStatus.OK)
     @ErrorMeta(AuthCommonController.name, 'login')
     @Post('/login')
     async login(@Body() body: AuthLoginDto): Promise<IResponse> {
-        const rememberMe: boolean = body.rememberMe ? true : false;
+        const rememberMe: boolean = body.rememberMe;
         const user: IUserDocument =
             await this.userService.findOne<IUserDocument>(
                 {

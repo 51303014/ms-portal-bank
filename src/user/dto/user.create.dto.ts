@@ -4,7 +4,7 @@ import {
     IsNotEmpty,
     MaxLength,
     MinLength,
-    IsMongoId, IsOptional,
+    IsMongoId, IsOptional, IsArray,
 } from 'class-validator';
 
 export class UserCreateDto {
@@ -16,27 +16,26 @@ export class UserCreateDto {
 
     @IsString()
     @IsNotEmpty()
-    @MinLength(10)
+    @MinLength(5)
     @MaxLength(100)
     @Type(() => String)
     readonly fullName: string;
 
     @IsString()
     @IsNotEmpty()
-    @MinLength(10)
+    @MinLength(1)
     @MaxLength(30)
     @Type(() => String)
     readonly codeAM: string;
 
     @IsString()
     @IsNotEmpty()
-    @MinLength(10)
+    @MinLength(1)
     @MaxLength(50)
     @Type(() => String)
     readonly codeDepartmentLevelSix: string;
 
-    @IsString()
-    @IsMongoId()
+    @IsArray()
     @IsOptional()
     @Type(() => Array)
     readonly codeLevelSix?: string[];

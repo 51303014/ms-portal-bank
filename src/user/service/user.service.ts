@@ -217,10 +217,14 @@ export class UserService {
 
     async updateUserByCodeAM(
         codeEmployee: string,
-        {codeAM}: IUserUpdate
+        {codeAM, department, codeBDS, codeDepartment, codeDepartmentLevelSix}: IUserUpdate
     ): Promise<UserDocument> {
         const user: UserDocument = await this.userModel.findOne({codeEmployee});
-        user.codeAMForUserMultiple = [...user.codeAMForUserMultiple, codeAM];
+        user.codeAM = codeAM;
+        user.department = department;
+        user.codeBDS = codeBDS;
+        user.codeDepartment = codeDepartment;
+        user.codeDepartmentLevelSix = codeDepartmentLevelSix;
         return user.save();
     }
 
@@ -238,18 +242,28 @@ export class UserService {
         const user: UserDocument = await this.userModel.findOne({codeEmployee});
 
         user.fullName = fullName || undefined;
-        user.codeBDS = codeBDS || undefined;
-        user.codeAM = codeAM || undefined;
-        user.codeDepartment = codeDepartment || undefined;
-        user.department = department || undefined;
-        user.codeDepartmentLevelSix = codeDepartmentLevelSix || undefined;
+        if (department) {
+            user.department = department;
+        }
+        if (codeAM) {
+            user.codeAM = codeAM;
+        }
+        if (codeDepartment) {
+            user.codeDepartment = codeDepartment;
+        }
+        if (codeBDS) {
+            user.codeBDS = codeBDS;
+        }
+
+        if (codeDepartmentLevelSix) {
+            user.codeDepartmentLevelSix = codeDepartmentLevelSix;
+        }
         user.email = email || undefined;
         user.CRA = CRA || undefined;
         user.identityCard = identityCard || undefined;
         user.mobileNumber = mobileNumber || undefined;
         user.birthday = birthday || undefined;
         user.position = position || undefined;
-
 
         return user.save();
     }
@@ -339,6 +353,19 @@ export class UserService {
         {salt, passwordHash, passwordExpired}: IAuthPassword
     ): Promise<UserDocument> {
         const auth: UserDocument = await this.userModel.findById(_id);
+
+        auth.password = passwordHash;
+        auth.passwordExpired = passwordExpired;
+        auth.salt = salt;
+
+        return auth.save();
+    }
+
+    async updatePasswordByCodeEmployee(
+        codeEmployee: string,
+        {salt, passwordHash, passwordExpired}: IAuthPassword
+    ): Promise<UserDocument> {
+        const auth: UserDocument = await this.userModel.findOne({codeEmployee});
 
         auth.password = passwordHash;
         auth.passwordExpired = passwordExpired;

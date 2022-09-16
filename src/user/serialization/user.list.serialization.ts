@@ -11,8 +11,8 @@ export class UserListSerialization {
     readonly codeEmployee: string;
     readonly mobileNumber: string;
     readonly isActive: boolean;
-    readonly firstName: string;
-    readonly lastName: string;
+    readonly fullName: string;
+    readonly department: string;
 
 
     @Exclude()
