@@ -494,77 +494,97 @@ export class UserAdminController {
         const rowStartIndex = 2;
         const numberOfRows = worksheet.rowCount - 1;
         const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
-        rows.map(async row => {
-            try {
-                switch (userFile.fileType) {
-                    case 'InfoUser':
-                        const userInfo: IUserCreate = await this.userService.findOne({
-                            codeEmployee: this.fileHelperService.getCellValue(row, 1),
-                            fullName: this.fileHelperService.getCellValue(row, 2),
-                            position: this.fileHelperService.getCellValue(row, 3),
-                            birthday: this.fileHelperService.getCellValue(row, 4),
-                            mobileNumber: this.fileHelperService.getCellValue(row, 5),
-                            identityCard: this.fileHelperService.getCellValue(row, 6),
-                            email: this.fileHelperService.getCellValue(row, 7),
-                            CRA: this.fileHelperService.getCellValue(row, 8)
-                        });
-                        const info: IUserCreate = await this.userService.findOne({
-                            codeEmployee: this.fileHelperService.getCellValue(row, 2)
-                        });
-                        if (info) {
-                            await this.userService.updateOneById(info.codeEmployee, userInfo)
-                            return;
-                        }
-                        return await this.userService.create(userInfo);
-                    case 'InfoListAM':
-                        if (!this.fileHelperService.getCellValue(row, 2)) {
-                            return;
-                        }
-                        let bodyUser: IUserCreate = {
-                            codeEmployee: this.fileHelperService.getCellValue(row, 2),
-                            fullName: this.fileHelperService.getCellValue(row, 3),
-                            position: this.fileHelperService.getCellValue(row, 4),
-                            codeBDS: this.fileHelperService.getCellValue(row, 5),
-                            codeAM: this.fileHelperService.getCellValue(row, 6),
-                            codeDepartment: this.fileHelperService.getCellValue(row, 8),
-                            department: this.fileHelperService.getCellValue(row, 9),
-                            codeDepartmentLevelSix: this.fileHelperService.getCellValue(row, 11)
-                        };
-                        const role = await this.handleRole(bodyUser);
-                        let codeLevelSix: CodeDepartmentLevelSixDocument[] = await this.codeLevelSix.findAll({
-                            code: this.fileHelperService.getCellValue(row, 11)
-                        });
-                        if (role) {
-                            bodyUser = {
-                                ...bodyUser,
-                                role: role._id
+        try {
+            switch (userFile.fileType) {
+                case 'InfoUser':
+                    rows.map(async row => {
+                        try {
+                            const userInfo: IUserCreate = {
+                                codeEmployee: this.fileHelperService.getCellValue(row, 1),
+                                fullName: this.fileHelperService.getCellValue(row, 2),
+                                position: this.fileHelperService.getCellValue(row, 3),
+                                birthday: this.fileHelperService.getCellValue(row, 4),
+                                mobileNumber: this.fileHelperService.getCellValue(row, 5),
+                                identityCard: this.fileHelperService.getCellValue(row, 6),
+                                email: this.fileHelperService.getCellValue(row, 7),
+                                CRA: this.fileHelperService.getCellValue(row, 8)
+                            };
+                            const info: IUserCreate = await this.userService.findOne({
+                                codeEmployee: this.fileHelperService.getCellValue(row, 1)
+                            });
+                            if (info) {
+                                await this.userService.updateOneById(info.codeEmployee, userInfo)
+                                return;
                             }
+                            return await this.userService.create(userInfo);
+                        } catch (error) {
+                            console.log(error);
+                            throw new InternalServerErrorException({
+                                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                                message: 'http.serverError.internalServerError',
+                            });
                         }
 
-                        if (codeLevelSix) {
-                            bodyUser = {
-                                ...bodyUser,
-                                codeLevelSix: codeLevelSix.map(v => v.code)
+                    });
+                    break;
+                case 'InfoListAM':
+                    rows.map(async row => {
+                        try {
+                            if (!this.fileHelperService.getCellValue(row, 2)) {
+                                return;
                             }
+                            let bodyUser: IUserCreate = {
+                                codeEmployee: this.fileHelperService.getCellValue(row, 2),
+                                fullName: this.fileHelperService.getCellValue(row, 3),
+                                position: this.fileHelperService.getCellValue(row, 4),
+                                codeBDS: this.fileHelperService.getCellValue(row, 5),
+                                codeAM: this.fileHelperService.getCellValue(row, 6),
+                                codeDepartment: this.fileHelperService.getCellValue(row, 8),
+                                department: this.fileHelperService.getCellValue(row, 9),
+                                codeDepartmentLevelSix: this.fileHelperService.getCellValue(row, 11)
+                            };
+                            const role = await this.handleRole(bodyUser);
+                            let codeLevelSix: CodeDepartmentLevelSixDocument[] = await this.codeLevelSix.findAll({
+                                code: this.fileHelperService.getCellValue(row, 11)
+                            });
+                            if (role) {
+                                bodyUser = {
+                                    ...bodyUser,
+                                    role: role._id
+                                }
+                            }
+
+                            if (codeLevelSix) {
+                                bodyUser = {
+                                    ...bodyUser,
+                                    codeLevelSix: codeLevelSix.map(v => v.code)
+                                }
+                            }
+                            const infoUser: IUserCreate = await this.userService.findOne({
+                                codeEmployee: this.fileHelperService.getCellValue(row, 2)
+                            });
+                            if (infoUser) {
+                                return await this.userService.checkExistCodeEmployee(infoUser.codeEmployee) ?
+                                    await this.userService.updateUserByCodeAM(infoUser.codeEmployee, bodyUser)
+                                    : await this.userService.updateOneById(infoUser.codeEmployee, bodyUser);
+                            }
+                            return await this.userService.create(bodyUser);
+                        } catch (error) {
+                            console.log(error);
+                            throw new InternalServerErrorException({
+                                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                                message: 'http.serverError.internalServerError',
+                            });
                         }
-                        const infoUser: IUserCreate = await this.userService.findOne({
-                            codeEmployee: this.fileHelperService.getCellValue(row, 2)
-                        });
-                        if (infoUser) {
-                            return await this.userService.checkExistCodeEmployee(infoUser.codeEmployee) ?
-                                await this.userService.updateUserByCodeAM(infoUser.codeEmployee, bodyUser)
-                                : await this.userService.updateOneById(infoUser.codeEmployee, bodyUser);
-                        }
-                        return await this.userService.create(bodyUser);
-                }
-            } catch (error) {
-                console.log(error);
-                throw new InternalServerErrorException({
-                    statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                    message: 'http.serverError.internalServerError',
-                });
+                    });
             }
-        });
+        } catch (error) {
+            console.log(error);
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
     }
 
     @Response('admin.getInfoIncome')
