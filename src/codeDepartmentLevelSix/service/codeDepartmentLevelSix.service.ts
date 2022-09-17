@@ -63,13 +63,6 @@ export class CodeDepartmentLevelSixService {
     ): Promise<T> {
         const role = this.codeDepartmentLevelSixModel.findOne(find);
 
-        if (options && options.populate && options.populate.permission) {
-            role.populate({
-                path: 'permissions',
-                model: PermissionEntity.name,
-            });
-        }
-
         return role.lean();
     }
 
