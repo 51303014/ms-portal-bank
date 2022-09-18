@@ -23,8 +23,10 @@ import {
 import {UserProfileSerialization} from '../serialization/user.profile.serialization';
 import {UserListSerialization} from '../serialization/user.list.serialization';
 import {UserGetSerialization} from '../serialization/user.get.serialization';
-import {HelperHashService} from "../../utils/helper/service/helper.hash.service";
-import {HelperDateService} from "../../utils/helper/service/helper.date.service";
+import {HelperHashService} from '../../utils/helper/service/helper.hash.service';
+import {HelperDateService} from '../../utils/helper/service/helper.date.service';
+import {CodeDepartmentLevelSixService} from '../../codeDepartmentLevelSix/service/codeDepartmentLevelSix.service';
+import {CodeDepartmentLevelSixDocument} from "../../codeDepartmentLevelSix/schema/codeDepartmentLevelSix.schema";
 
 @Injectable()
 export class UserService {
@@ -36,6 +38,7 @@ export class UserService {
         private readonly helperStringService: HelperStringService,
         private readonly helperHashService: HelperHashService,
         private readonly helperDateService: HelperDateService,
+        private readonly codeLevelSix: CodeDepartmentLevelSixService,
         private readonly configService: ConfigService,
     ) {
         this.uploadPath = this.configService.get<string>('user.uploadPath');
@@ -285,6 +288,8 @@ export class UserService {
         }
         if (codeDepartmentLevelSix) {
             user.codeDepartmentLevelSix = codeDepartmentLevelSix;
+            const codeLevelSix: CodeDepartmentLevelSixDocument = await this.codeLevelSix.findOne({code: codeDepartmentLevelSix});
+            user.department = codeLevelSix.name;
         }
 
         if (position) {

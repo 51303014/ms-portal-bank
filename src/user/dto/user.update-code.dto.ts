@@ -7,6 +7,7 @@ import {
 } from 'class-validator';
 
 export class UserUpdateCodeDto {
+
     @IsNotEmpty()
     @IsString()
     @MaxLength(100)

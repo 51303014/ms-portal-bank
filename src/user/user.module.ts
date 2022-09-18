@@ -4,9 +4,11 @@ import { DATABASE_CONNECTION_NAME } from 'src/database/database.constant';
 import { UserService } from './service/user.service';
 import { UserBulkService } from './service/user.bulk.service';
 import { UserDatabaseName, UserEntity, UserSchema } from './schema/user.schema';
+import {CodeDepartmentLevelSixModule} from "../codeDepartmentLevelSix/codeDepartmentLevelSix.module";
 
 @Module({
     imports: [
+        CodeDepartmentLevelSixModule,
         MongooseModule.forFeature(
             [
                 {
