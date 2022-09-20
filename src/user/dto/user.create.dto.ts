@@ -51,13 +51,6 @@ export class UserCreateDto {
     @Type(() => String)
     readonly position: string;
 
-    @IsString()
-    @IsNotEmpty()
-    @MinLength(5)
-    @MaxLength(50)
-    @Type(() => String)
-    readonly department: string;
-
     @IsNotEmpty()
     readonly password: string;
 }
