@@ -8,14 +8,14 @@ import {
     Post, Query,
     UploadedFile,
 } from '@nestjs/common';
-import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
+import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {AwsS3Service} from 'src/aws/service/aws.s3.service';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {ENUM_FILE_TYPE} from 'src/utils/file/file.constant';
 import {UploadFileSingle} from 'src/utils/file/file.decorator';
-import {Response} from 'src/utils/response/response.decorator';
-import {IResponse} from 'src/utils/response/response.interface';
+import {Response, ResponsePaging} from 'src/utils/response/response.decorator';
+import {IResponse, IResponsePaging} from 'src/utils/response/response.interface';
 import {CustomerService} from "../service/customer.service";
 import {GetUser, UserProfileGuard} from "../customer.decorator";
 import {CustomerFile, ICustomerCreate, ICustomerDocument, SheetName} from "../customer.interface";
@@ -39,9 +39,14 @@ import {IWorkCustomerCreate} from "../../workCustomer/workCustomer.interface";
 import {OtherInfoService} from "../../otherInfoCustomer/service/otherInfo.service";
 import {IOtherInfoCustomerCreate} from "../../otherInfoCustomer/otherInfo.interface";
 import {PaginationService} from "../../pagination/service/pagination.service";
-import {IUserDocument} from "../../user/user.interface";
+import {IUserCreate, IUserDocument} from "../../user/user.interface";
 import {CustomerDocument} from "../schema/customer.schema";
 import {IncomeDocument} from "../../income/schema/income.schema";
+import {ENUM_PERMISSIONS} from "../../permission/permission.constant";
+import {UserListDto} from "../../user/dto/user.list.dto";
+import {CustomerListSerialization} from "../serialization/customer.list.serialization";
+import {RoleDocument} from "../../role/schema/role.schema";
+import {ROLE_USER} from "../../user/user.constant";
 
 @Controller({
     version: '1',
@@ -70,6 +75,103 @@ export class CustomerController {
     @Get('/profile')
     async profile(@GetUser() user: ICustomerDocument): Promise<IResponse> {
         return this.customerService.serializationProfile(user);
+    }
+
+    async handleRole(user: IUserDocument, role: string): Promise<IncomeDocument[]> {
+        if (role === 'admin') {
+            return await this.incomeService.findAll();
+        }
+
+        if (role === 'manager') {
+            let listIncome: IncomeDocument[]  = await this.incomeService.findAll();
+            listIncome = listIncome.filter(v => user.codeLevelSix.includes(v.codeDepartmentLevelSix));
+            return listIncome;
+        }
+        if (role === 'user') {
+            return await this.incomeService.findAll({codeAM: user.codeAM})
+        }
+        return await this.incomeService.findAll({codeDepartmentLevelSix: user.codeDepartmentLevelSix});
+
+    }
+
+    @ResponsePaging('customer.list')
+    @UserProfileGuard()
+    @AuthPublicJwtGuard()
+    @ErrorMeta(CustomerController.name, 'list-customer')
+    @Get('/list-customer')
+    async getListCustomer(
+        @GetUser() user: IUserDocument,
+        @Query()
+            {
+                date,
+                filter,
+                page,
+                perPage,
+                search,
+            }
+    ): Promise<IResponsePaging> {
+        const skip: number = await this.paginationService.skip(page, perPage);
+        const find: Record<string, any> = {};
+        if (filter) {
+            switch (filter) {
+                case 'day':
+                    find['$expr'] = {
+                        "$and": [
+                            {"$eq": [{"$dayOfMonth": "$effectiveDate"}, {"$dayOfMonth": new Date(date)}]},
+                        ]
+                    };
+                    break;
+                case 'month':
+                    find['$expr'] = {
+                        "$and": [
+                            {"$eq": [{"$month": "$effectiveDate"}, {"$month": new Date(date)}]},
+                        ]
+                    };
+                    break;
+                case 'year':
+                    find['$expr'] = {
+                        "$and": [
+                            {"$eq": [{"$year": "$effectiveDate"}, {"$year": new Date(date)}]},
+                        ]
+                    };
+                    break;
+                default:
+            }
+        }
+
+        const incomeInfo: IncomeDocument[] = await this.handleRole(user, user?.role?.name);
+        let customerInfo: CustomerDocument[] = await this.customerService.findAll(find, {
+            limit: perPage,
+            skip: skip,
+        });
+        customerInfo = customerInfo.filter(value => {
+            for (const element of incomeInfo) {
+                if (element.cif === value.cif)
+                    return value
+            }
+        });
+        if (!customerInfo.length) {
+            throw new NotFoundException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                message: 'customerInfo.error.notFound',
+            });
+        }
+        const totalData: number = await this.customerService.getTotal(find);
+        const totalPage: number = await this.paginationService.totalPage(
+            totalData,
+            perPage
+        );
+
+        const data: CustomerListSerialization[] =
+            await this.customerService.serializationList(customerInfo);
+
+        return {
+            totalData,
+            totalPage,
+            currentPage: page,
+            perPage,
+            data,
+        };
     }
 
 

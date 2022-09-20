@@ -620,7 +620,7 @@ export class UserAdminController {
                 });
 
             if (user?.role?.name === 'manager') {
-                incomeInfo = incomeInfo.filter(v => user.codeLevelSix.includes(v._id.codeDepartmentLevelSix));
+                incomeInfo = incomeInfo.filter(v => user.codeLevelSix.includes(v.codeDepartmentLevelSix));
             }
 
             if (!incomeInfo.length) {

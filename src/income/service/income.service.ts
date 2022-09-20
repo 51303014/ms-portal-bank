@@ -99,6 +99,39 @@ export class IncomeService {
         ]);
     }
 
+    async findAllIncomeByCodeLevelSix<T>(
+        codeDepartmentLevelSix: string,
+    ): Promise<T[]> {
+        return this.incomeModel.aggregate([
+            {
+                $match: {"codeDepartmentLevelSix": codeDepartmentLevelSix}
+            },
+            {
+                $group: {
+                    _id: "$codeDepartmentLevelSix",
+                    totalIncomeFTP: {
+                        $sum: "$incomeFTPBaseMore"
+                    },
+                    totalIncomeService: {
+                        $sum: "$incomeFromService"
+                    },
+                    totalIncomeInterestKDNTPS: {
+                        $sum: "$incomeInterestKDNTPS"
+                    },
+                    totalIncomeCardService: {
+                        $sum: "$incomeFromCardAndInterestService"
+                    },
+                    totalRaisingCapitalAtTheEndExchange: {
+                        $sum: "$raisingCapitalAtTheEndExchange"
+                    },
+                    totalAmountDebtCreditAtTheEndExchange: {
+                        $sum: "$amountDebtCreditAtTheEndExchange"
+                    },
+                }
+            }
+        ]);
+    }
+
     async findAllIncomeBaseUser<T>(
         codeAM: string,
     ): Promise<T[]> {
