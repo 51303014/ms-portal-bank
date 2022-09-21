@@ -1,6 +1,6 @@
 import {
     Body,
-    Controller, ForbiddenException,
+    Controller,
     Get,
     HttpCode,
     HttpStatus,
@@ -8,7 +8,7 @@ import {
     Post, Query,
     UploadedFile,
 } from '@nestjs/common';
-import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
+import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {AwsS3Service} from 'src/aws/service/aws.s3.service';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
@@ -19,7 +19,6 @@ import {IResponse, IResponsePaging} from 'src/utils/response/response.interface'
 import {CustomerService} from "../service/customer.service";
 import {GetUser, UserProfileGuard} from "../customer.decorator";
 import {CustomerFile, ICustomerCreate, ICustomerDocument, SheetName} from "../customer.interface";
-import {CustomerCreateDto} from "../dto/customer.create.dto";
 import Excel from 'exceljs';
 import {HelperFileService} from "../../utils/helper/service/helper.file.service";
 import {ENUM_USER_STATUS_CODE_ERROR} from "../customer.constant";
@@ -39,14 +38,10 @@ import {IWorkCustomerCreate} from "../../workCustomer/workCustomer.interface";
 import {OtherInfoService} from "../../otherInfoCustomer/service/otherInfo.service";
 import {IOtherInfoCustomerCreate} from "../../otherInfoCustomer/otherInfo.interface";
 import {PaginationService} from "../../pagination/service/pagination.service";
-import {IUserCreate, IUserDocument} from "../../user/user.interface";
+import {IUserDocument} from "../../user/user.interface";
 import {CustomerDocument} from "../schema/customer.schema";
 import {IncomeDocument} from "../../income/schema/income.schema";
-import {ENUM_PERMISSIONS} from "../../permission/permission.constant";
-import {UserListDto} from "../../user/dto/user.list.dto";
 import {CustomerListSerialization} from "../serialization/customer.list.serialization";
-import {RoleDocument} from "../../role/schema/role.schema";
-import {ROLE_USER} from "../../user/user.constant";
 
 @Controller({
     version: '1',
@@ -81,9 +76,8 @@ export class CustomerController {
         if (role === 'admin') {
             return await this.incomeService.findAll();
         }
-
         if (role === 'manager') {
-            let listIncome: IncomeDocument[]  = await this.incomeService.findAll();
+            let listIncome: IncomeDocument[] = await this.incomeService.findAll();
             listIncome = listIncome.filter(v => user.codeLevelSix.includes(v.codeDepartmentLevelSix));
             return listIncome;
         }
@@ -112,33 +106,30 @@ export class CustomerController {
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
         const find: Record<string, any> = {};
-        if (filter) {
-            switch (filter) {
-                case 'day':
-                    find['$expr'] = {
-                        "$and": [
-                            {"$eq": [{"$dayOfMonth": "$effectiveDate"}, {"$dayOfMonth": new Date(date)}]},
-                        ]
-                    };
-                    break;
-                case 'month':
-                    find['$expr'] = {
-                        "$and": [
-                            {"$eq": [{"$month": "$effectiveDate"}, {"$month": new Date(date)}]},
-                        ]
-                    };
-                    break;
-                case 'year':
-                    find['$expr'] = {
-                        "$and": [
-                            {"$eq": [{"$year": "$effectiveDate"}, {"$year": new Date(date)}]},
-                        ]
-                    };
-                    break;
-                default:
-            }
+        switch (filter) {
+            case 'day':
+                find['$expr'] = {
+                    "$and": [
+                        {"$eq": [{"$dayOfMonth": "$effectiveDate"}, {"$dayOfMonth": new Date(date)}]},
+                    ]
+                };
+                break;
+            case 'month':
+                find['$expr'] = {
+                    "$and": [
+                        {"$eq": [{"$month": "$effectiveDate"}, {"$month": new Date(date)}]},
+                    ]
+                };
+                break;
+            case 'year':
+                find['$expr'] = {
+                    "$and": [
+                        {"$eq": [{"$year": "$effectiveDate"}, {"$year": new Date(date)}]},
+                    ]
+                };
+                break;
+            default:
         }
-
         const incomeInfo: IncomeDocument[] = await this.handleRole(user, user?.role?.name);
         let customerInfo: CustomerDocument[] = await this.customerService.findAll(find, {
             limit: perPage,
@@ -1001,22 +992,28 @@ export class CustomerController {
     @ErrorMeta(CustomerController.name, 'customer-get-info')
     @Get('/info')
     async getCustomerInfo(
-        @GetUser() user: ICustomerDocument,
+        @GetUser() user: IUserDocument,
         @Query()
             {
                 cif
             }
     ): Promise<any> {
-        const customerInfo: CustomerCreateDto = await this.customerService.findOne({cif});
-        if (customerInfo) {
-            try {
-                return customerInfo
-            } catch (err) {
-                throw new InternalServerErrorException({
-                    statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                    message: 'http.serverError.internalServerError',
-                });
-            }
+        const customerInfo: CustomerDocument = await this.customerService.findOne({cif});
+        if (!customerInfo) {
+            throw new NotFoundException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                message: 'customerInfo.error.notFound',
+            });
+        }
+        try {
+            const incomeInfo: IncomeDocument[] = await this.handleRole(user, user?.role?.name);
+            const filterUserByIncome = incomeInfo.filter(v => v.cif === customerInfo.cif);
+            return filterUserByIncome.length > 0 ? customerInfo : [];
+        } catch (err) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
         }
     }
 }

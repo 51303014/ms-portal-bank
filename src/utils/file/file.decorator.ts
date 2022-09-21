@@ -8,7 +8,6 @@ export function UploadFileSingle(
     type: ENUM_FILE_TYPE,
     required?: boolean
 ): any {
-    console.log(type);
     if (type === ENUM_FILE_TYPE.CSV || type === ENUM_FILE_TYPE.EXCEL) {
         return applyDecorators(
             UseInterceptors(
