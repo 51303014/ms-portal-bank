@@ -101,7 +101,6 @@ export class CustomerController {
                 filter,
                 page,
                 perPage,
-                search,
             }
     ): Promise<IResponsePaging> {
         const skip: number = await this.paginationService.skip(page, perPage);
@@ -135,34 +134,43 @@ export class CustomerController {
             limit: perPage,
             skip: skip,
         });
-        customerInfo = customerInfo.filter(value => {
-            for (const element of incomeInfo) {
-                if (element.cif === value.cif)
-                    return value
-            }
-        });
+        if (user?.role?.name !== 'admin') {
+            customerInfo = customerInfo.filter(value => {
+                for (const element of incomeInfo) {
+                    if (element.cif === value.cif)
+                        return value
+                }
+            });
+        }
         if (!customerInfo.length) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
                 message: 'customerInfo.error.notFound',
             });
         }
-        const totalData: number = await this.customerService.getTotal(find);
-        const totalPage: number = await this.paginationService.totalPage(
-            totalData,
-            perPage
-        );
+        try {
+            const totalData: number = await this.customerService.getTotal(find);
+            const totalPage: number = await this.paginationService.totalPage(
+                totalData,
+                perPage
+            );
 
-        const data: CustomerListSerialization[] =
-            await this.customerService.serializationList(customerInfo);
+            const data: CustomerListSerialization[] =
+                await this.customerService.serializationList(customerInfo);
 
-        return {
-            totalData,
-            totalPage,
-            currentPage: page,
-            perPage,
-            data,
-        };
+            return {
+                totalData,
+                totalPage,
+                currentPage: page,
+                perPage,
+                data,
+            };
+        } catch (error) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
     }
 
 
@@ -200,12 +208,15 @@ export class CustomerController {
             const incomeInfo: IncomeDocument[] = user?.role?.name === 'user' ? await this.incomeService.findAll({codeAM: user.codeAM}) :
                 await this.incomeService.findAll({codeDepartmentLevelSix: user.codeDepartmentLevelSix});
             let customerInfo: CustomerDocument[] = await this.customerService.findAll(find);
-            customerInfo = customerInfo.filter(value => {
-                for (const element of incomeInfo) {
-                    if (element.cif === value.cif)
-                        return value
-                }
-            });
+            if (user?.role?.name !== 'admin') {
+                customerInfo = customerInfo.filter(value => {
+                    for (const element of incomeInfo) {
+                        if (element.cif === value.cif)
+                            return value
+                    }
+                });
+            }
+
             if (!customerInfo.length) {
                 throw new NotFoundException({
                     statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
