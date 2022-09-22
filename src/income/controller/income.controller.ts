@@ -95,8 +95,8 @@ export class IncomeController {
                 },
             ];
             totalBaseAM = type === TYPE_LIST_INCOME.income ?
-                await this.incomeService.findAllIncomeByCodeDepartmentLeader(user.codeDepartmentLevelSix) :
-                await this.incomeService.findAllScaleByCodeDepartmentLeader(user.codeDepartmentLevelSix)
+                await this.incomeService.findAllIncomeByCodeDepartmentLeader(user.codeDepartmentLevelSix, search) :
+                await this.incomeService.findAllScaleByCodeDepartmentLeader(user.codeDepartmentLevelSix, search)
             ;
         }
 

@@ -22,18 +22,18 @@ export class UserCreateDto {
     readonly fullName: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @MinLength(1)
     @MaxLength(30)
     @Type(() => String)
-    readonly codeAM: string;
+    readonly codeAM?: string;
 
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     @MinLength(1)
     @MaxLength(50)
     @Type(() => String)
-    readonly codeDepartmentLevelSix: string;
+    readonly codeDepartmentLevelSix?: string;
 
     @IsArray()
     @IsOptional()
