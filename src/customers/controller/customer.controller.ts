@@ -133,7 +133,7 @@ export class CustomerController {
         let customerInfo: CustomerDocument[] = await this.customerService.findAll(find, {
             limit: perPage,
             skip: skip,
-        });
+        })
         if (user?.role?.name !== 'admin') {
             customerInfo = customerInfo.filter(value => {
                 for (const element of incomeInfo) {

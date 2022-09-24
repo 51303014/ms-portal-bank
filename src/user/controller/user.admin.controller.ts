@@ -128,6 +128,12 @@ export class UserAdminController {
                         $options: 'i',
                     },
                 },
+                {
+                    codeAM: {
+                        $regex: new RegExp(search),
+                        $options: 'i',
+                    }
+                },
             ];
         }
 
@@ -392,15 +398,19 @@ export class UserAdminController {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
+                },
+                {
                     codeAM: {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
+                },
+                {
                     codeDepartmentLevelSix: {
                         $regex: new RegExp(search),
                         $options: 'i',
                     },
-                },
+                }
             ];
         }
         find['$expr'] = {
@@ -618,9 +628,8 @@ export class UserAdminController {
                     limit: +perPage,
                     currentPage: +page,
                 });
-
             if (user?.role?.name === 'manager') {
-                incomeInfo = incomeInfo.filter(v => user.codeLevelSix.includes(v.codeDepartmentLevelSix));
+                incomeInfo = incomeInfo.filter(v => user.codeLevelSix.includes(v._id.codeDepartmentLevelSix));
             }
 
             if (!incomeInfo.length) {
@@ -788,7 +797,7 @@ export class UserAdminController {
             });
         }
 
-        const codeDepartmentLevelSix: ICodeDepartmentLevelSix = await this.codeLevelSix.findOne({code: body.codeDepartmentLevelSix});
+        const codeDepartmentLevelSix: ICodeDepartmentLevelSix = await this.codeLevelSix.findOneById(body.codeDepartmentLevelSix);
         if (!codeDepartmentLevelSix) {
             throw new NotFoundException({
                 statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
