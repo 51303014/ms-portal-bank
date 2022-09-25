@@ -150,7 +150,7 @@ export class CustomerController {
             });
         }
         try {
-            const totalData: number = await this.customerService.getTotal(find);
+            const totalData: number = customerInfo.length;
             const totalPage: number = await this.paginationService.totalPage(
                 totalData,
                 perPage
@@ -249,7 +249,7 @@ export class CustomerController {
                     message: 'customerInfo.error.notFound',
                 });
             }
-            const totalData: number = await this.customerService.getTotal(find);
+            const totalData: number = customerInfo.length;
             const totalPage: number = await this.paginationService.totalPage(
                 totalData,
                 perPage
