@@ -1,6 +1,6 @@
 import {
     Body,
-    Controller,
+    Controller, ForbiddenException,
     Get,
     HttpCode,
     HttpStatus,
@@ -42,6 +42,7 @@ import {IUserDocument} from "../../user/user.interface";
 import {CustomerDocument} from "../schema/customer.schema";
 import {IncomeDocument} from "../../income/schema/income.schema";
 import {CustomerListSerialization} from "../serialization/customer.list.serialization";
+import {ADMIN_USER} from "../../user/user.constant";
 
 @Controller({
     version: '1',
@@ -184,9 +185,19 @@ export class CustomerController {
         @GetUser() user: IUserDocument,
         @Query()
             {
-                search
+                search,
+                page,
+                perPage,
             }
     ): Promise<any> {
+        if (ADMIN_USER.includes(user?.role?.name)) {
+            throw new ForbiddenException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
+                message: 'role.error.invalid',
+            });
+        }
+        const skip: number = await this.paginationService.skip(page, perPage);
+
         try {
             const find: Record<string, any> = {};
             if (search) {
@@ -205,9 +216,24 @@ export class CustomerController {
                     {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
                 ]
             };
-            const incomeInfo: IncomeDocument[] = user?.role?.name === 'user' ? await this.incomeService.findAll({codeAM: user.codeAM}) :
-                await this.incomeService.findAll({codeDepartmentLevelSix: user.codeDepartmentLevelSix});
-            let customerInfo: CustomerDocument[] = await this.customerService.findAll(find);
+            const incomeInfo: IncomeDocument[] = user?.role?.name === 'user' ? await this.incomeService.findAll({codeAM: user.codeAM},
+                {
+                    skip: skip,
+                    limit: +perPage,
+                    currentPage: +page,
+                }) :
+                await this.incomeService.findAll({codeDepartmentLevelSix: user.codeDepartmentLevelSix},
+                    {
+                        skip: skip,
+                        limit: +perPage,
+                        currentPage: +page,
+                    });
+            let customerInfo: CustomerDocument[] = await this.customerService.findAll(find,
+                {
+                    skip: skip,
+                    limit: +perPage,
+                    currentPage: +page,
+                });
             if (user?.role?.name !== 'admin') {
                 customerInfo = customerInfo.filter(value => {
                     for (const element of incomeInfo) {
@@ -223,7 +249,21 @@ export class CustomerController {
                     message: 'customerInfo.error.notFound',
                 });
             }
-            return customerInfo;
+            const totalData: number = await this.customerService.getTotal(find);
+            const totalPage: number = await this.paginationService.totalPage(
+                totalData,
+                perPage
+            );
+            const data: CustomerListSerialization[] =
+                await this.customerService.serializationList(customerInfo);
+
+            return {
+                totalData,
+                totalPage,
+                currentPage: page,
+                perPage,
+                data,
+            };
         } catch (error) {
             if (error?.status === 404) {
                 throw new NotFoundException({

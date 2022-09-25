@@ -326,6 +326,7 @@ export class UserAdminController {
     @ErrorMeta(UserAdminController.name, 'list')
     @Get('/list-birthday')
     async getListBirthday(
+        @GetUser() user: IUserDocument,
         @Query()
             {
                 page,
@@ -333,6 +334,12 @@ export class UserAdminController {
                 search,
             }: UserListDto
     ): Promise<IResponsePaging> {
+        if (!ADMIN_USER.includes(user?.role?.name)) {
+            throw new ForbiddenException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
+                message: 'role.error.invalid',
+            });
+        }
         const skip: number = await this.paginationService.skip(page, perPage);
         const find: Record<string, any> = {};
         const sort: Record<string, any> = {
