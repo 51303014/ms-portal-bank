@@ -321,7 +321,8 @@ export class UserAdminController {
         };
     }
 
-    @ResponsePaging('customer-birthday.list')
+    @ResponsePaging('customer-birthday-admin.list')
+    @UserProfileGuard()
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
     @ErrorMeta(UserAdminController.name, 'list')
     @Get('/list-birthday')

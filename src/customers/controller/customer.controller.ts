@@ -175,7 +175,7 @@ export class CustomerController {
     }
 
 
-    @Response('customer.list.birthday')
+    @ResponsePaging('customer-birthday.list')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -189,7 +189,7 @@ export class CustomerController {
                 page,
                 perPage,
             }
-    ): Promise<any> {
+    ): Promise<IResponsePaging> {
         if (ADMIN_USER.includes(user?.role?.name)) {
             throw new ForbiddenException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
