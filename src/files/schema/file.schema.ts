@@ -1,6 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {Types, Document} from 'mongoose';
-import {IAwsS3Response} from 'src/aws/aws.interface';
+import {ILocalFileResponse} from 'src/aws/aws.interface';
 import {UserEntity} from "../../user/schema/user.schema";
 
 @Schema({timestamps: true, versionKey: false})
@@ -8,14 +8,12 @@ export class FileEntity {
     @Prop({
         required: true,
         index: true,
-        lowercase: true,
         trim: true,
     })
     fileName: string;
 
     @Prop({
         required: false,
-        lowercase: true,
         trim: true,
     })
     type: string;
@@ -45,7 +43,7 @@ export class FileEntity {
             mime: String,
         },
     })
-    file?: IAwsS3Response;
+    file?: ILocalFileResponse;
 }
 
 export const FileDatabaseName = 'files';
@@ -55,8 +53,5 @@ export type FileDocument = FileEntity & Document;
 
 // Hooks
 FileSchema.pre<FileDocument>('save', function (next) {
-    if (this.fileName) {
-        this.fileName = this.fileName.toLowerCase();
-    }
     next();
 });

@@ -4,7 +4,7 @@ import {
 } from '@nestjs/common';
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {IResponse} from 'src/utils/response/response.interface';
 import {UserService} from '../service/user.service';
 import {GetUser, UserProfileGuard} from '../user.decorator';
@@ -24,7 +24,7 @@ export class UserPublicController {
     ) {
     }
 
-    @Response('user.profile')
+    @ResponseCustom('user.profile')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @ErrorMeta(UserPublicController.name, 'profile')
@@ -33,7 +33,7 @@ export class UserPublicController {
         return this.userService.serializationProfile(user);
     }
 
-    @Response('user.getInfoTotal')
+    @ResponseCustom('user.getInfoTotal')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @ErrorMeta(UserPublicController.name, 'get')

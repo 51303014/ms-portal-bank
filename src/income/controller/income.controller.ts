@@ -9,7 +9,7 @@ import {
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {IResponse, IResponsePaging} from 'src/utils/response/response.interface';
 import {IncomeService} from "../service/income.service";
 import {GetUser, UserProfileGuard} from "../income.decorator";
@@ -32,7 +32,7 @@ export class IncomeController {
     ) {
     }
 
-    @Response('user.profile')
+    @ResponseCustom('user.profile')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @ErrorMeta(IncomeController.name, 'profile')
@@ -41,7 +41,7 @@ export class IncomeController {
         return this.incomeService.serializationProfile(user);
     }
 
-    @Response('income.list')
+    @ResponseCustom('income.list')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -137,7 +137,7 @@ export class IncomeController {
         }
     }
 
-    @Response('income-by-code-department.list')
+    @ResponseCustom('income-by-code-department.list')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -228,7 +228,7 @@ export class IncomeController {
     }
 
 
-    @Response('income.get.cif')
+    @ResponseCustom('income.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)

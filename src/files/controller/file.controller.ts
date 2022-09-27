@@ -5,7 +5,8 @@ import {
     HttpCode,
     HttpStatus,
     InternalServerErrorException,
-    Post, Query,
+    Post,
+    Query,
     UploadedFile,
 } from '@nestjs/common';
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
@@ -15,7 +16,7 @@ import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
 import {ENUM_FILE_TYPE} from 'src/utils/file/file.constant';
 import {UploadFileSingle} from 'src/utils/file/file.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {IResponse} from 'src/utils/response/response.interface';
 import {FileService} from '../service/file.service';
 import {GetUser, UserProfileGuard} from '../file.decorator';
@@ -34,7 +35,7 @@ export class FileController {
     ) {
     }
 
-    @Response('user.profile')
+    @ResponseCustom('user.profile')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @ErrorMeta(FileController.name, 'profile')
@@ -43,7 +44,7 @@ export class FileController {
         return this.fileService.serializationProfile(user);
     }
 
-    @Response('file.upload')
+    @ResponseCustom('file.upload')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @UploadFileSingle('file', ENUM_FILE_TYPE.EXCEL || ENUM_FILE_TYPE.CSV)
@@ -88,7 +89,7 @@ export class FileController {
     }
 
 
-    @Response('file.download')
+    @ResponseCustom('file.download')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @UploadFileSingle('file', ENUM_FILE_TYPE.EXCEL || ENUM_FILE_TYPE.CSV)
@@ -96,39 +97,32 @@ export class FileController {
     @ErrorMeta(FileController.name, 'download')
     @Get('/download')
     async download(
-        @GetUser() user: IFileDocument
+        @GetUser() user: IFileDocument,
     ): Promise<any> {
         const fileInfo = await this.fileService.findAll({user: user._id});
         if (fileInfo.length > 0) {
             const workbook = XLSX.utils.book_new();
             try {
-                await Promise.all(
-                    fileInfo.map(async (file) => {
-                        const url = await this.awsService.getBufferFromS3Promise(file.file.pathWithFilename);
-                        const wb = XLSX.read(url);
-                        let worksheets = {};
-                        for (const sheetName of wb.SheetNames) {
-                            worksheets[sheetName] = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {
-                                header: "A",
-                                blankrows: true,
-                                defval: ''
-                            })
-                            const worksheet = XLSX.utils.json_to_sheet(worksheets[sheetName], {skipHeader: true});
-                            XLSX.utils.book_append_sheet(workbook, worksheet, file.type);
-                            const fileContent = XLSX.write(workbook, {
-                                type: "buffer",
-                                bookType: "xlsx"
-                            });
-                            await this.awsService.putItemInBucket(
-                                `FormTongHop.xlsx`,
-                                fileContent,
-                            );
-                        }
-                    })
-                )
-                const url = await this.awsService.generatePreSignedUrl('FormTongHop.xlsx');
-                return {url};
+                fileInfo.map(async (data) => {
+                    const wb = XLSX.readFile(data.file.path);
+                    let worksheets = {};
+                    for (const sheetName of wb.SheetNames) {
+                        worksheets[sheetName] = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], {
+                            header: "A",
+                            blankrows: true,
+                            defval: ''
+                        })
+                        const worksheet = XLSX.utils.json_to_sheet(worksheets[sheetName], {skipHeader: true});
+                        XLSX.utils.book_append_sheet(workbook, worksheet, data.type);
 
+                    }
+                })
+
+                return XLSX.write(workbook, {
+                    type: 'base64',
+                    bookType: "xlsx",
+                    bookSST: false
+                });
             } catch (err) {
                 console.log(err);
                 throw new InternalServerErrorException({
@@ -140,7 +134,7 @@ export class FileController {
     }
 
 
-    @Response('file.download.single')
+    @ResponseCustom('file.download.single')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @UploadFileSingle('file', ENUM_FILE_TYPE.EXCEL || ENUM_FILE_TYPE.CSV)

@@ -10,7 +10,7 @@ import {
 import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {CompanyService} from "../service/company.service";
 import {GetUser, UserProfileGuard} from "../company.decorator";
 import {ICompanyCreate, ICompanyDocument} from "../company.interface";
@@ -30,7 +30,7 @@ export class CompanyController {
     ) {
     }
 
-    @Response('companies.get.cif')
+    @ResponseCustom('companies.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -56,7 +56,7 @@ export class CompanyController {
         }
     }
 
-    @Response('companies.create')
+    @ResponseCustom('companies.create')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
     @ErrorMeta(CompanyController.name, 'create')
     @Post('/create')

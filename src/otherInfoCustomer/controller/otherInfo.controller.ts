@@ -10,7 +10,7 @@ import {
 import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {GetUser, UserProfileGuard} from "../../user/user.decorator";
 import {OtherInfoService} from "../service/otherInfo.service";
 import {IOtherInfoCustomerCreate, IOtherInfoCustomerDocument} from "../otherInfo.interface";
@@ -30,7 +30,7 @@ export class OtherInfoController {
     ) {
     }
 
-    @Response('otherInfo.get.cif')
+    @ResponseCustom('otherInfo.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -56,7 +56,7 @@ export class OtherInfoController {
         }
     }
 
-    @Response('otherInfo.create')
+    @ResponseCustom('otherInfo.create')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
     @ErrorMeta(OtherInfoController.name, 'create')
     @Post('/create')

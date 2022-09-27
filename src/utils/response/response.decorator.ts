@@ -5,7 +5,7 @@ import { ResponseTimeoutInterceptor } from './interceptor/response.timeout.inter
 import { RESPONSE_CUSTOM_TIMEOUT_META_KEY } from './response.constant';
 import { IResponseOptions, IResponsePagingOptions } from './response.interface';
 
-export function Response(messagePath: string, options?: IResponseOptions): any {
+export function ResponseCustom(messagePath: string, options?: IResponseOptions): any {
     return applyDecorators(
         UseInterceptors(ResponseDefaultInterceptor(messagePath, options))
     );

@@ -15,7 +15,7 @@ import { Connection } from 'mongoose';
 import { DatabaseConnection } from 'src/database/database.decorator';
 import { AwsHealthIndicator } from '../indicator/health.aws.indicator';
 import { IResponse } from 'src/utils/response/response.interface';
-import { Response } from 'src/utils/response/response.decorator';
+import { ResponseCustom } from 'src/utils/response/response.decorator';
 import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
 import { ErrorMeta } from 'src/utils/error/error.decorator';
 
@@ -33,7 +33,7 @@ export class HealthCommonController {
         private readonly awsIndicator: AwsHealthIndicator
     ) {}
 
-    @Response('health.check')
+    @ResponseCustom('health.check')
     @HealthCheck()
     @ErrorMeta(HealthCommonController.name, 'aws')
     @Get('/aws')
@@ -50,7 +50,7 @@ export class HealthCommonController {
         }
     }
 
-    @Response('health.check')
+    @ResponseCustom('health.check')
     @HealthCheck()
     @ErrorMeta(HealthCommonController.name, 'checkDatabase')
     @Get('/database')
@@ -70,7 +70,7 @@ export class HealthCommonController {
         }
     }
 
-    @Response('health.check')
+    @ResponseCustom('health.check')
     @HealthCheck()
     @ErrorMeta(HealthCommonController.name, 'checkMemoryHeap')
     @Get('/memory-heap')
@@ -91,7 +91,7 @@ export class HealthCommonController {
         }
     }
 
-    @Response('health.check')
+    @ResponseCustom('health.check')
     @HealthCheck()
     @ErrorMeta(HealthCommonController.name, 'checkMemoryRss')
     @Get('/memory-rss')
@@ -112,7 +112,7 @@ export class HealthCommonController {
         }
     }
 
-    @Response('health.check')
+    @ResponseCustom('health.check')
     @HealthCheck()
     @ErrorMeta(HealthCommonController.name, 'checkStorage')
     @Get('/storage')

@@ -9,7 +9,7 @@ import { ENUM_PERMISSIONS } from 'src/permission/permission.constant';
 import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
 import { ErrorMeta } from 'src/utils/error/error.decorator';
 import { RequestParamGuard } from 'src/utils/request/request.decorator';
-import { Response } from 'src/utils/response/response.decorator';
+import { ResponseCustom } from 'src/utils/response/response.decorator';
 import { IResponse } from 'src/utils/response/response.interface';
 import { SettingRequestDto } from '../dto/setting.request.dto';
 import { SettingUpdateDto } from '../dto/setting.update.dto';
@@ -24,7 +24,7 @@ import { GetSetting, SettingUpdateGuard } from '../setting.decorator';
 export class SettingAdminController {
     constructor(private readonly settingService: SettingService) {}
 
-    @Response('setting.update')
+    @ResponseCustom('setting.update')
     @SettingUpdateGuard()
     @RequestParamGuard(SettingRequestDto)
     @AuthAdminJwtGuard(

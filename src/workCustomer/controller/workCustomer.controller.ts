@@ -10,7 +10,7 @@ import {
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {GetUser, UserProfileGuard} from "../../user/user.decorator";
 import {WorkCustomerService} from "../service/workCustomer.service";
 import {IWorkCustomerCreate} from "../workCustomer.interface";
@@ -35,7 +35,7 @@ export class WorkCustomerController {
     ) {
     }
 
-    @Response('workCustomers.get.cif')
+    @ResponseCustom('workCustomers.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -62,7 +62,7 @@ export class WorkCustomerController {
         }
     }
 
-    @Response('workCustomers.list')
+    @ResponseCustom('workCustomers.list')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -90,7 +90,7 @@ export class WorkCustomerController {
         return customerInfo;
     }
 
-    @Response('workCustomers.create')
+    @ResponseCustom('workCustomers.create')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @ErrorMeta(WorkCustomerController.name, 'create')

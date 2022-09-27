@@ -11,7 +11,7 @@ import {
 import {AuthAdminJwtGuard, AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {ParentService} from "../service/parent.service";
 import {GetUser, UserProfileGuard} from "../parent.decorator";
 import {ParentListDto} from "../dto/parent.list.dto";
@@ -36,7 +36,7 @@ export class ParentController {
     ) {
     }
 
-    @Response('parents.get.cif')
+    @ResponseCustom('parents.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -62,7 +62,7 @@ export class ParentController {
         }
     }
 
-    @Response('parents.create')
+    @ResponseCustom('parents.create')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
     @ErrorMeta(ParentController.name, 'create')
     @Post('/create')

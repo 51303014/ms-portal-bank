@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import {ENUM_PERMISSIONS,} from 'src/permission/permission.constant';
 import {AuthAdminJwtGuard} from 'src/auth/auth.decorator';
-import {Response, ResponsePaging,} from 'src/utils/response/response.decorator';
+import {ResponseCustom, ResponsePaging,} from 'src/utils/response/response.decorator';
 import {IResponse,} from 'src/utils/response/response.interface';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {RequestParamGuard} from 'src/utils/request/request.decorator';
@@ -43,7 +43,7 @@ export class CodeDepartmentLevelSixAdminController {
         return { data };
     }
 
-    @Response('codeDepartmentLevelSix.create')
+    @ResponseCustom('codeDepartmentLevelSix.create')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
     @ErrorMeta(CodeDepartmentLevelSixAdminController.name, 'create')
     @Post('/create')
@@ -76,7 +76,7 @@ export class CodeDepartmentLevelSixAdminController {
         }
     }
 
-    @Response('codeDepartmentLevelSix.update')
+    @ResponseCustom('codeDepartmentLevelSix.update')
     @RequestParamGuard(CodeDepartmentLevelSixRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
     @ErrorMeta(CodeDepartmentLevelSixAdminController.name, 'update')
@@ -111,7 +111,7 @@ export class CodeDepartmentLevelSixAdminController {
         };
     }
 
-    @Response('codeDepartmentLevelSix.delete')
+    @ResponseCustom('codeDepartmentLevelSix.delete')
     @RequestParamGuard(CodeDepartmentLevelSixRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_DELETE)
     @ErrorMeta(CodeDepartmentLevelSixAdminController.name, 'delete')

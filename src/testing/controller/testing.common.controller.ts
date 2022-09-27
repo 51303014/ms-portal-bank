@@ -10,7 +10,7 @@ import {
     RequestUserAgent,
 } from 'src/utils/request/request.decorator';
 import {
-    Response,
+    ResponseCustom,
     ResponseTimeout,
 } from 'src/utils/response/response.decorator';
 import { IResponse } from 'src/utils/response/response.interface';
@@ -25,7 +25,7 @@ export class TestingCommonController {
         private readonly helperService: HelperService
     ) {}
 
-    @Response('test.hello')
+    @ResponseCustom('test.hello')
     @AuthExcludeApiKey()
     @Logger(ENUM_LOGGER_ACTION.TEST, { tags: ['test'] })
     @ErrorMeta(TestingCommonController.name, 'hello')
@@ -50,7 +50,7 @@ export class TestingCommonController {
         };
     }
 
-    @Response('test.helloTimeout')
+    @ResponseCustom('test.helloTimeout')
     @AuthExcludeApiKey()
     @ResponseTimeout('10s')
     @ErrorMeta(TestingCommonController.name, 'helloTimeout')

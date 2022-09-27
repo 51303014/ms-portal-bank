@@ -9,6 +9,15 @@ export interface IAwsS3Response {
     mime: string;
 }
 
+export interface ILocalFileResponse {
+    path: string;
+    pathWithFilename?: string;
+    filename?: string;
+    completedUrl?: string;
+    baseUrl?: string;
+    mime: string;
+}
+
 export interface IAwsS3PutItemOptions {
     path: string;
     acl?: ObjectCannedACL;

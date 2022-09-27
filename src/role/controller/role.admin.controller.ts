@@ -29,7 +29,7 @@ import {
 import { IRoleDocument } from '../role.interface';
 import { ENUM_ROLE_STATUS_CODE_ERROR } from '../role.constant';
 import {
-    Response,
+    ResponseCustom,
     ResponsePaging,
 } from 'src/utils/response/response.decorator';
 import {
@@ -113,7 +113,7 @@ export class RoleAdminController {
         };
     }
 
-    @Response('role.get')
+    @ResponseCustom('role.get')
     @RoleGetGuard()
     @RequestParamGuard(RoleRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ)
@@ -123,7 +123,7 @@ export class RoleAdminController {
         return this.roleService.serializationGet(role);
     }
 
-    @Response('role.create')
+    @ResponseCustom('role.create')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
     @ErrorMeta(RoleAdminController.name, 'create')
     @Post('/create')
@@ -170,7 +170,7 @@ export class RoleAdminController {
         }
     }
 
-    @Response('role.update')
+    @ResponseCustom('role.update')
     @RoleUpdateGuard()
     @RequestParamGuard(RoleRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
@@ -220,7 +220,7 @@ export class RoleAdminController {
         };
     }
 
-    @Response('role.delete')
+    @ResponseCustom('role.delete')
     @RoleDeleteGuard()
     @RequestParamGuard(RoleRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_DELETE)
@@ -238,7 +238,7 @@ export class RoleAdminController {
         return;
     }
 
-    @Response('role.inactive')
+    @ResponseCustom('role.inactive')
     @RoleUpdateInactiveGuard()
     @RequestParamGuard(RoleRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
@@ -257,7 +257,7 @@ export class RoleAdminController {
         return;
     }
 
-    @Response('role.active')
+    @ResponseCustom('role.active')
     @RoleUpdateActiveGuard()
     @RequestParamGuard(RoleRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)

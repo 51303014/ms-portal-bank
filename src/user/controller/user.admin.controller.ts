@@ -30,7 +30,7 @@ import {IUserCheckExist, IUserCreate, IUserDocument} from '../user.interface';
 import {ADMIN_USER, ENUM_USER_STATUS_CODE_ERROR, ROLE_USER} from '../user.constant';
 import {PaginationService} from 'src/pagination/service/pagination.service';
 import {AuthService} from 'src/auth/service/auth.service';
-import {Response, ResponsePaging,} from 'src/utils/response/response.decorator';
+import {ResponseCustom, ResponsePaging,} from 'src/utils/response/response.decorator';
 import {IResponse, IResponsePaging,} from 'src/utils/response/response.interface';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {UserListDto} from '../dto/user.list.dto';
@@ -81,7 +81,7 @@ export class UserAdminController {
     ) {
     }
 
-    @Response('income-department-detail.list')
+    @ResponseCustom('income-department-detail.list')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -181,7 +181,7 @@ export class UserAdminController {
         }
     }
 
-    @Response('income-codeAM-detail.list')
+    @ResponseCustom('income-codeAM-detail.list')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -449,7 +449,7 @@ export class UserAdminController {
         };
     }
 
-    @Response('user.get')
+    @ResponseCustom('user.get')
     @UserGetGuard()
     @RequestParamGuard(UserRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
@@ -489,7 +489,7 @@ export class UserAdminController {
         );
     }
 
-    @Response('user.upload')
+    @ResponseCustom('user.upload')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_CREATE)
     @UploadFileSingle('file', ENUM_FILE_TYPE.EXCEL || ENUM_FILE_TYPE.CSV)
     @HttpCode(HttpStatus.OK)
@@ -598,7 +598,7 @@ export class UserAdminController {
         }
     }
 
-    @Response('admin.getInfoIncome')
+    @ResponseCustom('admin.getInfoIncome')
     @UserProfileGuard()
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
     @ErrorMeta(UserAdminController.name, 'get')
@@ -663,7 +663,7 @@ export class UserAdminController {
     }
 
 
-    @Response('admin.getIncomeUser')
+    @ResponseCustom('admin.getIncomeUser')
     @UserProfileGuard()
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ)
     @ErrorMeta(UserAdminController.name, 'get')
@@ -724,7 +724,7 @@ export class UserAdminController {
         }
     }
 
-    @Response('user.reset-password')
+    @ResponseCustom('user.reset-password')
     @UserProfileGuard()
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.SETTING_READ, ENUM_PERMISSIONS.SETTING_UPDATE)
     @ErrorMeta(UserAdminController.name, 'reset')
@@ -760,7 +760,7 @@ export class UserAdminController {
         }
     }
 
-    @Response('user.delete')
+    @ResponseCustom('user.delete')
     @UserDeleteGuard()
     @RequestParamGuard(UserRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.SETTING_READ, ENUM_PERMISSIONS.SETTING_UPDATE, ENUM_PERMISSIONS.USER_DELETE)
@@ -779,7 +779,7 @@ export class UserAdminController {
         return;
     }
 
-    @Response('user.create')
+    @ResponseCustom('user.create')
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.SETTING_READ, ENUM_PERMISSIONS.SETTING_UPDATE, ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_CREATE)
     @ErrorMeta(UserAdminController.name, 'create')
     @Post('/create')
@@ -843,7 +843,7 @@ export class UserAdminController {
         }
     }
 
-    @Response('user.update')
+    @ResponseCustom('user.update')
     @UserUpdateGuard()
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE, ENUM_PERMISSIONS.SETTING_UPDATE)
     @ErrorMeta(UserAdminController.name, 'update')
@@ -867,7 +867,7 @@ export class UserAdminController {
         };
     }
 
-    @Response('user.inactive')
+    @ResponseCustom('user.inactive')
     @UserUpdateInactiveGuard()
     @RequestParamGuard(UserRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)
@@ -886,7 +886,7 @@ export class UserAdminController {
         return;
     }
 
-    @Response('user.active')
+    @ResponseCustom('user.active')
     @UserUpdateActiveGuard()
     @RequestParamGuard(UserRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.USER_READ, ENUM_PERMISSIONS.USER_UPDATE)

@@ -18,7 +18,7 @@ import {
     PermissionUpdateInactiveGuard,
 } from '../permission.decorator';
 import {
-    Response,
+    ResponseCustom,
     ResponsePaging,
 } from 'src/utils/response/response.decorator';
 import {
@@ -105,7 +105,7 @@ export class PermissionAdminController {
         };
     }
 
-    @Response('permission.get')
+    @ResponseCustom('permission.get')
     @PermissionGetGuard()
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.PERMISSION_READ)
@@ -117,7 +117,7 @@ export class PermissionAdminController {
         return this.permissionService.serializationGet(permission);
     }
 
-    @Response('permission.update')
+    @ResponseCustom('permission.update')
     @PermissionUpdateGuard()
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
@@ -144,7 +144,7 @@ export class PermissionAdminController {
         };
     }
 
-    @Response('permission.inactive')
+    @ResponseCustom('permission.inactive')
     @PermissionUpdateInactiveGuard()
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(
@@ -168,7 +168,7 @@ export class PermissionAdminController {
         return;
     }
 
-    @Response('permission.active')
+    @ResponseCustom('permission.active')
     @PermissionUpdateActiveGuard()
     @RequestParamGuard(PermissionRequestDto)
     @AuthAdminJwtGuard(

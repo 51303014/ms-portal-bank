@@ -18,7 +18,7 @@ import {
     ENUM_AUTH_STATUS_CODE_ERROR,
     ENUM_AUTH_STATUS_CODE_SUCCESS,
 } from '../auth.constant';
-import { Response } from 'src/utils/response/response.decorator';
+import { ResponseCustom } from 'src/utils/response/response.decorator';
 import { IResponse } from 'src/utils/response/response.interface';
 import { IUserDocument } from 'src/user/user.interface';
 import { ENUM_LOGGER_ACTION } from 'src/logger/logger.constant';
@@ -47,7 +47,7 @@ export class AuthCommonController {
         private readonly authService: AuthService
     ) {}
 
-    @Response('auth.login', {
+    @ResponseCustom('auth.login', {
         statusCode: ENUM_AUTH_STATUS_CODE_SUCCESS.AUTH_LOGIN_SUCCESS,
     })
     @Logger(ENUM_LOGGER_ACTION.LOGIN, { tags: ['login', 'codeEmployee'] })
@@ -139,7 +139,7 @@ export class AuthCommonController {
         };
     }
 
-    @Response('auth.refresh')
+    @ResponseCustom('auth.refresh')
     @AuthRefreshJwtGuard()
     @HttpCode(HttpStatus.OK)
     @ErrorMeta(AuthCommonController.name, 'refresh')
@@ -202,7 +202,7 @@ export class AuthCommonController {
         };
     }
 
-    @Response('auth.changePassword')
+    @ResponseCustom('auth.changePassword')
     @AuthJwtGuard()
     @ErrorMeta(AuthCommonController.name, 'changePassword')
     @Patch('/change-password')

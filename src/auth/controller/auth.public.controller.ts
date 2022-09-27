@@ -14,7 +14,7 @@ import { ENUM_USER_STATUS_CODE_ERROR } from 'src/user/user.constant';
 import { IUserCheckExist, IUserDocument } from 'src/user/user.interface';
 import { ENUM_STATUS_CODE_ERROR } from 'src/utils/error/error.constant';
 import { ErrorMeta } from 'src/utils/error/error.decorator';
-import { Response } from 'src/utils/response/response.decorator';
+import { ResponseCustom } from 'src/utils/response/response.decorator';
 import { IResponse } from 'src/utils/response/response.interface';
 import { AuthSignUpDto } from '../dto/auth.sign-up.dto';
 import { AuthLoginSerialization } from '../serialization/auth.login.serialization';

@@ -9,7 +9,7 @@ import {
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {CardService} from "../service/card.service";
 import {GetUser, UserProfileGuard} from "../card.decorator";
 import {ICardCreate, ICardDocument} from "../card.interface";
@@ -31,7 +31,7 @@ export class CardController {
     ) {
     }
 
-    @Response('card.get.cif')
+    @ResponseCustom('card.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
@@ -130,7 +130,7 @@ export class CardController {
     }
 
 
-    @Response('card.list')
+    @ResponseCustom('card.list')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)

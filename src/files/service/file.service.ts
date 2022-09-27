@@ -166,26 +166,18 @@ export class FileService {
     }
 
     async checkExist(
-        email: string,
-        fileName: string,
+        typeFile: string,
         _id?: string
     ): Promise<IFileCheckExist> {
         const existFile: Record<string, any> = await this.fileModel.exists({
-            codeEmployee: {
-                $regex: new RegExp(email),
+            type: {
+                $regex: new RegExp(typeFile),
                 $options: 'i',
             },
             _id: { $nin: [new Types.ObjectId(_id)] },
         });
 
-        const existUser: Record<string, any> =
-            await this.fileModel.exists({
-                fileName,
-                _id: { $nin: [new Types.ObjectId(_id)] },
-            });
-
         return {
-            user: !!existUser,
             file: !!existFile,
         };
     }

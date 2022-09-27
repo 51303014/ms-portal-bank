@@ -9,7 +9,7 @@ import {
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {Response} from 'src/utils/response/response.decorator';
+import {ResponseCustom} from 'src/utils/response/response.decorator';
 import {IResponse} from 'src/utils/response/response.interface';
 import {AssetService} from "../service/asset.service";
 import {GetUser, UserProfileGuard} from "../asset.decorator";
@@ -25,7 +25,7 @@ export class AssetController {
     ) {
     }
 
-    @Response('user.profile')
+    @ResponseCustom('user.profile')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @ErrorMeta(AssetController.name, 'profile')
@@ -34,7 +34,7 @@ export class AssetController {
         return this.assetService.serializationProfile(user);
     }
 
-    @Response('assets.get.cif')
+    @ResponseCustom('assets.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)

@@ -3,7 +3,7 @@ import { PaginationService } from 'src/pagination/service/pagination.service';
 import { ErrorMeta } from 'src/utils/error/error.decorator';
 import { RequestParamGuard } from 'src/utils/request/request.decorator';
 import {
-    Response,
+    ResponseCustom,
     ResponsePaging,
 } from 'src/utils/response/response.decorator';
 import {
@@ -86,7 +86,7 @@ export class SettingCommonController {
         };
     }
 
-    @Response('setting.get')
+    @ResponseCustom('setting.get')
     @SettingGetGuard()
     @RequestParamGuard(SettingRequestDto)
     @ErrorMeta(SettingCommonController.name, 'get')
@@ -95,7 +95,7 @@ export class SettingCommonController {
         return this.settingService.serializationGet(setting);
     }
 
-    @Response('setting.getByName')
+    @ResponseCustom('setting.getByName')
     @SettingGetByNameGuard()
     @ErrorMeta(SettingCommonController.name, 'getByName')
     @Get('get/name/:settingName')

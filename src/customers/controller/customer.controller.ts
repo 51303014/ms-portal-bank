@@ -5,16 +5,15 @@ import {
     HttpCode,
     HttpStatus,
     InternalServerErrorException, NotFoundException,
-    Post, Query,
-    UploadedFile,
+    Post, Query, UnsupportedMediaTypeException,
+    UploadedFile, UseInterceptors,
 } from '@nestjs/common';
 import {AuthPublicJwtGuard} from 'src/auth/auth.decorator';
 import {AwsS3Service} from 'src/aws/service/aws.s3.service';
 import {ENUM_STATUS_CODE_ERROR} from 'src/utils/error/error.constant';
 import {ErrorMeta} from 'src/utils/error/error.decorator';
-import {ENUM_FILE_TYPE} from 'src/utils/file/file.constant';
-import {UploadFileSingle} from 'src/utils/file/file.decorator';
-import {Response, ResponsePaging} from 'src/utils/response/response.decorator';
+import {ENUM_FILE_IMAGE_MIME, ENUM_FILE_STATUS_CODE_ERROR} from 'src/utils/file/file.constant';
+import {ResponseCustom, ResponsePaging} from 'src/utils/response/response.decorator';
 import {IResponse, IResponsePaging} from 'src/utils/response/response.interface';
 import {CustomerService} from "../service/customer.service";
 import {GetUser, UserProfileGuard} from "../customer.decorator";
@@ -43,6 +42,9 @@ import {CustomerDocument} from "../schema/customer.schema";
 import {IncomeDocument} from "../../income/schema/income.schema";
 import {CustomerListSerialization} from "../serialization/customer.list.serialization";
 import {ADMIN_USER} from "../../user/user.constant";
+import LocalFilesInterceptor from "../../utils/file/interceptor/file.local.interceptor";
+import {FileService} from "../../files/service/file.service";
+import {ILocalFileResponse} from "../../aws/aws.interface";
 
 @Controller({
     version: '1',
@@ -61,10 +63,11 @@ export class CustomerController {
         private readonly awsService: AwsS3Service,
         private readonly fileHelperService: HelperFileService,
         private readonly paginationService: PaginationService,
+        private readonly fileService: FileService,
     ) {
     }
 
-    @Response('user.profile')
+    @ResponseCustom('user.profile')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @ErrorMeta(CustomerController.name, 'profile')
@@ -278,10 +281,28 @@ export class CustomerController {
         }
     }
 
-    @Response('customer.upload')
+    @ResponseCustom('customer.upload')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
-    @UploadFileSingle('file', ENUM_FILE_TYPE.EXCEL || ENUM_FILE_TYPE.CSV)
+    @UseInterceptors(LocalFilesInterceptor({
+        fieldName: 'file',
+        path: '/customer',
+        fileFilter: (request, file, callback) => {
+            if (!Object.values(ENUM_FILE_IMAGE_MIME).find(
+                (val) => val === file.mimetype.toLowerCase()
+            )) {
+                throw new UnsupportedMediaTypeException({
+                    statusCode:
+                    ENUM_FILE_STATUS_CODE_ERROR.FILE_EXTENSION_ERROR,
+                    message: 'file.error.mimeInvalid',
+                });
+            }
+            callback(null, true);
+        },
+        limits: {
+            fileSize: Math.pow(1024, 2) // 1MB
+        }
+    }))
     @HttpCode(HttpStatus.OK)
     @ErrorMeta(CustomerController.name, 'upload')
     @Post('/upload')
@@ -289,9 +310,13 @@ export class CustomerController {
         @GetUser() user: ICustomerDocument,
         @Body() customerFile: CustomerFile,
         @UploadedFile() file: Express.Multer.File,
-    ): Promise<void> {
+    ): Promise<any> {
+        const fileLocal: ILocalFileResponse = {
+            path: file.path,
+            mime: file.mimetype
+        }
         const workbook = new Excel.Workbook();
-        const content = await workbook.xlsx.load(file.buffer);
+        const content = await workbook.xlsx.readFile(file.path);
         if (!customerFile || !SheetName[customerFile.fileType]) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
@@ -305,6 +330,13 @@ export class CustomerController {
                     const rowStartIndex = 2;
                     const numberOfRows = worksheet.rowCount - 1;
                     const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
+
                     rows.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
@@ -361,6 +393,12 @@ export class CustomerController {
                     const rowStartIndexInfoCustomer = 2;
                     const numberOfRowsInfoCustomer = worksheetInfoCustomer.rowCount - 1;
                     const rowsInfoCustomer = worksheetInfoCustomer.getRows(rowStartIndexInfoCustomer, numberOfRowsInfoCustomer) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoCustomer.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
@@ -405,6 +443,12 @@ export class CustomerController {
                     const rowStartInfoCustomerMisLastYear = 2;
                     const numberOfRowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.rowCount - 1;
                     const rowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.getRows(rowStartInfoCustomerMisLastYear, numberOfRowsInfoCustomerMisLastYear) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoCustomerMisLastYear.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
@@ -433,6 +477,12 @@ export class CustomerController {
                     const rowStartInfoCustomerIncomeScale = 2;
                     const numberOfRowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.rowCount - 1;
                     const rowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.getRows(rowStartInfoCustomerIncomeScale, numberOfRowsInfoCustomerIncomeScale) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoCustomerIncomeScale.map(async row => {
                         try {
                             const infoCustomer: IIncomeCreate = {
@@ -504,7 +554,12 @@ export class CustomerController {
                     const rowStartInfoCustomerIncomeScaleLastYear = 2;
                     const numberOfRowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.rowCount - 1;
                     const rowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.getRows(rowStartInfoCustomerIncomeScaleLastYear, numberOfRowsInfoCustomerIncomeScaleLastYear) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoCustomerIncomeScaleLastYear.map(async row => {
                         try {
                             const infoCustomer: IIncomeCreate = {
@@ -579,7 +634,12 @@ export class CustomerController {
                     const rowStartInfoCustomerCoreDebt = 2
                     const numberOfRowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.rowCount - 1;
                     const rowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.getRows(rowStartInfoCustomerCoreDebt, numberOfRowsInfoCustomerCoreDebt) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoCustomerCoreDebt.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
@@ -611,7 +671,12 @@ export class CustomerController {
                     const rowStartInfoCustomerCoreDebtLastYear = 2
                     const numberOfRowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.rowCount - 1;
                     const rowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.getRows(rowStartInfoCustomerCoreDebtLastYear, numberOfRowsInfoCustomerCoreDebtLastYear) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoCustomerCoreDebtLastYear.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
@@ -641,7 +706,12 @@ export class CustomerController {
                     const rowStartInfoDebitDomesticCard = 2
                     const numberOfRowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.rowCount - 1;
                     const rowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.getRows(rowStartInfoDebitDomesticCard, numberOfRowsInfoDebitDomesticCard) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoDebitDomesticCard.map(async row => {
                         try {
                             const infoCard: ICardCreate = {
@@ -681,7 +751,12 @@ export class CustomerController {
                     const rowStartInfoDebitInternationalCard = 2
                     const numberOfRowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.rowCount - 1;
                     const rowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.getRows(rowStartInfoDebitInternationalCard, numberOfRowsInfoDebitInternationalCard) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoDebitInternationalCard.map(async row => {
                         try {
                             const infoCard: ICardCreate = {
@@ -722,7 +797,12 @@ export class CustomerController {
                     const rowStartInfoDetailTSDB = 3
                     const numberOfRowsInfoDetailTSDB = worksheetInfoDetailTSDB.rowCount - 2;
                     const rowsInfoDetailTSDB = worksheetInfoDetailTSDB.getRows(rowStartInfoDetailTSDB, numberOfRowsInfoDetailTSDB) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     await Promise.all(rowsInfoDetailTSDB.map(async row => {
                         try {
                             const valueTSDB = +this.fileHelperService.getCellValue(row, 9)
@@ -764,7 +844,12 @@ export class CustomerController {
                     const rowStartInfoProductServiceBrand = 2
                     const numberOfRowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.rowCount - 1;
                     const rowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.getRows(rowStartInfoProductServiceBrand, numberOfRowsInfoProductServiceBrand) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoProductServiceBrand.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
@@ -814,7 +899,12 @@ export class CustomerController {
                     const rowStartInfoProductServiceSystem = 2
                     const numberOfRowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.rowCount - 1;
                     const rowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.getRows(rowStartInfoProductServiceSystem, numberOfRowsInfoProductServiceSystem) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoProductServiceSystem.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
@@ -863,7 +953,12 @@ export class CustomerController {
                     const rowStartInfoCreditInternationalCard = 2
                     const numberOfRowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.rowCount - 1;
                     const rowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.getRows(rowStartInfoCreditInternationalCard, numberOfRowsInfoCreditInternationalCard) ?? [];
-
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoCreditInternationalCard.map(async row => {
                         try {
                             const infoCard: ICardCreate = {
@@ -923,6 +1018,12 @@ export class CustomerController {
                     const rowStartInfoRelevantCustomer = 2
                     const numberOfRowsInfoRelevantCustomer = worksheetInfoRelevantCustomer.rowCount - 1;
                     const rowsInfoRelevantCustomer = worksheetInfoRelevantCustomer.getRows(rowStartInfoRelevantCustomer, numberOfRowsInfoRelevantCustomer) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoRelevantCustomer.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
@@ -949,6 +1050,12 @@ export class CustomerController {
                     const rowStartInfoRelevantCompany = 2
                     const numberOfRowsInfoRelevantCompany = worksheetInfoRelevantCompany.rowCount - 1;
                     const rowsInfoRelevantCompany = worksheetInfoRelevantCompany.getRows(rowStartInfoRelevantCompany, numberOfRowsInfoRelevantCompany) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoRelevantCompany.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
@@ -974,6 +1081,12 @@ export class CustomerController {
                     const rowStartInfoWorkWithCustomer = 2
                     const numberOfRowsInfoWorkWithCustomer = worksheetInfoWorkWithCustomer.rowCount - 1;
                     const rowsInfoWorkWithCustomer = worksheetInfoWorkWithCustomer.getRows(rowStartInfoWorkWithCustomer, numberOfRowsInfoWorkWithCustomer) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoWorkWithCustomer.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
@@ -1001,6 +1114,12 @@ export class CustomerController {
                     const rowStartInfoOtherCustomer = 2
                     const numberOfRowsInfoOtherCustomer = worksheetInfoOtherCustomer.rowCount - 1;
                     const rowsInfoOtherCustomer = worksheetInfoOtherCustomer.getRows(rowStartInfoOtherCustomer, numberOfRowsInfoOtherCustomer) ?? [];
+                    await this.fileService.create({
+                        fileName: `${file.filename}`,
+                        type: customerFile.fileType,
+                        user: user._id,
+                        file: fileLocal
+                    })
                     rowsInfoOtherCustomer.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
@@ -1036,7 +1155,7 @@ export class CustomerController {
     }
 
 
-    @Response('customer.get.cif')
+    @ResponseCustom('customer.get.cif')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
     @HttpCode(HttpStatus.OK)
