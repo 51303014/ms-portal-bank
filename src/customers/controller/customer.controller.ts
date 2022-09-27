@@ -77,9 +77,6 @@ export class CustomerController {
     }
 
     async handleRole(user: IUserDocument, role: string): Promise<IncomeDocument[]> {
-        if (role === 'admin') {
-            return await this.incomeService.findAll();
-        }
         if (role === 'manager') {
             let listIncome: IncomeDocument[] = await this.incomeService.findAll();
             listIncome = listIncome.filter(v => user.codeLevelSix.includes(v.codeDepartmentLevelSix));
@@ -1174,6 +1171,9 @@ export class CustomerController {
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
                 message: 'customerInfo.error.notFound',
             });
+        }
+        if (user?.role?.name === 'admin') {
+            return customerInfo;
         }
         try {
             const incomeInfo: IncomeDocument[] = await this.handleRole(user, user?.role?.name);
