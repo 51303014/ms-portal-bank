@@ -57,7 +57,7 @@
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/terminus": "^8.1.0",
     "@types/response-time": "^2.3.5",
-    "aws-sdk": "^2.1172.0",
+    "aws-sdk": "^2.1224.0",
     "bcrypt": "^5.0.1",
     "cache-manager": "^4.1.0",
     "class-transformer": "^0.5.1",
