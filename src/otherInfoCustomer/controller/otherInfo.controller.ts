@@ -89,7 +89,7 @@ export class OtherInfoController {
             bodyOtherInfos.map(async (info) => {
                 const infoOther: IOtherInfoCustomerCreate = {
                     cif: info.cif,
-                    dateKHCCAdditional: new Date(info.dateKHCCAdditional),
+                    dateKHCCAdditional: info.dateKHCCAdditional ? new Date(info.dateKHCCAdditional) : null,
                     productsApply: info.productsApply,
                     programsApplied: info.programsApplied,
                     priorityKHRegistered: info.priorityKHRegistered,
