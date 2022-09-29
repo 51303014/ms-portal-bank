@@ -49,16 +49,15 @@ export class UserSeed {
                 'aaAA@@123444'
             );
 
-            // await this.userService.create({
-            //     firstName: 'admin',
-            //     lastName: 'test',
-            //     codeEmployee: '80553',
-            //     password: password.passwordHash,
-            //     passwordExpired: password.passwordExpired,
-            //     mobileNumber: '08111111111',
-            //     role: roleAdmin._id,
-            //     salt: password.salt,
-            // });
+            await this.userService.create({
+                fullName: 'võ tấn trần duy',
+                codeEmployee: '80553',
+                password: password.passwordHash,
+                passwordExpired: password.passwordExpired,
+                mobileNumber: '0913659111',
+                role: roleAdmin._id,
+                salt: password.salt,
+            });
             //
             // await this.userService.create({
             //     firstName: 'user',
