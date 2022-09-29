@@ -22,7 +22,8 @@ import {FileService} from '../service/file.service';
 import {GetUser, UserProfileGuard} from '../file.decorator';
 import {IFileCreate, IFileDocument, TypeFile} from "../file.interface";
 import * as XLSX from 'xlsx';
-import {FileCreateDto} from "../dto/file.create.dto";
+import {CustomerService} from "../../customers/service/customer.service";
+import {CustomerDocument} from "../../customers/schema/customer.schema";
 
 @Controller({
     version: '1',
@@ -31,6 +32,7 @@ import {FileCreateDto} from "../dto/file.create.dto";
 export class FileController {
     constructor(
         private readonly fileService: FileService,
+        private readonly customerService: CustomerService,
         private readonly awsService: AwsS3Service
     ) {
     }
@@ -102,6 +104,7 @@ export class FileController {
         const fileInfo = await this.fileService.findAll({user: user._id});
         if (fileInfo.length > 0) {
             const workbook = XLSX.utils.book_new();
+
             try {
                 fileInfo.map(async (data) => {
                     const wb = XLSX.readFile(data.file.path);
@@ -133,7 +136,6 @@ export class FileController {
         }
     }
 
-
     @ResponseCustom('file.download.single')
     @UserProfileGuard()
     @AuthPublicJwtGuard()
@@ -145,18 +147,81 @@ export class FileController {
         @GetUser() user: IFileDocument,
         @Query()
             {
-                type
-            }
+                cif
+            },
     ): Promise<any> {
-        const fileInfo: FileCreateDto = await this.fileService.findOne({type: type});
-        if (fileInfo) {
+        const customer: CustomerDocument[] = await this.customerService.findAll({cif});
+        if (customer) {
             try {
-                const url = await this.awsService.generatePreSignedUrl(fileInfo.file.pathWithFilename);
-                return {
-                    ...fileInfo.file,
-                    url
-                }
+                const workbook = XLSX.utils.book_new();
+                const mappingCustomer = customer.map((v) => {
+                    return {
+                        CIF: v.cif,
+                        "Họ tên khách hàng": v.fullName,
+                        "CN mở CIF": v.brandCifOpen,
+                        "Ngày mở CIF": v.dateCifOpen,
+                        "Quốc tịch": v.nationality,
+                        "Địa chỉ": v.address,
+                        "Nơi cư trú": v.residence,
+                        "Ngày sinh": v.birthday,
+                        "Nơi sinh": v.birthPlace,
+                        "Số định danh(CMND/CCCD)": v.numberIdentity,
+                        "Ngày hiệu lựcCMND/CCCD": v.effectiveDate,
+                        "Tuổi": v.age,
+                        "Email": v.email,
+                        "SĐT": v.mobile,
+                        "Giới tính": v.gender,
+                        "Tình trạng hôn nhân": v.maritalStatus,
+                        "Ngành nghề": v.job,
+                        "Thời gian quan hệ với Ngân hàng": v.relationshipBank,
+                        "Trạng thái khách hàng": v.currentStatus,
+                        "Trạng thái trước đó": v.previousStatus,
+                        "Ngày thay đổi trạng thái": v.statusChangeDate,
+                        "Đối tượng khách hàng": v.customerType,
+                        "Phân đoạn khách hàng": v.customerSegment,
+                        "Phân đoạn số dư tín dụng": v.creditBalanceSegment,
+                        "Phân đoạn số dư huy động": v.depositBalanceSegment,
+                        "Nhóm nợ": v.debtGroup,
+                        "Thu nhập thuần năm trước của khách hàng tại Chi nhánh": v.incomeBrandLastYear,
+                        "Thu nhập thuần từ đầu năm của khách hàng tại Chi nhánh": v.incomeBrandYearly,
+                        "Thu nhập thuần năm trước của khách hàng toàn hệ thống": v.incomeTotalLastYear,
+                        "Thu nhập thuần từ đầu năm của khách hàng trên toàn hệ thống": v.incomeTotalYearly,
+                        "Giới hạn tín dụng theo khách hàng (Quy đổi)": v.creditLimitCustomer,
+                        "Tổng số dư tín dụng cuối năm trước (quy đổi)": v.totalCreditBalanceLastYear,
+                        "Tổng số dư tín dụng cuối ngày (quy đổi)": v.totalCreditBalanceEndDay,
+                        "Tổng số dư tín dụng bình quân năm trước (quy đổi)": v.totalCreditBalanceAvgLastYear,
+                        "Tổng số dư tín dụng bình quân trong kỳ (quy đổi)": v.totalCreditBalanceAvgBeginYear,
+                        "Dư nợ lãi cuối năm trước (quy đổi)": v.coreDebtLastYear,
+                        "Dư nợ lãi cuối ngày (quy đổi)": v.coreDebt,
+                        "Dư nợ cho vay cuối năm trước (quy đổi)": v.balanceDebtLastYear,
+                        "Dư nợ cho vay cuối ngày (quy đổi)": v.balanceDebtEndDay,
+                        "Dư nợ thẻ tín dụng cuối năm trước (quy đổi)": v.balanceCreditLastYear,
+                        "Dư nợ thẻ tín dụng cuối ngày (quy đổi)": v.balanceCreditEndDay,
+                        "Dư nợ thấu chi cuối năm trước (quy đổi)": v.overdraftBalanceLastYear,
+                        "Dư nợ thấu chi cuối ngày (quy đổi)": v.overdraftBalanceEndDay,
+                        "Tổng số dư huy động cuối năm trước (quy đổi)": v.totalDepositBalanceLastYear,
+                        "Tổng số dư huy động cuối ngày (quy đổi)": v.totalDepositBalanceEndDay,
+                        "Tổng số dư huy động bình quân năm trước (quy đổi)": v.totalDepositBalanceAvgLastYear,
+                        "Tổng số dư huy động bình quân trong kỳ từ đầu năm (quy đổi)": v.totalDepositBalanceAvgBeginYear,
+                        "Số dư tiền gửi thanh toán cuối năm trước (quy đổi)": v.paymentBalanceDepositLastYear,
+                        "Số dư tiền gửi thanh toán cuối ngày (quy đổi)": v.paymentBalanceDepositEndDay,
+                        "Số dư tiền gửi có kỳ hạn cuối năm trước (quy đổi)": v.termDepositBalanceLastYear,
+                        "Số dư tiền gửi có kỳ hạn cuối ngày (quy đổi)": v.termDepositBalanceEndDay,
+                        "Chi tiết TSĐB theo từng khoản vay": v.totalValueTSDB
+                    }
+                })
+
+                const ws = XLSX.utils.json_to_sheet(mappingCustomer);
+
+                XLSX.utils.book_append_sheet(workbook, ws, 'Sheet1');
+
+                return XLSX.write(workbook, {
+                    type: 'base64',
+                    bookType: "xlsx",
+                    bookSST: false
+                })
             } catch (err) {
+                console.log(err);
                 throw new InternalServerErrorException({
                     statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                     message: 'http.serverError.internalServerError',
