@@ -186,16 +186,11 @@ export class UserService {
         );
         const user: UserEntity = {
             fullName,
-            codeAM,
-            codeBDS,
-            codeDepartment,
-            codeDepartmentLevelSix,
             position,
             birthday,
             identityCard,
             email,
             CRA,
-            department,
             codeEmployee,
             mobileNumber,
             password: password.passwordHash,
@@ -205,6 +200,21 @@ export class UserService {
             salt,
             passwordExpired,
         };
+        if (codeDepartment) {
+            user.codeDepartment = codeDepartment;
+        }
+        if (codeBDS) {
+            user.codeBDS = codeBDS;
+        }
+        if (codeAM) {
+            user.codeAM = codeAM;
+        }
+        if (codeDepartmentLevelSix) {
+            user.codeDepartmentLevelSix = codeDepartmentLevelSix;
+        }
+        if (department) {
+            user.department = department;
+        }
 
         const create: UserDocument = new this.userModel(user);
         return create.save();

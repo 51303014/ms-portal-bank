@@ -2,28 +2,11 @@ import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
 import {Types, Document} from 'mongoose';
 import {IAwsS3Response} from 'src/aws/aws.interface';
 import {RoleEntity} from 'src/role/schema/role.schema';
-import {PermissionEntity} from "../../permission/schema/permission.schema";
-import {CodeDepartmentLevelSixEntity} from "../../codeDepartmentLevelSix/schema/codeDepartmentLevelSix.schema";
 
 @Schema({timestamps: true, versionKey: false})
 export class UserEntity {
     @Prop({
         required: false,
-        lowercase: true,
-        trim: true,
-    })
-    firstName?: string;
-
-    @Prop({
-        required: false,
-        lowercase: true,
-        trim: true,
-    })
-    lastName?: string;
-
-    @Prop({
-        required: false,
-        lowercase: true,
         trim: true,
     })
     fullName?: string;
@@ -37,7 +20,6 @@ export class UserEntity {
         required: true,
         index: true,
         unique: true,
-        lowercase: true,
         trim: true,
     })
     codeEmployee: string;
@@ -59,7 +41,6 @@ export class UserEntity {
 
     @Prop({
         required: false,
-        lowercase: true,
         trim: true,
     })
     codeDepartment?: string;
@@ -73,14 +54,11 @@ export class UserEntity {
 
     @Prop({
         required: false,
-        unique: true,
-        lowercase: true,
         trim: true,
     })
     codeBDS?: string;
 
     @Prop({
-        lowercase: true,
         trim: true,
     })
     position: string;
@@ -110,10 +88,11 @@ export class UserEntity {
     CRA: string;
 
     @Prop({
+        required: false,
         lowercase: true,
         trim: true,
     })
-    department: string;
+    department?: string;
 
     @Prop({
         required: true,

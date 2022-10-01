@@ -43,6 +43,7 @@ import {IncomeDocument} from "../../income/schema/income.schema";
 import {CustomerListSerialization} from "../serialization/customer.list.serialization";
 import {ADMIN_USER} from "../../user/user.constant";
 import LocalFilesInterceptor from "../../utils/file/interceptor/file.local.interceptor";
+import bytes from 'bytes';
 
 @Controller({
     version: '1',
@@ -294,7 +295,7 @@ export class CustomerController {
             callback(null, true);
         },
         limits: {
-            fileSize: Math.pow(1024, 2) // 1MB
+            fileSize: bytes('10000kb') // 10MB
         }
     }))
     @HttpCode(HttpStatus.OK)
@@ -455,8 +456,7 @@ export class CustomerController {
 
                     rowsInfoCustomerIncomeScale.map(async row => {
                         try {
-                            if (!this.fileHelperService.getCellValue(row, 3) || this.fileHelperService.getCellValue(row, 2)
-                            || this.fileHelperService.getCellValue(row, 1)) {
+                            if (!this.fileHelperService.getCellValue(row, 3)) {
                                 return;
                             }
                             const infoCustomer: IIncomeCreate = {
