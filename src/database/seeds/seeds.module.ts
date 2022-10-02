@@ -10,6 +10,8 @@ import { AuthModule } from 'src/auth/auth.module';
 import { CoreModule } from 'src/core/core.module';
 import { AuthApiSeed } from './auth.api.seed';
 import { SettingSeed } from './setting.seed';
+import { CodeLevelSixSeed } from './codeLevelSix.seed';
+import { CodeDepartmentLevelSixModule } from 'src/codeDepartmentLevelSix/codeDepartmentLevelSix.module';
 
 @Module({
     imports: [
@@ -19,8 +21,9 @@ import { SettingSeed } from './setting.seed';
         AuthModule,
         UserModule,
         RoleModule,
+        CodeDepartmentLevelSixModule
     ],
-    providers: [AuthApiSeed, PermissionSeed, RoleSeed, UserSeed, SettingSeed],
+    providers: [AuthApiSeed, PermissionSeed, RoleSeed, UserSeed, SettingSeed, CodeLevelSixSeed],
     exports: [],
 })
 export class SeedsModule {}
