@@ -58,6 +58,15 @@ export class UserSeed {
                 role: roleAdmin._id,
                 salt: password.salt,
             });
+            await this.userService.create({
+                fullName: 'Đặng Thị Ngọc An',
+                codeEmployee: '169044',
+                password: password.passwordHash,
+                passwordExpired: password.passwordExpired,
+                mobileNumber: '0913659111',
+                role: roleAdmin._id,
+                salt: password.salt,
+            });
             //
             // await this.userService.create({
             //     firstName: 'user',
