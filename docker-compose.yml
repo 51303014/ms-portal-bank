@@ -10,7 +10,7 @@ services:
       - app-network
     volumes:
       - ./src/:/app/src/
-      - .env.production/:/app/.env.production
+      - .env/:/app/.env
     restart: unless-stopped
     depends_on:
       - mongodb
