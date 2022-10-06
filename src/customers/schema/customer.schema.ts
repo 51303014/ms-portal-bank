@@ -932,25 +932,25 @@ export class CustomerEntity {
         required: false,
         trim: true,
     })
-    incomeBrandYearly: number;
+    incomeBrandYearly: string;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeBrandLastYear: number;
+    incomeBrandLastYear: string;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeTotalYearly: number;
+    incomeTotalYearly: string;
 
     @Prop({
         required: false,
         trim: true,
     })
-    incomeTotalLastYear: number;
+    incomeTotalLastYear: string;
 
     @Prop({
         type: Date,

@@ -354,8 +354,8 @@ export class CustomerController {
                                 creditBalanceSegment: this.fileHelperService.getCellValue(row, 25),
                                 depositBalanceSegment: this.fileHelperService.getCellValue(row, 26),
                                 debtGroup: this.fileHelperService.getCellValue(row, 27),
-                                incomeBrandYearly: +this.fileHelperService.getCellValue(row, 28),
-                                incomeTotalYearly: +this.fileHelperService.getCellValue(row, 29)
+                                incomeBrandYearly: this.fileHelperService.getCellValue(row, 28),
+                                incomeTotalYearly: this.fileHelperService.getCellValue(row, 29)
                             }
                             const customerInfo: ICustomerCreate = await this.customerService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 1)
@@ -429,8 +429,8 @@ export class CustomerController {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
-                                incomeBrandLastYear: +this.fileHelperService.getCellValue(row, 2),
-                                incomeTotalLastYear: +this.fileHelperService.getCellValue(row, 3),
+                                incomeBrandLastYear: this.fileHelperService.getCellValue(row, 2),
+                                incomeTotalLastYear: this.fileHelperService.getCellValue(row, 3),
                             }
                             const customerInfo: ICustomerCreate = await this.customerService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 1)
@@ -456,7 +456,7 @@ export class CustomerController {
 
                     rowsInfoCustomerIncomeScale.map(async row => {
                         try {
-                            if (!this.fileHelperService.getCellValue(row, 3)) {
+                            if (!this.fileHelperService.getCellValue(row, 2)) {
                                 return;
                             }
                             const infoCustomer: IIncomeCreate = {
@@ -531,8 +531,7 @@ export class CustomerController {
 
                     rowsInfoCustomerIncomeScaleLastYear.map(async row => {
                         try {
-                            if (!this.fileHelperService.getCellValue(row, 3) || this.fileHelperService.getCellValue(row, 2)
-                                || this.fileHelperService.getCellValue(row, 1)) {
+                            if (!this.fileHelperService.getCellValue(row, 2)) {
                                 return;
                             }
                             const infoCustomer: IIncomeCreate = {
@@ -594,6 +593,7 @@ export class CustomerController {
                             }
                             return await this.incomeService.create(infoCustomer);
                         } catch (error) {
+                            console.log(error)
                             throw new InternalServerErrorException({
                                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                                 message: 'http.serverError.internalServerError',
@@ -696,6 +696,7 @@ export class CustomerController {
                             // }
                             return await this.cardService.create(infoCard);
                         } catch (error) {
+                            console.log(error)
                             throw new InternalServerErrorException({
                                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                                 message: 'http.serverError.internalServerError',

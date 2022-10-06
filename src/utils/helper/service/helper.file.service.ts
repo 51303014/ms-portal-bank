@@ -16,13 +16,19 @@ export class HelperFileService {
         this.appName = this.configService.get<string>('app.name');
     }
 
-    getCellValue(row: excelJs.Row, cellIndex: number) {
+    getCellValue(row: excelJs.Row, cellIndex: number, cif?: boolean) {
         const cell = row.getCell(cellIndex);
+        if (cif && (cell.value === 0 || cell.value === '0')) {
+            return '0';
+        }
         return cell && cell.value ? cell.value.toString() : '';
     };
 
-    getCellFormulaValue(row: excelJs.Row, cellIndex: number) {
+    getCellFormulaValue(row: excelJs.Row, cellIndex: number, cif?: boolean) {
         const value = row.getCell(cellIndex).value as excelJs.CellFormulaValue;
+        if (cif && (value.result === 0 || value.result === '0')) {
+            return '0';
+        }
         return value && value.result ? value.result.toString() : '';
     };
 

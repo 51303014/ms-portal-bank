@@ -442,6 +442,7 @@ export class CustomerService {
         }: IIncomeCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
+        if (!customerModel) {return;};
         customerModel.cif = id;
         customerModel.totalCreditBalanceAvgLastYear = totalCreditBalanceAvgLastYear;
         customerModel.totalDepositBalanceAvgLastYear = totalDepositBalanceAvgLastYear;

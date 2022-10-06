@@ -32,10 +32,10 @@ export interface ICustomerCreate {
     creditBalanceSegment?: string;
     depositBalanceSegment?: string;
     debtGroup?: string;
-    incomeBrandYearly?: number;
-    incomeBrandLastYear?: number;
-    incomeTotalYearly?: number;
-    incomeTotalLastYear?: number;
+    incomeBrandYearly?: string;
+    incomeBrandLastYear?: string;
+    incomeTotalYearly?: string;
+    incomeTotalLastYear?: string;
     currentStatus?: string;
     previousStatus?: string;
     creditLimitCustomer?: string;
