@@ -50,9 +50,11 @@ export interface IIncomeCreate {
     incomeBuySharesAndContribution?: number;
     incomeGolden?: number;
     incomeExcludeInterestKDNTPS?: number;
+    incomeFromCardService?: number,
+    incomeFromCardInterest?: number,
     incomeOtherActivity?: number;
     incomeInterestKDNTPS?: number;
-    incomeFromDebt?: number;
+    incomeFromDebtCurrency?: number;
     incomeFromCardAndInterestService?: number;
     raisingCapitalAtTheEndLastYear?: number;
     raisingCapitalAtTheEndExchangeLastYear?: number;
@@ -93,6 +95,9 @@ export interface IIncomeCreate {
     incomeOtherActivityLastYear?: number;
     incomeFromDebtLastYear?: number;
     incomeFromCardAndInterestServiceLastYear?: number;
+    incomeFromCardServiceLastYear?: number,
+    incomeFromCardInterestLastYear?: number,
+    incomeFromDebtCurrencyLastYear?: number,
     totalCreditBalanceAvgLastYear?: number;
     totalDepositBalanceAvgLastYear?: number;
     user: string;

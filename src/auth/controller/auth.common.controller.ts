@@ -68,7 +68,7 @@ export class AuthCommonController {
                     },
                 }
             );
-
+            console.log(user);
         if (!user) {
             throw new NotFoundException({
                 statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,

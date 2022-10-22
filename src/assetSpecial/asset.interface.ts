@@ -7,6 +7,7 @@ export interface IAssetDocument extends Omit<AssetDocument, 'user'> {
 
 export interface IAssetCreate {
     cif?: string;
+    codeDepartmentLevelSix?: string;
     fullName?: string;
     totalDebtTSDB?: string;
     debtShortTSDB?: string;

@@ -1153,7 +1153,9 @@ export class IncomeService {
                      incomeExcludeInterestKDNTPS,
                      incomeOtherActivity,
                      incomeInterestKDNTPS,
-                     incomeFromDebt,
+                     incomeFromDebtCurrency,
+                     incomeFromCardService,
+                     incomeFromCardInterest,
                      incomeFromCardAndInterestService,
                      raisingCapitalAtTheEndLastYear,
                      raisingCapitalAtTheEndExchangeLastYear,
@@ -1194,6 +1196,9 @@ export class IncomeService {
                      incomeOtherActivityLastYear,
                      incomeFromDebtLastYear,
                      incomeFromCardAndInterestServiceLastYear,
+                     incomeFromCardInterestLastYear,
+                     incomeFromCardServiceLastYear,
+                     incomeFromDebtCurrencyLastYear
                  }: IIncomeCreate
     ):
         Promise<IncomeDocument> {
@@ -1204,7 +1209,7 @@ export class IncomeService {
             codeAM,
             codeDepartmentLevelSix,
             incomeFromCardAndInterestService,
-            incomeFromDebt,
+            incomeFromDebtCurrency,
             incomeInterestKDNTPS,
             incomeOtherActivity,
             incomeExcludeInterestKDNTPS,
@@ -1219,6 +1224,8 @@ export class IncomeService {
             incomeHDVFTPBaseMore,
             incomeGuaranteeActivities,
             incomeFromInterestFTPBaseMore,
+            incomeFromCardService,
+            incomeFromCardInterest,
             incomeFTPBaseMore,
             kindOfMoney,
             raisingCapitalAtTheEnd,
@@ -1282,6 +1289,9 @@ export class IncomeService {
             incomeOtherActivityLastYear,
             incomeFromDebtLastYear,
             incomeFromCardAndInterestServiceLastYear,
+            incomeFromCardInterestLastYear,
+            incomeFromCardServiceLastYear,
+            incomeFromDebtCurrencyLastYear,
             user: new Types.ObjectId(user)
         };
 
@@ -1311,9 +1321,7 @@ export class IncomeService {
     }
 
     async updateOneByIdInfoCustomerIncomeScale(
-        id
-            :
-            string,
+        id: string,
         {
             cif,
             codeAM,
@@ -1358,7 +1366,9 @@ export class IncomeService {
             incomeExcludeInterestKDNTPS,
             incomeOtherActivity,
             incomeInterestKDNTPS,
-            incomeFromDebt,
+            incomeFromDebtCurrency,
+            incomeFromCardInterest,
+            incomeFromCardService,
             incomeFromCardAndInterestService
         }
             :
@@ -1411,7 +1421,9 @@ export class IncomeService {
         incomeModel.incomeExcludeInterestKDNTPS = incomeExcludeInterestKDNTPS;
         incomeModel.incomeOtherActivity = incomeOtherActivity;
         incomeModel.incomeInterestKDNTPS = incomeInterestKDNTPS;
-        incomeModel.incomeFromDebt = incomeFromDebt;
+        incomeModel.incomeFromDebtCurrency = incomeFromDebtCurrency;
+        incomeModel.incomeFromCardInterest = incomeFromCardInterest;
+        incomeModel.incomeFromCardService = incomeFromCardService;
         incomeModel.incomeFromCardAndInterestService = incomeFromCardAndInterestService;
         return incomeModel.save();
     }
@@ -1464,6 +1476,9 @@ export class IncomeService {
             incomeOtherActivityLastYear,
             incomeFromDebtLastYear,
             incomeFromCardAndInterestServiceLastYear,
+            incomeFromCardServiceLastYear,
+            incomeFromCardInterestLastYear,
+            incomeFromDebtCurrencyLastYear,
         }
             :
             IIncomeCreate
@@ -1517,6 +1532,10 @@ export class IncomeService {
         incomeModel.incomeOtherActivityLastYear = incomeOtherActivityLastYear;
         incomeModel.incomeFromDebtLastYear = incomeFromDebtLastYear;
         incomeModel.incomeFromCardAndInterestServiceLastYear = incomeFromCardAndInterestServiceLastYear;
+        incomeModel.incomeFromCardServiceLastYear = incomeFromCardServiceLastYear;
+        incomeModel.incomeFromCardInterestLastYear = incomeFromCardInterestLastYear;
+        incomeModel.incomeFromDebtCurrencyLastYear = incomeFromDebtCurrencyLastYear;
+
         return incomeModel.save();
     }
 

@@ -510,7 +510,7 @@ export class UserAdminController {
                 case 'InfoUser':
                     rows.map(async row => {
                         try {
-                            const userInfo: IUserCreate = {
+                            let userInfo: IUserCreate = {
                                 codeEmployee: this.fileHelperService.getCellValue(row, 1),
                                 fullName: this.fileHelperService.getCellValue(row, 2),
                                 position: this.fileHelperService.getCellValue(row, 3),
@@ -520,6 +520,13 @@ export class UserAdminController {
                                 email: this.fileHelperService.getCellValue(row, 7),
                                 CRA: this.fileHelperService.getCellValue(row, 8)
                             };
+                            const role = await this.handleRole(userInfo);
+                            if (role) {
+                                userInfo = {
+                                    ...userInfo,
+                                    role: role._id
+                                }
+                            }
                             const info: IUserCreate = await this.userService.findOne({
                                 codeEmployee: this.fileHelperService.getCellValue(row, 1)
                             });

@@ -236,7 +236,7 @@ export class CardService {
             codeDebitDomestic,
             statusDebitDomestic,
             formPHTDebitDomestic
-        }: ICustomerCreate
+        }: ICardCreate
     ): Promise<CardDocument> {
         const cardModel: CardDocument = await this.cardModel.findOne({cif: id});
         cardModel.cif = id;
@@ -281,7 +281,7 @@ export class CardService {
             numberOfTransactionsCreditCard,
             numberOfTransactionsDebtCreditCard,
             numberOfTransactionsWriteCreditCard
-        }: ICustomerCreate
+        }: ICardCreate
     ): Promise<CardDocument> {
         const cardModel: CardDocument = await this.cardModel.findOne({cif: id});
         cardModel.cif = id;
@@ -327,7 +327,7 @@ export class CardService {
             typeCardDebitInternational,
             codeCardDebitInternational,
             codeAM
-        }: ICustomerCreate
+        }: ICardCreate
     ): Promise<CardDocument> {
         const cardModel: CardDocument = await this.cardModel.findOne({cif: id});
         cardModel.cif = id;

@@ -13,14 +13,12 @@ export class CustomerEntity {
 
     @Prop({
         required: false,
-        trim: true,
         index: true
     })
     codeAM?: string;
 
     @Prop({
         required: false,
-        trim: true,
         index: true
     })
     codeDepartmentLevelSix?: string;
@@ -1105,11 +1103,13 @@ export class CustomerEntity {
     })
     fileTypeCustomer?: string;
     @Prop({
+        default: 0,
         required: false,
         trim: true,
     })
     coreDebt?: number;
     @Prop({
+        default: 0,
         required: false,
         trim: true,
     })

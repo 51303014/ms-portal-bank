@@ -12,6 +12,12 @@ export class AssetEntity {
 
     @Prop({
         required: false,
+        index: true
+    })
+    codeDepartmentLevelSix?: string;
+
+    @Prop({
+        required: false,
         trim: true,
     })
     fullName?: string;

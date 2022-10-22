@@ -124,6 +124,7 @@ export class CustomerService {
     async create({
                      cif,
                      codeAM,
+                     codeDepartmentLevelSix,
                      customerId,
                      user,
                      address,
@@ -199,6 +200,7 @@ export class CustomerService {
                  }: ICustomerCreate): Promise<CustomerDocument> {
         const customerEntity: CustomerEntity = {
             cif,
+            codeDepartmentLevelSix,
             customerId,
             address,
             age,
@@ -466,17 +468,14 @@ export class CustomerService {
     async updateOneByInfoCustomerCoreDebt(
         id: string,
         type: SheetName,
-        {
-            coreDebt,
-            coreDebtLastYear
-        }: ICustomerCreate
+        total: number
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
         if (type === SheetName.InfoCustomerCoreDebt) {
-            customerModel.coreDebt = coreDebt;
+            customerModel.coreDebt = total;
         }
         if (type === SheetName.InfoCustomerCoreDebtLastYear) {
-            customerModel.coreDebtLastYear = coreDebtLastYear;
+            customerModel.coreDebtLastYear = total;
         }
         return customerModel.save();
     }

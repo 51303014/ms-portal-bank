@@ -135,6 +135,7 @@ export class AssetService {
 
     async create({
                      cif,
+                     codeDepartmentLevelSix,
                      fullName,
                      totalDebtTSDB,
                      debtShortTSDB,
@@ -147,6 +148,7 @@ export class AssetService {
                  }: IAssetCreate): Promise<AssetDocument> {
         const AssetEntity: AssetEntity = {
             cif,
+            codeDepartmentLevelSix,
             fullName,
             totalDebtTSDB,
             debtShortTSDB,
