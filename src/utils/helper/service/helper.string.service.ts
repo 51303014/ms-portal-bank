@@ -106,4 +106,11 @@ export class HelperStringService {
         const regex = new RegExp('^[A-Za-z0-9_-]+$');
         return regex.test(text);
     }
+
+    formatCurrency(amount: string | number) {
+        if (!amount) {
+            return;
+        }
+        return amount.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 }

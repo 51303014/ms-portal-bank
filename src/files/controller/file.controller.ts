@@ -24,6 +24,8 @@ import {IFileCreate, IFileDocument, TypeFile} from "../file.interface";
 import * as XLSX from 'xlsx';
 import {CustomerService} from "../../customers/service/customer.service";
 import {CustomerDocument} from "../../customers/schema/customer.schema";
+import {HelperDateService} from "../../utils/helper/service/helper.date.service";
+import {HelperStringService} from "../../utils/helper/service/helper.string.service";
 
 @Controller({
     version: '1',
@@ -32,6 +34,8 @@ import {CustomerDocument} from "../../customers/schema/customer.schema";
 export class FileController {
     constructor(
         private readonly fileService: FileService,
+        private readonly helperDateService: HelperDateService,
+        private readonly helperStringService: HelperStringService,
         private readonly customerService: CustomerService,
         private readonly awsService: AwsS3Service
     ) {
@@ -166,7 +170,7 @@ export class FileController {
                         "Ngày sinh": v.birthday,
                         "Nơi sinh": v.birthPlace,
                         "Số định danh(CMND/CCCD)": v.numberIdentity,
-                        "Ngày hiệu lựcCMND/CCCD": v.effectiveDate,
+                        "Ngày hiệu lực CMND/CCCD": v.effectiveDate,
                         "Tuổi": v.age,
                         "Email": v.email,
                         "SĐT": v.mobile,
@@ -182,32 +186,32 @@ export class FileController {
                         "Phân đoạn số dư tín dụng": v.creditBalanceSegment,
                         "Phân đoạn số dư huy động": v.depositBalanceSegment,
                         "Nhóm nợ": v.debtGroup,
-                        "Thu nhập thuần năm trước của khách hàng tại Chi nhánh": v.incomeBrandLastYear,
-                        "Thu nhập thuần từ đầu năm của khách hàng tại Chi nhánh": v.incomeBrandYearly,
-                        "Thu nhập thuần năm trước của khách hàng toàn hệ thống": v.incomeTotalLastYear,
-                        "Thu nhập thuần từ đầu năm của khách hàng trên toàn hệ thống": v.incomeTotalYearly,
-                        "Giới hạn tín dụng theo khách hàng (Quy đổi)": v.creditLimitCustomer,
-                        "Tổng số dư tín dụng cuối năm trước (quy đổi)": v.totalCreditBalanceLastYear,
-                        "Tổng số dư tín dụng cuối ngày (quy đổi)": v.totalCreditBalanceEndDay,
-                        "Tổng số dư tín dụng bình quân năm trước (quy đổi)": v.totalCreditBalanceAvgLastYear,
-                        "Tổng số dư tín dụng bình quân trong kỳ (quy đổi)": v.totalCreditBalanceAvgBeginYear,
-                        "Dư nợ lãi cuối năm trước (quy đổi)": v.coreDebtLastYear,
-                        "Dư nợ lãi cuối ngày (quy đổi)": v.coreDebt,
-                        "Dư nợ cho vay cuối năm trước (quy đổi)": v.balanceDebtLastYear,
-                        "Dư nợ cho vay cuối ngày (quy đổi)": v.balanceDebtEndDay,
-                        "Dư nợ thẻ tín dụng cuối năm trước (quy đổi)": v.balanceCreditLastYear,
-                        "Dư nợ thẻ tín dụng cuối ngày (quy đổi)": v.balanceCreditEndDay,
-                        "Dư nợ thấu chi cuối năm trước (quy đổi)": v.overdraftBalanceLastYear,
-                        "Dư nợ thấu chi cuối ngày (quy đổi)": v.overdraftBalanceEndDay,
-                        "Tổng số dư huy động cuối năm trước (quy đổi)": v.totalDepositBalanceLastYear,
-                        "Tổng số dư huy động cuối ngày (quy đổi)": v.totalDepositBalanceEndDay,
-                        "Tổng số dư huy động bình quân năm trước (quy đổi)": v.totalDepositBalanceAvgLastYear,
-                        "Tổng số dư huy động bình quân trong kỳ từ đầu năm (quy đổi)": v.totalDepositBalanceAvgBeginYear,
-                        "Số dư tiền gửi thanh toán cuối năm trước (quy đổi)": v.paymentBalanceDepositLastYear,
-                        "Số dư tiền gửi thanh toán cuối ngày (quy đổi)": v.paymentBalanceDepositEndDay,
-                        "Số dư tiền gửi có kỳ hạn cuối năm trước (quy đổi)": v.termDepositBalanceLastYear,
-                        "Số dư tiền gửi có kỳ hạn cuối ngày (quy đổi)": v.termDepositBalanceEndDay,
-                        "Chi tiết TSĐB theo từng khoản vay": v.totalValueTSDB
+                        "Thu nhập thuần năm trước của khách hàng tại Chi nhánh": this.helperStringService.formatCurrency(v.incomeBrandLastYear),
+                        "Thu nhập thuần từ đầu năm của khách hàng tại Chi nhánh": this.helperStringService.formatCurrency(v.incomeBrandYearly),
+                        "Thu nhập thuần năm trước của khách hàng toàn hệ thống": this.helperStringService.formatCurrency(v.incomeTotalLastYear),
+                        "Thu nhập thuần từ đầu năm của khách hàng trên toàn hệ thống": this.helperStringService.formatCurrency(v.incomeTotalYearly),
+                        "Giới hạn tín dụng theo khách hàng (Quy đổi)": this.helperStringService.formatCurrency(v.creditLimitCustomer),
+                        "Tổng số dư tín dụng cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.totalCreditBalanceLastYear),
+                        "Tổng số dư tín dụng cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.totalCreditBalanceEndDay),
+                        "Tổng số dư tín dụng bình quân năm trước (quy đổi)": this.helperStringService.formatCurrency(v.totalCreditBalanceAvgLastYear),
+                        "Tổng số dư tín dụng bình quân trong kỳ (quy đổi)": this.helperStringService.formatCurrency(v.totalCreditBalanceAvgBeginYear),
+                        "Dư nợ lõi cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.coreDebtLastYear),
+                        "Dư nợ lõi cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.coreDebt),
+                        "Dư nợ cho vay cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.balanceDebtLastYear),
+                        "Dư nợ cho vay cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.balanceDebtEndDay),
+                        "Dư nợ thẻ tín dụng cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.balanceCreditLastYear),
+                        "Dư nợ thẻ tín dụng cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.balanceCreditEndDay),
+                        "Dư nợ thấu chi cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.overdraftBalanceLastYear),
+                        "Dư nợ thấu chi cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.overdraftBalanceEndDay),
+                        "Tổng số dư huy động cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.totalDepositBalanceLastYear),
+                        "Tổng số dư huy động cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.totalDepositBalanceEndDay),
+                        "Tổng số dư huy động bình quân năm trước (quy đổi)": this.helperStringService.formatCurrency(v.totalDepositBalanceAvgLastYear),
+                        "Tổng số dư huy động bình quân trong kỳ từ đầu năm (quy đổi)": this.helperStringService.formatCurrency(v.totalDepositBalanceAvgBeginYear),
+                        "Số dư tiền gửi thanh toán cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.paymentBalanceDepositLastYear),
+                        "Số dư tiền gửi thanh toán cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.paymentBalanceDepositEndDay),
+                        "Số dư tiền gửi có kỳ hạn cuối năm trước (quy đổi)": this.helperStringService.formatCurrency(v.termDepositBalanceLastYear),
+                        "Số dư tiền gửi có kỳ hạn cuối ngày (quy đổi)": this.helperStringService.formatCurrency(v.termDepositBalanceEndDay),
+                        "Chi tiết TSĐB theo từng khoản vay": this.helperStringService.formatCurrency(v.totalValueTSDB)
                     }
                 })
 
