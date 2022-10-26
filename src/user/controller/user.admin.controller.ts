@@ -349,6 +349,7 @@ export class UserAdminController {
         if (search) {
             find['$expr'] = {
                 "$and": [
+                    {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
                     {"$eq": [{"$dayOfMonth": "$birthday"}, {"$dayOfMonth": this.helperDateService.addDays(new Date(search), 1)}]},
 
                 ]
