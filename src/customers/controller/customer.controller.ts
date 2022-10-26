@@ -44,7 +44,6 @@ import {CustomerListSerialization} from "../serialization/customer.list.serializ
 import {ADMIN_USER} from "../../user/user.constant";
 import LocalFilesInterceptor from "../../utils/file/interceptor/file.local.interceptor";
 import bytes from 'bytes';
-import e from 'express';
 
 @Controller({
     version: '1',

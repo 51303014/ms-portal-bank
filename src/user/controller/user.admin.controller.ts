@@ -347,20 +347,20 @@ export class UserAdminController {
             birthday: 1
         }
         if (search) {
-            find['$or'] = [
-                {
-                    cif: {
-                        $regex: new RegExp(search),
-                        $options: 'i',
-                    }
-                },
-            ];
+            find['$expr'] = {
+                "$and": [
+                    {"$eq": [{"$dayOfMonth": "$birthday"}, {"$dayOfMonth": this.helperDateService.addDays(new Date(search), 1)}]},
+
+                ]
+            };
+        } else {
+            find['$expr'] = {
+                "$and": [
+                    {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
+                ]
+            };
         }
-        find['$expr'] = {
-            "$and": [
-                {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
-            ]
-        };
+
         const customerInfo: CustomerDocument[] = await this.customerService.findAll(find, {
             limit: perPage,
             skip: skip,
