@@ -4,10 +4,14 @@ import {
     IsNotEmpty,
     MaxLength,
     IsOptional,
-    ValidateIf, IsDate,
+    ValidateIf, IsDate, IsMongoId,
 } from 'class-validator';
+import { Types } from 'mongoose';
 
 export class WorkCustomerCreateDto {
+
+    @Type(() => IsMongoId())
+    readonly _id: Types.ObjectId;
 
     @IsString()
     @IsNotEmpty()

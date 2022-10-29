@@ -123,9 +123,9 @@ export class WorkCustomerService {
     }
 
     async createOrUpdate({
+                    _id,
                      cif,
                      codeAM,
-                     codeDepartmentLevelSix,
                      statusFix,
                      result,
                      inProgress,
@@ -136,12 +136,14 @@ export class WorkCustomerService {
                  }: IWorkCustomerCreate
     ):
         Promise<WorkCustomerDocument> {
-        const infoUserCreated: WorkCustomerDocument  = await this.findOne({user, cif});
-        if (infoUserCreated) {
-            infoUserCreated.inProgress = inProgress;
-            infoUserCreated.result = result;
-            infoUserCreated.statusFix = statusFix;
-            infoUserCreated.workHandle = workHandle;
+        const infoUserCreate: WorkCustomerDocument  = await this.workCustomerModel.findOne({_id, user, cif});
+        console.log(infoUserCreate);
+        if (infoUserCreate) {
+            infoUserCreate.inProgress = inProgress;
+            infoUserCreate.result = result;
+            infoUserCreate.statusFix = statusFix;
+            infoUserCreate.workHandle = workHandle;
+            return infoUserCreate.save();
         }
         const workCustomerEntity: WorkCustomerEntity = {
             dateStart,
@@ -152,8 +154,7 @@ export class WorkCustomerService {
             statusFix,
             workHandle,
             cif,
-            codeAM,
-            codeDepartmentLevelSix,
+            codeAM
         };
 
         const create: WorkCustomerDocument = new this.workCustomerModel(workCustomerEntity);

@@ -1,4 +1,7 @@
+import { Types } from "mongoose";
+
 export interface IWorkCustomerCreate {
+    _id?: Types.ObjectId;
     cif?: string;
     codeAM?: string;
     codeDepartmentLevelSix?: string;

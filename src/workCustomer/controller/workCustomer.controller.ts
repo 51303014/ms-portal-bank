@@ -20,6 +20,7 @@ import {IUserDocument} from "../../user/user.interface";
 import {ENUM_USER_STATUS_CODE_ERROR} from "../../customers/customer.constant";
 import {WorkCustomerDocument} from "../schema/workCustomer.schema";
 import {HelperDateService} from "../../utils/helper/service/helper.date.service";
+import { Types } from 'mongoose';
 
 class IParentDocument {
 }
@@ -120,14 +121,13 @@ export class WorkCustomerController {
         //         });
         //     }
         // }
-
         try {
             bodyWorkCustomers.map(async (info) => {
                 const infoWorkCus: IWorkCustomerCreate = {
+                    _id:  new Types.ObjectId(info._id) ,
                     cif: info.cif,
                     user: user._id,
                     codeAM: user.codeAM,
-                    codeDepartmentLevelSix: user.codeDepartmentLevelSix,
                     workHandle: info.workHandle,
                     dateStart: new Date(info.dateStart),
                     deadline: new Date(info.deadline),

@@ -322,7 +322,7 @@ export class CustomerController {
                     const numberOfRows = worksheet.rowCount - 1;
                     const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
 
-                    rows.map(async row => {
+                    Promise.all([rows.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -361,7 +361,8 @@ export class CustomerController {
                                 message: 'http.serverError.internalServerError',
                             });
                         }
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoCustomer:
                     const worksheetInfoCustomer = content.getWorksheet(1);
@@ -369,7 +370,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomer = worksheetInfoCustomer.rowCount - 1;
                     const rowsInfoCustomer = worksheetInfoCustomer.getRows(rowStartIndexInfoCustomer, numberOfRowsInfoCustomer) ?? [];
 
-                    rowsInfoCustomer.map(async row => {
+                    Promise.all([rowsInfoCustomer.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -406,7 +407,8 @@ export class CustomerController {
                                 message: 'http.serverError.internalServerError',
                             });
                         }
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoCustomerMisLastYear:
                     const worksheetInfoCustomerMisLastYear = content.getWorksheet(1);
@@ -414,7 +416,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.rowCount - 1;
                     const rowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.getRows(rowStartInfoCustomerMisLastYear, numberOfRowsInfoCustomerMisLastYear) ?? [];
 
-                    rowsInfoCustomerMisLastYear.map(async row => {
+                    Promise.all([rowsInfoCustomerMisLastYear.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -435,7 +437,8 @@ export class CustomerController {
                                 message: 'http.serverError.internalServerError',
                             });
                         }
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoCustomerIncomeScale:
                     const worksheetInfoCustomerIncomeScale = content.getWorksheet(1);
@@ -443,7 +446,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.rowCount - 1;
                     const rowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.getRows(rowStartInfoCustomerIncomeScale, numberOfRowsInfoCustomerIncomeScale) ?? [];
 
-                    rowsInfoCustomerIncomeScale.map(async row => {
+                    Promise.all([rowsInfoCustomerIncomeScale.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 2)) {
                                 return;
@@ -516,7 +519,9 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
+                   
                     break;
                 case SheetName.InfoCustomerIncomeScaleLastYear:
                     const worksheetInfoCustomerIncomeScaleLastYear = content.getWorksheet(1);
@@ -524,7 +529,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.rowCount - 1;
                     const rowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.getRows(rowStartInfoCustomerIncomeScaleLastYear, numberOfRowsInfoCustomerIncomeScaleLastYear) ?? [];
 
-                    rowsInfoCustomerIncomeScaleLastYear.map(async row => {
+                    Promise.all([rowsInfoCustomerIncomeScaleLastYear.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 2)) {
                                 return;
@@ -600,7 +605,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoCustomerCoreDebt:
                     const worksheetInfoCustomerCoreDebt = content.getWorksheet(1);
@@ -608,7 +614,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.rowCount - 1;
                     const rowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.getRows(rowStartInfoCustomerCoreDebt, numberOfRowsInfoCustomerCoreDebt) ?? [];
 
-                    rowsInfoCustomerCoreDebt.map(async row => {
+                    Promise.all([rowsInfoCustomerCoreDebt.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -634,7 +640,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
 
                 case SheetName.InfoCustomerCoreDebtLastYear:
@@ -643,7 +650,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.rowCount - 1;
                     const rowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.getRows(rowStartInfoCustomerCoreDebtLastYear, numberOfRowsInfoCustomerCoreDebtLastYear) ?? [];
 
-                    rowsInfoCustomerCoreDebtLastYear.map(async row => {
+                    Promise.all([rowsInfoCustomerCoreDebtLastYear.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -669,7 +676,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoDebitDomesticCard:
                     const worksheetInfoDebitDomesticCard = content.getWorksheet(1);
@@ -677,7 +685,7 @@ export class CustomerController {
                     const numberOfRowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.rowCount - 1;
                     const rowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.getRows(rowStartInfoDebitDomesticCard, numberOfRowsInfoDebitDomesticCard) ?? [];
 
-                    rowsInfoDebitDomesticCard.map(async row => {
+                    Promise.all([rowsInfoDebitDomesticCard.map(async row => {
                         try {
                             const infoCard: ICardCreate = {
                                 user: user._id,
@@ -712,7 +720,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoDebitInternationalCard:
                     const worksheetInfoDebitInternationalCard = content.getWorksheet(1);
@@ -720,7 +729,7 @@ export class CustomerController {
                     const numberOfRowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.rowCount - 1;
                     const rowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.getRows(rowStartInfoDebitInternationalCard, numberOfRowsInfoDebitInternationalCard) ?? [];
 
-                    rowsInfoDebitInternationalCard.map(async row => {
+                    Promise.all([rowsInfoDebitInternationalCard.map(async row => {
                         try {
                             const infoCard: ICardCreate = {
                                 user: user._id,
@@ -755,7 +764,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoDetailTSDB:
                     const worksheetInfoDetailTSDB = content.getWorksheet(1);
@@ -806,7 +816,7 @@ export class CustomerController {
                     const numberOfRowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.rowCount - 1;
                     const rowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.getRows(rowStartInfoProductServiceBrand, numberOfRowsInfoProductServiceBrand) ?? [];
 
-                    rowsInfoProductServiceBrand.map(async row => {
+                    Promise.all([rowsInfoProductServiceBrand.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -849,7 +859,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoProductServiceSystem:
                     const worksheetInfoProductServiceSystem = content.getWorksheet(1);
@@ -857,7 +868,7 @@ export class CustomerController {
                     const numberOfRowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.rowCount - 1;
                     const rowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.getRows(rowStartInfoProductServiceSystem, numberOfRowsInfoProductServiceSystem) ?? [];
 
-                    rowsInfoProductServiceSystem.map(async row => {
+                    Promise.all([rowsInfoProductServiceSystem.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -898,7 +909,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoCreditInternationalCard:
                     const worksheetInfoCreditInternationalCard = content.getWorksheet(1);
@@ -906,7 +918,7 @@ export class CustomerController {
                     const numberOfRowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.rowCount - 1;
                     const rowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.getRows(rowStartInfoCreditInternationalCard, numberOfRowsInfoCreditInternationalCard) ?? [];
 
-                    rowsInfoCreditInternationalCard.map(async row => {
+                    Promise.all([rowsInfoCreditInternationalCard.map(async row => {
                         const fullName = this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2);
                         const department = this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3);
                         try {
@@ -963,7 +975,8 @@ export class CustomerController {
                             });
                         }
 
-                    });
+                    })
+                ])
                     break;
                 case SheetName.InfoRelevantCustomer:
                     const worksheetInfoRelevantCustomer = content.getWorksheet(1);
