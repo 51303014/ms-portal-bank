@@ -392,6 +392,7 @@ export class CustomerController {
                                 paymentBalanceDepositEndDay: this.fileHelperService.getCellValue(row, 16),
                                 termDepositBalanceLastYear: this.fileHelperService.getCellValue(row, 17),
                                 termDepositBalanceEndDay: this.fileHelperService.getCellValue(row, 18),
+                                totalCreditBalanceAvgLastYear: +this.fileHelperService.getCellValue(row, 19)
                             }
                             const customerInfo: ICustomerCreate = await this.customerService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 1)
@@ -909,8 +910,7 @@ export class CustomerController {
                             });
                         }
 
-                    })
-                ])
+                    })])
                     break;
                 case SheetName.InfoCreditInternationalCard:
                     const worksheetInfoCreditInternationalCard = content.getWorksheet(1);
