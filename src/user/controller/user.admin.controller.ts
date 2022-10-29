@@ -461,7 +461,7 @@ export class UserAdminController {
     }
 
     async handleRole(bodyUser) {
-        if (bodyUser.position === 'Giám đốc') {
+        if (bodyUser?.position?.toLowerCase() === 'giám đốc') {
             return await this.roleService.findOne<RoleDocument>(
                 {
                     name: 'admin',
@@ -469,7 +469,7 @@ export class UserAdminController {
             );
         }
 
-        if (bodyUser.position === 'Phó Giám đốc' && bodyUser.department === 'Ban Giám đốc') {
+        if (bodyUser?.position?.toLowerCase() === 'phó giám đốc') {
             return await this.roleService.findOne<RoleDocument>(
                 {
                     name: 'manager',

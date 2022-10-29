@@ -122,7 +122,7 @@ export class WorkCustomerService {
         return file.lean();
     }
 
-    async create({
+    async createOrUpdate({
                      cif,
                      codeAM,
                      codeDepartmentLevelSix,
@@ -132,13 +132,22 @@ export class WorkCustomerService {
                      deadline,
                      dateStart,
                      workHandle,
+                     user,
                  }: IWorkCustomerCreate
     ):
         Promise<WorkCustomerDocument> {
+        const infoUserCreated: WorkCustomerDocument  = await this.findOne({user, cif});
+        if (infoUserCreated) {
+            infoUserCreated.inProgress = inProgress;
+            infoUserCreated.result = result;
+            infoUserCreated.statusFix = statusFix;
+            infoUserCreated.workHandle = workHandle;
+        }
         const workCustomerEntity: WorkCustomerEntity = {
             dateStart,
             deadline,
             inProgress,
+            user: new Types.ObjectId(user),
             result,
             statusFix,
             workHandle,

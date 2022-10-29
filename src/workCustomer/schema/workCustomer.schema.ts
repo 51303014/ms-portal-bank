@@ -1,5 +1,6 @@
 import {Prop, Schema, SchemaFactory} from '@nestjs/mongoose';
-import { Document} from 'mongoose';
+import { Document, Types} from 'mongoose';
+import { UserEntity } from 'src/user/schema/user.schema';
 
 @Schema({timestamps: true, versionKey: false})
 export class WorkCustomerEntity {
@@ -59,6 +60,13 @@ export class WorkCustomerEntity {
         trim: true,
     })
     statusFix?: string;
+    
+    @Prop({
+        required: true,
+        type: Types.ObjectId,
+        ref: UserEntity.name,
+    })
+    user: Types.ObjectId;
 }
 
 export const WorkCustomerDatabaseName = 'workCustomers';

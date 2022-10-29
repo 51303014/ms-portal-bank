@@ -322,28 +322,17 @@ export class CustomerController {
                     const numberOfRows = worksheet.rowCount - 1;
                     const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
 
-
                     rows.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
                                 cif: this.fileHelperService.getCellValue(row, 1),
-                                fullName: this.fileHelperService.getCellValue(row, 2),
-                                brandCifOpen: +this.fileHelperService.getCellValue(row, 3),
-                                dateCifOpen: this.fileHelperService.getCellValueCommon(row, 4) ? new Date(this.fileHelperService.getCellValueCommon(row, 4)) : null,
-                                nationality: this.fileHelperService.getCellValue(row, 5),
                                 address: this.fileHelperService.getCellValue(row, 6),
-                                residence: this.fileHelperService.getCellValue(row, 7),
-                                birthday: this.fileHelperService.getCellValueCommon(row, 8) ? new Date(this.fileHelperService.getCellValueCommon(row, 8)) : null,
-                                birthPlace: this.fileHelperService.getCellValue(row, 9),
-                                customerId: this.fileHelperService.getCellValue(row, 10),
                                 numberIdentity: this.fileHelperService.getCellValue(row, 11),
                                 effectiveDate: this.fileHelperService.getCellValueCommon(row, 12) ? new Date(this.fileHelperService.getCellValueCommon(row, 12)) : null,
                                 age: +this.fileHelperService.getCellValue(row, 13),
                                 email: this.fileHelperService.getCellValue(row, 14),
                                 mobile: this.fileHelperService.getCellValue(row, 15),
-                                gender: this.fileHelperService.getCellFormulaValue(row, 16) ? this.fileHelperService.getCellFormulaValue(row, 16) : this.fileHelperService.getCellValue(row, 16),
-                                maritalStatus: this.fileHelperService.getCellValue(row, 17),
                                 job: this.fileHelperService.getCellValue(row, 18),
                                 relationshipBank: this.fileHelperService.getCellValue(row, 19),
                                 currentStatus: this.fileHelperService.getCellFormulaValue(row, 20) ? this.fileHelperService.getCellFormulaValue(row, 20) : this.fileHelperService.getCellValue(row, 20),
@@ -1038,6 +1027,7 @@ export class CustomerController {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 1)) return;
                             const info: IWorkCustomerCreate = {
+                                user: user._id,
                                 cif: this.fileHelperService.getCellFormulaValue(row, 1) ? this.fileHelperService.getCellFormulaValue(row, 1) : this.fileHelperService.getCellValue(row, 1),
                                 workHandle: this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2),
                                 dateStart: this.fileHelperService.getCellValueCommon(row, 3) ? new Date(this.fileHelperService.getCellValueCommon(row, 3)) : null,
@@ -1046,7 +1036,7 @@ export class CustomerController {
                                 result: this.fileHelperService.getCellFormulaValue(row, 6) ? this.fileHelperService.getCellFormulaValue(row, 6) : this.fileHelperService.getCellValue(row, 6),
                                 statusFix: this.fileHelperService.getCellFormulaValue(row, 7) ? this.fileHelperService.getCellFormulaValue(row, 7) : this.fileHelperService.getCellValue(row, 7)
                             }
-                            return await this.workCustomerService.create(info);
+                            return await this.workCustomerService.createOrUpdate(info);
                         } catch (error) {
                             throw new InternalServerErrorException({
                                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,

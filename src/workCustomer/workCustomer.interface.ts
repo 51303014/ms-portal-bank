@@ -8,6 +8,7 @@ export interface IWorkCustomerCreate {
     inProgress: string;
     result: string;
     statusFix: string;
+    user: string;
 }
 
 export type IWorkCustomerUpdate = Pick<IWorkCustomerCreate, 'cif'>;

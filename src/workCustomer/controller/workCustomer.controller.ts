@@ -72,9 +72,9 @@ export class WorkCustomerController {
         @GetUser() user: IUserDocument,
     ): Promise<any> {
         const find: Record<string, any> = {};
-
         find['$expr'] = {
             "$and": [
+                {user: user._id},
                 {"$eq": [{"$dayOfMonth": "$deadline"}, {"$dayOfMonth": this.helperDateService.addDays(new Date, 3)}]},
             ]
         };
@@ -125,6 +125,7 @@ export class WorkCustomerController {
             bodyWorkCustomers.map(async (info) => {
                 const infoWorkCus: IWorkCustomerCreate = {
                     cif: info.cif,
+                    user: user._id,
                     codeAM: user.codeAM,
                     codeDepartmentLevelSix: user.codeDepartmentLevelSix,
                     workHandle: info.workHandle,
@@ -134,7 +135,7 @@ export class WorkCustomerController {
                     result: info.result,
                     statusFix: info.statusFix
                 }
-                await this.workCustomerService.create(infoWorkCus)
+                await this.workCustomerService.createOrUpdate(infoWorkCus)
             })
             return;
         } catch (err: any) {

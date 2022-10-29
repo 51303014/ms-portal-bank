@@ -317,22 +317,12 @@ export class CustomerService {
     async updateOneByInfoCustomerMis(
         id: string,
         {
-            fullName,
-            brandCifOpen,
-            dateCifOpen,
-            nationality,
             address,
-            residence,
-            birthday,
-            birthPlace,
-            customerId,
             numberIdentity,
             effectiveDate,
             age,
             email,
             mobile,
-            gender,
-            maritalStatus,
             job,
             relationshipBank,
             currentStatus,
@@ -348,22 +338,12 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.fullName = fullName;
-        customerModel.brandCifOpen = brandCifOpen;
-        customerModel.dateCifOpen = dateCifOpen;
-        customerModel.nationality = nationality;
         customerModel.address = address;
-        customerModel.residence = residence;
-        customerModel.birthday = birthday;
-        customerModel.birthPlace = birthPlace;
-        customerModel.customerId = customerId;
         customerModel.numberIdentity = numberIdentity;
         customerModel.effectiveDate = effectiveDate;
         customerModel.age = age;
         customerModel.email = email;
         customerModel.mobile = mobile;
-        customerModel.gender = gender;
-        customerModel.maritalStatus = maritalStatus;
         customerModel.job = job;
         customerModel.relationshipBank = relationshipBank;
         customerModel.currentStatus = currentStatus;
@@ -507,7 +487,9 @@ export class CustomerService {
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
-        customerModel.fullName = fullName;
+        if (fullName) {
+            customerModel.fullName = fullName;
+        }
         customerModel.productServiceBrandTGCKH = productServiceBrandTGCKH;
         customerModel.productServiceBrandTGTT = productServiceBrandTGTT;
         customerModel.productServiceBrandLOAN = productServiceBrandLOAN;
