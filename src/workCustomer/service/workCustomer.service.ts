@@ -10,6 +10,7 @@ import {CustomerDocument} from "../../customers/schema/customer.schema";
 import {CustomerListSerialization} from "../../customers/serialization/customer.list.serialization";
 import {plainToInstance} from "class-transformer";
 import {WorkCustomerListSerialization} from "../serialization/work-customer.list.serialization";
+import {RoleEntity} from "../../role/schema/role.schema";
 
 
 @Injectable()
@@ -46,7 +47,10 @@ export class WorkCustomerService {
         find?: Record<string, any>,
         options?: IDatabaseFindAllOptions
     ): Promise<T[]> {
-        const files = this.workCustomerModel.find(find)
+        const files = this.workCustomerModel.find(find).populate({
+            path: 'user',
+            model: UserEntity.name,
+        });
 
         if (
             options &&

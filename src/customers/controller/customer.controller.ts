@@ -44,6 +44,7 @@ import {CustomerListSerialization} from "../serialization/customer.list.serializ
 import {ADMIN_USER} from "../../user/user.constant";
 import LocalFilesInterceptor from "../../utils/file/interceptor/file.local.interceptor";
 import bytes from 'bytes';
+import {HelperDateService} from "../../utils/helper/service/helper.date.service";
 
 @Controller({
     version: '1',
@@ -62,6 +63,7 @@ export class CustomerController {
         private readonly awsService: AwsS3Service,
         private readonly fileHelperService: HelperFileService,
         private readonly paginationService: PaginationService,
+        private readonly helperDateService: HelperDateService,
     ) {
     }
 
@@ -199,21 +201,21 @@ export class CustomerController {
         try {
             const find: Record<string, any> = {};
             if (search) {
-                find['$or'] = [
-                    {
-                        cif: {
-                            $regex: new RegExp(search),
-                            $options: 'i',
-                        },
-                    },
-                ];
+                find['$expr'] = {
+                    "$and": [
+                        {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
+                        {"$eq": [{"$dayOfMonth": "$birthday"}, {"$dayOfMonth": this.helperDateService.addDays(new Date(search), 1)}]},
+
+                    ]
+                };
+            } else {
+                find['$expr'] = {
+                    "$and": [
+                        {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
+                    ]
+                };
             }
 
-            find['$expr'] = {
-                "$and": [
-                    {"$eq": [{"$month": "$birthday"}, {"$month": new Date()}]},
-                ]
-            };
             const incomeInfo: IncomeDocument[] = user?.role?.name === 'user' ? await this.incomeService.findAll({codeAM: user.codeAM},
                 {
                     skip: skip,

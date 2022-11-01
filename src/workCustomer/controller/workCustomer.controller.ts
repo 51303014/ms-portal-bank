@@ -20,7 +20,7 @@ import {IUserDocument} from "../../user/user.interface";
 import {ENUM_USER_STATUS_CODE_ERROR} from "../../customers/customer.constant";
 import {WorkCustomerDocument} from "../schema/workCustomer.schema";
 import {HelperDateService} from "../../utils/helper/service/helper.date.service";
-import { Types } from 'mongoose';
+import {Types} from 'mongoose';
 
 class IParentDocument {
 }
@@ -43,14 +43,30 @@ export class WorkCustomerController {
     @ErrorMeta(WorkCustomerController.name, 'workCustomers-get-detail')
     @Get('/')
     async getInfo(
-        @GetUser() user: IParentDocument,
+        @GetUser() user: IUserDocument,
         @Query()
             {
                 cif
             }
     ): Promise<any> {
         const cifParams = cif ? cif : '';
-        const info: IWorkCustomerCreate[] = await this.workCustomerService.findAll({cifParams});
+        const find: Record<string, any> = {};
+
+        if (user?.role?.name === 'admin') {
+            find['$expr'] = {
+                "$and": [
+                    {cifParams},
+                ]
+            };
+        } else {
+            find['$expr'] = {
+                "$and": [
+                    {user: user._id},
+                    {cifParams},
+                ]
+            };
+        }
+        const info: IWorkCustomerCreate[] = await this.workCustomerService.findAll(find);
         if (info) {
             try {
                 return info
@@ -73,12 +89,20 @@ export class WorkCustomerController {
         @GetUser() user: IUserDocument,
     ): Promise<any> {
         const find: Record<string, any> = {};
-        find['$expr'] = {
-            "$and": [
-                {user: user._id},
-                {"$eq": [{"$dayOfMonth": "$deadline"}, {"$dayOfMonth": this.helperDateService.addDays(new Date, 3)}]},
-            ]
-        };
+        if (user?.role?.name === 'admin') {
+            find['$expr'] = {
+                "$and": [
+                    {"$eq": [{"$dayOfMonth": "$deadline"}, {"$dayOfMonth": this.helperDateService.addDays(new Date, 3)}]},
+                ]
+            };
+        } else {
+            find['$expr'] = {
+                "$and": [
+                    {user: user._id},
+                    {"$eq": [{"$dayOfMonth": "$deadline"}, {"$dayOfMonth": this.helperDateService.addDays(new Date, 3)}]},
+                ]
+            };
+        }
         const customerInfo: WorkCustomerDocument[] = await this.workCustomerService.findAll(find);
 
         if (!customerInfo.length) {
@@ -124,7 +148,7 @@ export class WorkCustomerController {
         try {
             bodyWorkCustomers.map(async (info) => {
                 const infoWorkCus: IWorkCustomerCreate = {
-                    _id:  new Types.ObjectId(info._id) ,
+                    _id: new Types.ObjectId(info._id),
                     cif: info.cif,
                     user: user._id,
                     codeAM: user.codeAM,

@@ -74,6 +74,12 @@ export class IncomeController {
                         $options: 'i',
                     },
                 },
+                {
+                    cif: {
+                        $regex: new RegExp(search),
+                        $options: 'i',
+                    },
+                },
             ];
         }
         if (user?.role?.name === 'user') {
@@ -220,6 +226,12 @@ export class IncomeController {
             };
         } catch (error) {
             console.log(error);
+            if (error?.status === 404) {
+                throw new NotFoundException({
+                    statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_NOT_FOUND_ERROR,
+                    message: 'income.error.notFound',
+                });
+            }
             throw new InternalServerErrorException({
                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                 message: 'http.serverError.internalServerError',
