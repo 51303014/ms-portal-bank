@@ -100,6 +100,7 @@ export class OtherInfoService {
     }
 
     async create({
+                     _id,
                      cif,
                      dateKHCCAdditional,
                      expensesPayed,
@@ -107,11 +108,37 @@ export class OtherInfoService {
                      productsApply,
                      programsApplied,
                      favouriteCustomer,
-                     habitsCustomer
+                     habitsCustomer,
+                     user
                  }: IOtherInfoCustomerCreate
     ):
         Promise<OtherInfoCustomerDocument> {
-        const OtherInfoCustomerEntity: OtherInfoCustomerEntity = {
+        const infoOther = await this.otherInfoCustomerModel.findOne({_id, user});
+        if (infoOther) {
+            if (dateKHCCAdditional) {
+                infoOther.dateKHCCAdditional = dateKHCCAdditional;
+            }
+            if (productsApply) {
+                infoOther.productsApply = productsApply;
+            }
+            if (programsApplied) {
+                infoOther.programsApplied = programsApplied;
+            }
+            if (priorityKHRegistered) {
+                infoOther.priorityKHRegistered = priorityKHRegistered;
+            }
+            if (expensesPayed) {
+                infoOther.expensesPayed = expensesPayed;
+            }
+            if (habitsCustomer) {
+                infoOther.habitsCustomer = habitsCustomer;
+            }
+            if (favouriteCustomer) {
+                infoOther.favouriteCustomer = favouriteCustomer;
+            }
+            return infoOther.save();
+        }
+        const otherInfoCustomerEntity: OtherInfoCustomerEntity = {
             cif,
             dateKHCCAdditional,
             expensesPayed,
@@ -122,7 +149,7 @@ export class OtherInfoService {
             habitsCustomer
         };
 
-        const create: OtherInfoCustomerDocument = new this.otherInfoCustomerModel(OtherInfoCustomerEntity);
+        const create: OtherInfoCustomerDocument = new this.otherInfoCustomerModel(otherInfoCustomerEntity);
         return create.save();
     }
 

@@ -141,7 +141,6 @@ export class WorkCustomerService {
     ):
         Promise<WorkCustomerDocument> {
         const infoUserCreate: WorkCustomerDocument  = await this.workCustomerModel.findOne({_id, user, cif});
-        console.log(infoUserCreate);
         if (infoUserCreate) {
             infoUserCreate.inProgress = inProgress;
             infoUserCreate.result = result;

@@ -15,10 +15,10 @@ import {GetUser, UserProfileGuard} from "../../user/user.decorator";
 import {OtherInfoService} from "../service/otherInfo.service";
 import {IOtherInfoCustomerCreate, IOtherInfoCustomerDocument} from "../otherInfo.interface";
 import {ENUM_PERMISSIONS} from "../../permission/permission.constant";
-import {WorkCustomerCreateDto} from "../../workCustomer/dto/workCustomer.create.dto";
 import {IResponse} from "../../utils/response/response.interface";
-import {IWorkCustomerCreate} from "../../workCustomer/workCustomer.interface";
 import {OtherInfoCreateDto} from "../dto/otherInfo.create.dto";
+import {IUserDocument} from "../../user/user.interface";
+import {Types} from "mongoose";
 
 @Controller({
     version: '1',
@@ -57,10 +57,12 @@ export class OtherInfoController {
     }
 
     @ResponseCustom('otherInfo.create')
+    @UserProfileGuard()
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_CREATE)
     @ErrorMeta(OtherInfoController.name, 'create')
     @Post('/create')
     async create(
+        @GetUser() user: IUserDocument,
         @Body()
             bodyOtherInfos: OtherInfoCreateDto[]
     ): Promise<IResponse> {
@@ -88,6 +90,7 @@ export class OtherInfoController {
         try {
             bodyOtherInfos.map(async (info) => {
                 const infoOther: IOtherInfoCustomerCreate = {
+                    _id: new Types.ObjectId(info._id),
                     cif: info.cif,
                     dateKHCCAdditional: info.dateKHCCAdditional ? new Date(info.dateKHCCAdditional) : null,
                     productsApply: info.productsApply,
@@ -95,7 +98,8 @@ export class OtherInfoController {
                     priorityKHRegistered: info.priorityKHRegistered,
                     expensesPayed: info.expensesPayed,
                     habitsCustomer: info.habitsCustomer,
-                    favouriteCustomer: info.favouriteCustomer
+                    favouriteCustomer: info.favouriteCustomer,
+                    user: user._id,
                 }
                 await this.otherInfoCustomerService.create(infoOther)
             })
