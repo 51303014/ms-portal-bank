@@ -11,10 +11,10 @@ import {CodeDepartmentLevelSixNotFoundGuard} from "./guard/codeDepartmentLevelSi
 import {CodeDepartmentLevelSixActiveGuard} from "./guard/codeDepartmentLevelSix.active.guard";
 import {CodeDepartmentLevelSixUsedGuard} from "./guard/codeDepartmentLevelSix.used.guard";
 
-export const GetCodeLevelSix = createParamDecorator(
+export const GetIdCodeLevelSix = createParamDecorator(
     (data: string, ctx: ExecutionContext) => {
-        const { __code } = ctx.switchToHttp().getRequest();
-        return __code;
+        const { params } = ctx.switchToHttp().getRequest();
+        return params?.id;
     }
 );
 export function RoleGetGuard(): any {

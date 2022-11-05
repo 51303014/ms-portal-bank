@@ -72,7 +72,6 @@ export class CodeDepartmentLevelSixService {
                 $regex: new RegExp(code),
                 $options: 'i',
             },
-            _id: { $nin: new Types.ObjectId(_id) },
         });
 
         return !!exist;

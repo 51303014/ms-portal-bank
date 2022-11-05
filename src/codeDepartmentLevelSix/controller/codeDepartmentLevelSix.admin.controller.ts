@@ -21,8 +21,7 @@ import {CodeDepartmentLevelSixCreateDto} from "../dto/codeDepartmentLevelSix.cre
 import {CodeDepartmentLevelSixRequestDto} from "../dto/codeDepartmentLevelSix.request.dto";
 import {CodeDepartmentLevelSixUpdateDto} from "../dto/codeDepartmentLevelSix.update.dto";
 import {ICodeDepartmentLevelSix} from "../codeDepartmentLevelSix.interface";
-import {CodeDepartmentLevelSixDocument} from "../schema/codeDepartmentLevelSix.schema";
-import {GetCodeLevelSix} from "../codeDepartmentLevelSix.decorator";
+import {GetIdCodeLevelSix} from "../codeDepartmentLevelSix.decorator";
 
 @Controller({
     version: '1',
@@ -80,22 +79,22 @@ export class CodeDepartmentLevelSixAdminController {
     @RequestParamGuard(CodeDepartmentLevelSixRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_UPDATE)
     @ErrorMeta(CodeDepartmentLevelSixAdminController.name, 'update')
-    @Put('/update/:code')
+    @Put('/update/:id')
     async update(
-        @GetCodeLevelSix() codeLevelSix: CodeDepartmentLevelSixDocument,
+        @GetIdCodeLevelSix() idCode,
         @Body()
             {name, code}: CodeDepartmentLevelSixUpdateDto
     ): Promise<IResponse> {
-        const check: boolean = await this.codeLevelSixService.exists(code, codeLevelSix._id);
-        if (check) {
-            throw new BadRequestException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
-                message: 'codeDepartmentLevelSix.error.exist',
-            });
-        }
+        // const check: boolean = await this.codeLevelSixService.exists(code, idCode);
+        // if (check) {
+        //     throw new BadRequestException({
+        //         statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_EXIST_ERROR,
+        //         message: 'codeDepartmentLevelSix.error.exist',
+        //     });
+        // }
 
         try {
-            await this.codeLevelSixService.update(codeLevelSix._id, {
+            await this.codeLevelSixService.update(idCode, {
                 name,
                 code,
             });
@@ -107,7 +106,7 @@ export class CodeDepartmentLevelSixAdminController {
         }
 
         return {
-            _id: codeLevelSix._id,
+            _id: idCode,
         };
     }
 
@@ -115,10 +114,10 @@ export class CodeDepartmentLevelSixAdminController {
     @RequestParamGuard(CodeDepartmentLevelSixRequestDto)
     @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_DELETE)
     @ErrorMeta(CodeDepartmentLevelSixAdminController.name, 'delete')
-    @Delete('/delete/:code')
-    async delete(@GetCodeLevelSix() codeDepartmentLevelSix: ICodeDepartmentLevelSix): Promise<void> {
+    @Delete('/delete/:id')
+    async delete(@GetIdCodeLevelSix() idDepartmentLevelSix): Promise<void> {
         try {
-            await this.codeLevelSixService.deleteOneById(codeDepartmentLevelSix.code);
+            await this.codeLevelSixService.deleteOneById(idDepartmentLevelSix);
         } catch (err) {
             throw new InternalServerErrorException({
                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
@@ -126,5 +125,21 @@ export class CodeDepartmentLevelSixAdminController {
             });
         }
         return;
+    }
+
+    @ResponseCustom('codeDepartmentLevelSix.getDetail')
+    @RequestParamGuard(CodeDepartmentLevelSixRequestDto)
+    @AuthAdminJwtGuard(ENUM_PERMISSIONS.ROLE_READ, ENUM_PERMISSIONS.ROLE_DELETE)
+    @ErrorMeta(CodeDepartmentLevelSixAdminController.name, 'getDetail')
+    @Get('/:id')
+    async getDetails(@GetIdCodeLevelSix() idDepartmentLevelSix): Promise<void> {
+        try {
+            return await this.codeLevelSixService.findOneById(idDepartmentLevelSix);
+        } catch (err) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
+        }
     }
 }
