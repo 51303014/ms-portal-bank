@@ -83,7 +83,9 @@ export class IncomeService {
                         $sum: "$incomeFromService"
                     },
                     totalIncomeInterestKDNTPS: {
-                        $sum: "$incomeInterestKDNTPS"
+                        $sum: {
+                            $add: ['$incomeInterestKDNTPS', '$incomeExcludeInterestKDNTPS']
+                        }
                     },
                     totalIncomeCardService: {
                         $sum: "$incomeFromCardAndInterestService"
@@ -116,7 +118,9 @@ export class IncomeService {
                         $sum: "$incomeFromService"
                     },
                     totalIncomeInterestKDNTPS: {
-                        $sum: "$incomeInterestKDNTPS"
+                        $sum: {
+                            $add: ['$incomeInterestKDNTPS', '$incomeExcludeInterestKDNTPS']
+                        }
                     },
                     totalIncomeCardService: {
                         $sum: "$incomeFromCardAndInterestService"
@@ -1375,7 +1379,12 @@ export class IncomeService {
             IIncomeCreate
     ):
         Promise<IncomeDocument> {
-        const incomeModel: IncomeDocument = await this.incomeModel.findOne({cif: id, codeDepartmentLevelSix, kindOfMoney, codeAM});
+        const incomeModel: IncomeDocument = await this.incomeModel.findOne({
+            cif: id,
+            codeDepartmentLevelSix,
+            kindOfMoney,
+            codeAM
+        });
         if (!incomeModel) {
             return;
         }
@@ -1485,7 +1494,12 @@ export class IncomeService {
             IIncomeCreate
     ):
         Promise<IncomeDocument> {
-        const incomeModel: IncomeDocument = await this.incomeModel.findOne({cif: id, codeDepartmentLevelSix, kindOfMoney, codeAM});
+        const incomeModel: IncomeDocument = await this.incomeModel.findOne({
+            cif: id,
+            codeDepartmentLevelSix,
+            kindOfMoney,
+            codeAM
+        });
         if (!incomeModel) {
             return;
         }
