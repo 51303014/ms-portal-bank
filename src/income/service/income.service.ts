@@ -1375,9 +1375,10 @@ export class IncomeService {
             IIncomeCreate
     ):
         Promise<IncomeDocument> {
-        const incomeModel
-            :
-            IncomeDocument = await this.incomeModel.findOne({cif: id});
+        const incomeModel: IncomeDocument = await this.incomeModel.findOne({cif: id, codeDepartmentLevelSix, kindOfMoney, codeAM});
+        if (!incomeModel) {
+            return;
+        }
         incomeModel.cif = cif;
         incomeModel.codeAM = codeAM;
         incomeModel.fullName = fullName;
@@ -1484,9 +1485,10 @@ export class IncomeService {
             IIncomeCreate
     ):
         Promise<IncomeDocument> {
-        const incomeModel
-            :
-            IncomeDocument = await this.incomeModel.findOne({cif: id});
+        const incomeModel: IncomeDocument = await this.incomeModel.findOne({cif: id, codeDepartmentLevelSix, kindOfMoney, codeAM});
+        if (!incomeModel) {
+            return;
+        }
         incomeModel.cif = cif;
         incomeModel.codeAM = codeAM;
         incomeModel.fullName = fullName;
