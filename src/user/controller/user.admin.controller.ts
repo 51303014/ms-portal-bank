@@ -813,14 +813,6 @@ export class UserAdminController {
             });
         }
 
-        const codeDepartmentLevelSix: ICodeDepartmentLevelSix = await this.codeLevelSix.findOneById(body.codeDepartmentLevelSix);
-        if (!codeDepartmentLevelSix) {
-            throw new NotFoundException({
-                statusCode: ENUM_ROLE_STATUS_CODE_ERROR.ROLE_NOT_FOUND_ERROR,
-                message: 'codeDepartmentLevelSix.error.notFound',
-            });
-        }
-
         try {
             const password = await this.authService.createPassword(
                 body.password
@@ -832,7 +824,6 @@ export class UserAdminController {
                 codeDepartmentLevelSix: body.codeDepartmentLevelSix,
                 codeLevelSix: body?.codeLevelSix.length > 0 ? body.codeLevelSix : [],
                 position: body.position,
-                department: codeDepartmentLevelSix.name,
                 codeEmployee: body.codeEmployee,
                 role: body.role,
                 password: password.passwordHash,

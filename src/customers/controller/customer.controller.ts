@@ -324,7 +324,7 @@ export class CustomerController {
                     const numberOfRows = worksheet.rowCount - 1;
                     const rows = worksheet.getRows(rowStartIndex, numberOfRows) ?? [];
 
-                    Promise.all([rows.map(async row => {
+                    await Promise.all([rows.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -364,7 +364,7 @@ export class CustomerController {
                             });
                         }
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoCustomer:
                     const worksheetInfoCustomer = content.getWorksheet(1);
@@ -372,7 +372,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomer = worksheetInfoCustomer.rowCount - 1;
                     const rowsInfoCustomer = worksheetInfoCustomer.getRows(rowStartIndexInfoCustomer, numberOfRowsInfoCustomer) ?? [];
 
-                    Promise.all([rowsInfoCustomer.map(async row => {
+                    await Promise.all([rowsInfoCustomer.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -394,7 +394,8 @@ export class CustomerController {
                                 paymentBalanceDepositEndDay: this.fileHelperService.getCellValue(row, 16),
                                 termDepositBalanceLastYear: this.fileHelperService.getCellValue(row, 17),
                                 termDepositBalanceEndDay: this.fileHelperService.getCellValue(row, 18),
-                                totalCreditBalanceAvgLastYear: +this.fileHelperService.getCellValue(row, 19)
+                                totalCreditBalanceAvgLastYear: +this.fileHelperService.getCellValue(row, 19),
+                                totalDepositBalanceAvgLastYear: +this.fileHelperService.getCellValue(row, 20)
                             }
                             const customerInfo: ICustomerCreate = await this.customerService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 1)
@@ -411,7 +412,7 @@ export class CustomerController {
                             });
                         }
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoCustomerMisLastYear:
                     const worksheetInfoCustomerMisLastYear = content.getWorksheet(1);
@@ -419,7 +420,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.rowCount - 1;
                     const rowsInfoCustomerMisLastYear = worksheetInfoCustomerMisLastYear.getRows(rowStartInfoCustomerMisLastYear, numberOfRowsInfoCustomerMisLastYear) ?? [];
 
-                    Promise.all([rowsInfoCustomerMisLastYear.map(async row => {
+                    await Promise.all([rowsInfoCustomerMisLastYear.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -441,7 +442,7 @@ export class CustomerController {
                             });
                         }
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoCustomerIncomeScale:
                     const worksheetInfoCustomerIncomeScale = content.getWorksheet(1);
@@ -449,7 +450,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.rowCount - 1;
                     const rowsInfoCustomerIncomeScale = worksheetInfoCustomerIncomeScale.getRows(rowStartInfoCustomerIncomeScale, numberOfRowsInfoCustomerIncomeScale) ?? [];
 
-                    Promise.all([rowsInfoCustomerIncomeScale.map(async row => {
+                    await Promise.all([rowsInfoCustomerIncomeScale.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 2)) {
                                 return;
@@ -523,7 +524,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                    
                     break;
                 case SheetName.InfoCustomerIncomeScaleLastYear:
@@ -532,7 +533,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.rowCount - 1;
                     const rowsInfoCustomerIncomeScaleLastYear = worksheetInfoCustomerIncomeScaleLastYear.getRows(rowStartInfoCustomerIncomeScaleLastYear, numberOfRowsInfoCustomerIncomeScaleLastYear) ?? [];
 
-                    Promise.all([rowsInfoCustomerIncomeScaleLastYear.map(async row => {
+                    await Promise.all([rowsInfoCustomerIncomeScaleLastYear.map(async row => {
                         try {
                             if (!this.fileHelperService.getCellValue(row, 2)) {
                                 return;
@@ -584,9 +585,7 @@ export class CustomerController {
                                 incomeFromCardServiceLastYear: +this.fileHelperService.getCellValue(row, 43),
                                 incomeFromCardInterestLastYear: +this.fileHelperService.getCellValue(row, 44),
                                 incomeFromDebtCurrencyLastYear: +this.fileHelperService.getCellValue(row, 45),
-                                incomeOtherActivityLastYear: +this.fileHelperService.getCellValue(row, 46),
-                                totalCreditBalanceAvgLastYear: +this.fileHelperService.getCellValue(row, 23),
-                                totalDepositBalanceAvgLastYear: +this.fileHelperService.getCellValue(row, 13),
+                                incomeOtherActivityLastYear: +this.fileHelperService.getCellValue(row, 46)
                             }
                             const incomeInfo: IIncomeCreate = await this.incomeService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 3),
@@ -595,8 +594,7 @@ export class CustomerController {
                                 codeAM: this.fileHelperService.getCellValue(row, 2)
                             });
                             if (incomeInfo) {
-                                await Promise.all([this.incomeService.updateOneByInfoCustomerIncomeScaleLastYear(incomeInfo.cif, infoCustomer),
-                                    this.customerService.updateOneByInfoIncomeLastYear(incomeInfo.cif, infoCustomer)])
+                                await this.incomeService.updateOneByInfoCustomerIncomeScaleLastYear(incomeInfo.cif, infoCustomer)
                                 return;
                             }
                             return await this.incomeService.create(infoCustomer);
@@ -609,7 +607,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoCustomerCoreDebt:
                     const worksheetInfoCustomerCoreDebt = content.getWorksheet(1);
@@ -617,7 +615,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.rowCount - 1;
                     const rowsInfoCustomerCoreDebt = worksheetInfoCustomerCoreDebt.getRows(rowStartInfoCustomerCoreDebt, numberOfRowsInfoCustomerCoreDebt) ?? [];
 
-                    Promise.all([rowsInfoCustomerCoreDebt.map(async row => {
+                    await Promise.all([rowsInfoCustomerCoreDebt.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -644,7 +642,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                     break;
 
                 case SheetName.InfoCustomerCoreDebtLastYear:
@@ -653,7 +651,7 @@ export class CustomerController {
                     const numberOfRowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.rowCount - 1;
                     const rowsInfoCustomerCoreDebtLastYear = worksheetInfoCustomerCoreDebtLastYear.getRows(rowStartInfoCustomerCoreDebtLastYear, numberOfRowsInfoCustomerCoreDebtLastYear) ?? [];
 
-                    Promise.all([rowsInfoCustomerCoreDebtLastYear.map(async row => {
+                    await Promise.all([rowsInfoCustomerCoreDebtLastYear.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -680,7 +678,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoDebitDomesticCard:
                     const worksheetInfoDebitDomesticCard = content.getWorksheet(1);
@@ -688,7 +686,7 @@ export class CustomerController {
                     const numberOfRowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.rowCount - 1;
                     const rowsInfoDebitDomesticCard = worksheetInfoDebitDomesticCard.getRows(rowStartInfoDebitDomesticCard, numberOfRowsInfoDebitDomesticCard) ?? [];
 
-                    Promise.all([rowsInfoDebitDomesticCard.map(async row => {
+                    await Promise.all([rowsInfoDebitDomesticCard.map(async row => {
                         try {
                             const infoCard: ICardCreate = {
                                 user: user._id,
@@ -724,7 +722,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoDebitInternationalCard:
                     const worksheetInfoDebitInternationalCard = content.getWorksheet(1);
@@ -732,7 +730,7 @@ export class CustomerController {
                     const numberOfRowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.rowCount - 1;
                     const rowsInfoDebitInternationalCard = worksheetInfoDebitInternationalCard.getRows(rowStartInfoDebitInternationalCard, numberOfRowsInfoDebitInternationalCard) ?? [];
 
-                    Promise.all([rowsInfoDebitInternationalCard.map(async row => {
+                    await Promise.all([rowsInfoDebitInternationalCard.map(async row => {
                         try {
                             const infoCard: ICardCreate = {
                                 user: user._id,
@@ -768,7 +766,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoDetailTSDB:
                     const worksheetInfoDetailTSDB = content.getWorksheet(1);
@@ -819,7 +817,7 @@ export class CustomerController {
                     const numberOfRowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.rowCount - 1;
                     const rowsInfoProductServiceBrand = worksheetInfoProductServiceBrand.getRows(rowStartInfoProductServiceBrand, numberOfRowsInfoProductServiceBrand) ?? [];
 
-                    Promise.all([rowsInfoProductServiceBrand.map(async row => {
+                    await Promise.all([rowsInfoProductServiceBrand.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -863,7 +861,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoProductServiceSystem:
                     const worksheetInfoProductServiceSystem = content.getWorksheet(1);
@@ -871,7 +869,7 @@ export class CustomerController {
                     const numberOfRowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.rowCount - 1;
                     const rowsInfoProductServiceSystem = worksheetInfoProductServiceSystem.getRows(rowStartInfoProductServiceSystem, numberOfRowsInfoProductServiceSystem) ?? [];
 
-                    Promise.all([rowsInfoProductServiceSystem.map(async row => {
+                    await Promise.all([rowsInfoProductServiceSystem.map(async row => {
                         try {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
@@ -920,7 +918,7 @@ export class CustomerController {
                     const numberOfRowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.rowCount - 1;
                     const rowsInfoCreditInternationalCard = worksheetInfoCreditInternationalCard.getRows(rowStartInfoCreditInternationalCard, numberOfRowsInfoCreditInternationalCard) ?? [];
 
-                    Promise.all([rowsInfoCreditInternationalCard.map(async row => {
+                    await Promise.all([rowsInfoCreditInternationalCard.map(async row => {
                         const fullName = this.fileHelperService.getCellFormulaValue(row, 2) ? this.fileHelperService.getCellFormulaValue(row, 2) : this.fileHelperService.getCellValue(row, 2);
                         const department = this.fileHelperService.getCellFormulaValue(row, 3) ? this.fileHelperService.getCellFormulaValue(row, 3) : this.fileHelperService.getCellValue(row, 3);
                         try {
@@ -978,7 +976,7 @@ export class CustomerController {
                         }
 
                     })
-                ])
+                    ])
                     break;
                 case SheetName.InfoRelevantCustomer:
                     const worksheetInfoRelevantCustomer = content.getWorksheet(1);

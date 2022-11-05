@@ -147,6 +147,7 @@ export class CustomerService {
                      termDepositBalanceEndDay, termDepositBalanceLastYear, totalCreditBalanceAvgBeginYear, totalCreditBalanceEndDay, totalCreditBalanceLastYear,
                      totalDepositBalanceAvgBeginYear, totalDepositBalanceEndDay, totalDepositBalanceLastYear,
                      totalCreditBalanceAvgLastYear,
+                     totalDepositBalanceAvgLastYear,
                      fileTypeCustomer,
                      coreDebt,
                      coreDebtLastYear,
@@ -249,6 +250,7 @@ export class CustomerService {
             totalDepositBalanceEndDay,
             totalDepositBalanceLastYear,
             totalCreditBalanceAvgLastYear,
+            totalDepositBalanceAvgLastYear,
             fileTypeCustomer,
             coreDebt,
             coreDebtLastYear,
@@ -369,6 +371,7 @@ export class CustomerService {
             totalCreditBalanceEndDay,
             totalCreditBalanceAvgBeginYear,
             totalCreditBalanceAvgLastYear,
+            totalDepositBalanceAvgLastYear,
             balanceDebtLastYear,
             balanceDebtEndDay,
             balanceCreditLastYear,
@@ -390,6 +393,7 @@ export class CustomerService {
         customerModel.totalCreditBalanceEndDay = totalCreditBalanceEndDay;
         customerModel.totalCreditBalanceAvgBeginYear = totalCreditBalanceAvgBeginYear;
         customerModel.totalCreditBalanceAvgLastYear = totalCreditBalanceAvgLastYear;
+        customerModel.totalDepositBalanceAvgLastYear = totalDepositBalanceAvgLastYear;
         customerModel.balanceDebtLastYear = balanceDebtLastYear;
         customerModel.balanceDebtEndDay = balanceDebtEndDay;
         customerModel.balanceCreditLastYear = balanceCreditLastYear;

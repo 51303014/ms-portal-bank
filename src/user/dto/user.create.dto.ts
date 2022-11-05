@@ -16,22 +16,18 @@ export class UserCreateDto {
 
     @IsString()
     @IsNotEmpty()
-    @MinLength(5)
+    @MinLength(1)
     @MaxLength(100)
     @Type(() => String)
     readonly fullName: string;
 
     @IsString()
     @IsOptional()
-    @MinLength(1)
-    @MaxLength(30)
     @Type(() => String)
     readonly codeAM?: string;
 
     @IsString()
     @IsOptional()
-    @MinLength(1)
-    @MaxLength(50)
     @Type(() => String)
     readonly codeDepartmentLevelSix?: string;
 
@@ -46,7 +42,7 @@ export class UserCreateDto {
 
     @IsString()
     @IsNotEmpty()
-    @MinLength(5)
+    @MinLength(1)
     @MaxLength(50)
     @Type(() => String)
     readonly position: string;
