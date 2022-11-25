@@ -975,7 +975,8 @@ export class IncomeService {
                         $sum: "$amountDebtLoanGTCGAndAvgCard"
                     },
                 }
-            }
+            },
+            {$sort: {_id: 1}}
         ]);
     }
 
