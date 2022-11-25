@@ -483,6 +483,7 @@ export class IncomeService {
                     },
                 }
             },
+            {$sort: {_id: 1}}
         ]);
     }
 
@@ -550,6 +551,7 @@ export class IncomeService {
                     },
                 }
             },
+            {$sort: {_id: 1}}
         ]);
     }
 
@@ -1056,6 +1058,7 @@ export class IncomeService {
                     },
                 }
             },
+            {$sort: {_id: 1}}
         ]);
     }
 
