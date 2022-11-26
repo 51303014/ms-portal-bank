@@ -228,14 +228,12 @@ export class CustomerController {
                         limit: +perPage,
                         currentPage: +page,
                     });
-                    console.log(incomeInfo);
             let customerInfo: CustomerDocument[] = await this.customerService.findAll(find,
                 {
                     skip: skip,
                     limit: +perPage,
                     currentPage: +page,
                 });
-                console.log(customerInfo);
             if (user?.role?.name !== 'admin') {
                 customerInfo = customerInfo.filter(value => {
                     for (const element of incomeInfo) {
