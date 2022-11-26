@@ -329,7 +329,12 @@ export class CustomerController {
                             const infoCustomer: ICustomerCreate = {
                                 user: user._id,
                                 cif: this.fileHelperService.getCellValue(row, 1),
+                                fullName: this.fileHelperService.getCellValue(row, 2),
                                 address: this.fileHelperService.getCellValue(row, 6),
+                                residence: this.fileHelperService.getCellValue(row, 7),
+                                birthday: this.fileHelperService.getCellValueCommon(row, 8) ? new Date(this.fileHelperService.getCellValueCommon(row, 8)) : null,
+                                birthPlace: this.fileHelperService.getCellValue(row, 9),
+                                customerId: this.fileHelperService.getCellValue(row, 10),
                                 numberIdentity: this.fileHelperService.getCellValue(row, 11),
                                 effectiveDate: this.fileHelperService.getCellValueCommon(row, 12) ? new Date(this.fileHelperService.getCellValueCommon(row, 12)) : null,
                                 age: +this.fileHelperService.getCellValue(row, 13),
