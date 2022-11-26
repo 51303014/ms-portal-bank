@@ -328,6 +328,7 @@ export class CustomerService {
             email,
             mobile,
             job,
+            customerId,
             relationshipBank,
             currentStatus,
             previousStatus,
@@ -348,6 +349,7 @@ export class CustomerService {
         customerModel.age = age;
         customerModel.email = email;
         customerModel.mobile = mobile;
+        customerModel.customerId = customerId;
         customerModel.job = job;
         customerModel.relationshipBank = relationshipBank;
         customerModel.currentStatus = currentStatus;
