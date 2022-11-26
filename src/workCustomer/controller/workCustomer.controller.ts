@@ -45,37 +45,20 @@ export class WorkCustomerController {
     async getInfo(
         @GetUser() user: IUserDocument,
         @Query()
-            {
-                cif
-            }
-    ): Promise<any> {
-        const cifParams = cif ? cif : '';
-        const find: Record<string, any> = {};
-
-        if (user?.role?.name === 'admin') {
-            find['$expr'] = {
-                "$and": [
-                    {cifParams},
-                ]
-            };
-        } else {
-            find['$expr'] = {
-                "$and": [
-                    {user: user._id},
-                    {cifParams},
-                ]
-            };
+        {
+            cif
         }
-        const info: IWorkCustomerCreate[] = await this.workCustomerService.findAll(find);
-        if (info) {
-            try {
-                return info
-            } catch (err) {
-                throw new InternalServerErrorException({
-                    statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
-                    message: 'http.serverError.internalServerError',
-                });
+    ): Promise<any> {
+        try {
+            if (user?.role?.name === 'admin') {
+                return await this.workCustomerService.findAll();
             }
+            return await this.workCustomerService.findAll({ user: user._id });
+        } catch (err) {
+            throw new InternalServerErrorException({
+                statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
+                message: 'http.serverError.internalServerError',
+            });
         }
     }
 
