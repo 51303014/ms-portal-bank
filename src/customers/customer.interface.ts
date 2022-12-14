@@ -13,6 +13,7 @@ export interface ICustomerCreate {
     brandCifOpen?: number;
     age?: number;
     dateCifOpen?: Date;
+    createdDate?: Date;
     birthday?: Date;
     effectiveDate?: Date;
     statusChangeDate?: string;

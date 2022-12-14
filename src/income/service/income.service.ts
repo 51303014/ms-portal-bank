@@ -1118,6 +1118,8 @@ export class IncomeService {
     }
 
     async create({
+                     incomeCreateDated,
+                     incomeCreateDatedLastYear,
                      cif,
                      codeAM,
                      fullName,
@@ -1210,8 +1212,9 @@ export class IncomeService {
                  }: IIncomeCreate
     ):
         Promise<IncomeDocument> {
-        const incomeEntity:
-            IncomeEntity = {
+        const incomeEntity: IncomeEntity = {
+            incomeCreateDated,
+            incomeCreateDatedLastYear,
             cif,
             fullName,
             codeAM,
@@ -1331,6 +1334,7 @@ export class IncomeService {
     async updateOneByIdInfoCustomerIncomeScale(
         id: string,
         {
+            incomeCreateDated,
             cif,
             codeAM,
             fullName,
@@ -1392,6 +1396,7 @@ export class IncomeService {
         if (!incomeModel) {
             return;
         }
+        incomeModel.incomeCreateDated = incomeCreateDated;
         incomeModel.cif = cif;
         incomeModel.codeAM = codeAM;
         incomeModel.fullName = fullName;
@@ -1445,6 +1450,7 @@ export class IncomeService {
     async updateOneByInfoCustomerIncomeScaleLastYear(
         id: string,
         {
+            incomeCreateDatedLastYear,
             cif,
             codeAM,
             fullName,
@@ -1507,6 +1513,7 @@ export class IncomeService {
         if (!incomeModel) {
             return;
         }
+        incomeModel.incomeCreateDatedLastYear = incomeCreateDatedLastYear;
         incomeModel.cif = cif;
         incomeModel.codeAM = codeAM;
         incomeModel.fullName = fullName;

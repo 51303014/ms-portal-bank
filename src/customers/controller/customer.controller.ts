@@ -45,6 +45,7 @@ import {ADMIN_USER} from "../../user/user.constant";
 import LocalFilesInterceptor from "../../utils/file/interceptor/file.local.interceptor";
 import bytes from 'bytes';
 import {HelperDateService} from "../../utils/helper/service/helper.date.service";
+import { HistoryCustomerService } from '../../historyCustomer/service/historyCustomer.service';
 
 @Controller({
     version: '1',
@@ -59,6 +60,7 @@ export class CustomerController {
         private readonly workCustomerService: WorkCustomerService,
         private readonly otherInfoService: OtherInfoService,
         private readonly incomeService: IncomeService,
+        private readonly historyCustomerService: HistoryCustomerService,
         private readonly cardService: CardService,
         private readonly awsService: AwsS3Service,
         private readonly fileHelperService: HelperFileService,
@@ -354,7 +356,8 @@ export class CustomerController {
                                 depositBalanceSegment: this.fileHelperService.getCellValue(row, 26),
                                 debtGroup: this.fileHelperService.getCellValue(row, 27),
                                 incomeBrandYearly: this.fileHelperService.getCellValue(row, 28),
-                                incomeTotalYearly: this.fileHelperService.getCellValue(row, 29)
+                                incomeTotalYearly: this.fileHelperService.getCellValue(row, 29),
+                                createdDate: this.fileHelperService.getCellValueCommon(row, 30) ? new Date(this.fileHelperService.getCellValueCommon(row, 30)) : null,
                             }
                             const customerInfo: ICustomerCreate = await this.customerService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 1)
@@ -414,6 +417,7 @@ export class CustomerController {
                             }
                             return await this.customerService.create(infoCustomer);
                         } catch (error) {
+                            console.log(error);
                             throw new InternalServerErrorException({
                                 statusCode: ENUM_STATUS_CODE_ERROR.UNKNOWN_ERROR,
                                 message: 'http.serverError.internalServerError',
@@ -510,7 +514,8 @@ export class CustomerController {
                                 incomeFromCardService: this.fileHelperService.getCellValue(row, 43) ? +this.fileHelperService.getCellValue(row, 43) : 0,
                                 incomeFromCardInterest: this.fileHelperService.getCellValue(row, 44) ? +this.fileHelperService.getCellValue(row, 44) : 0,
                                 incomeFromDebtCurrency: this.fileHelperService.getCellValue(row, 45) ? +this.fileHelperService.getCellValue(row, 45) : 0,
-                                incomeOtherActivity: this.fileHelperService.getCellValue(row, 46) ? +this.fileHelperService.getCellValue(row, 46) : 0
+                                incomeOtherActivity: this.fileHelperService.getCellValue(row, 46) ? +this.fileHelperService.getCellValue(row, 46) : 0,
+                                incomeCreateDated: this.fileHelperService.getCellValueCommon(row, 47) ? new Date(this.fileHelperService.getCellValueCommon(row, 47)) : null
                             }
                             const incomeInfo: IIncomeCreate = await this.incomeService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 3),
@@ -518,6 +523,7 @@ export class CustomerController {
                                 kindOfMoney: this.fileHelperService.getCellValue(row, 5),
                                 codeAM: this.fileHelperService.getCellValue(row, 2)
                             });
+                            await this.historyCustomerService.create(infoCustomer);
                             if (incomeInfo) {
                                 await this.incomeService.updateOneByIdInfoCustomerIncomeScale(incomeInfo.cif, infoCustomer)
                                 return;
@@ -593,7 +599,8 @@ export class CustomerController {
                                 incomeFromCardServiceLastYear: +this.fileHelperService.getCellValue(row, 43),
                                 incomeFromCardInterestLastYear: +this.fileHelperService.getCellValue(row, 44),
                                 incomeFromDebtCurrencyLastYear: +this.fileHelperService.getCellValue(row, 45),
-                                incomeOtherActivityLastYear: +this.fileHelperService.getCellValue(row, 46)
+                                incomeOtherActivityLastYear: +this.fileHelperService.getCellValue(row, 46),
+                                incomeCreateDatedLastYear: this.fileHelperService.getCellValueCommon(row, 47) ? new Date(this.fileHelperService.getCellValueCommon(row, 47)) : null
                             }
                             const incomeInfo: IIncomeCreate = await this.incomeService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 3),
@@ -630,7 +637,6 @@ export class CustomerController {
                                 cif: this.fileHelperService.getCellValue(row, 3),
                                 codeDepartmentLevelSix: this.fileHelperService.getCellValue(row, 5),
                                 coreDebt: +this.fileHelperService.getCellValue(row, 10) - +this.fileHelperService.getCellValue(row, 9)
-
                             }
                             const customerInfo: ICustomerCreate = await this.customerService.findOne({
                                 cif: this.fileHelperService.getCellValue(row, 3)

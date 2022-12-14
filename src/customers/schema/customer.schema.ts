@@ -816,6 +816,12 @@ export class CustomerEntity {
     dateCifOpen: Date;
 
     @Prop({
+        type: Date,
+        required: false
+    })
+    createdDate?: Date;
+
+    @Prop({
         required: false,
         default: 'VIETNAM',
         trim: true,

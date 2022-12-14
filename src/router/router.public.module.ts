@@ -24,11 +24,13 @@ import {WorkCustomerModule} from "../workCustomer/workCustomer.module";
 import {WorkCustomerController} from "../workCustomer/controller/workCustomer.controller";
 import {OtherInfoModule} from "../otherInfoCustomer/otherInfo.module";
 import {OtherInfoController} from "../otherInfoCustomer/controller/otherInfo.controller";
+import { HistoryCustomerModule } from '../historyCustomer/historyCustomer.module';
+import { HistoryCustomerController } from '../historyCustomer/controller/historyCustomer.controller';
 
 @Module({
-    controllers: [UserPublicController,FileController,WorkCustomerController,OtherInfoController, ParentController, CompanyController, CustomerController, AssetController, IncomeController, CardController, AuthPublicController],
+    controllers: [UserPublicController,FileController,WorkCustomerController,OtherInfoController, ParentController, CompanyController, CustomerController, AssetController, HistoryCustomerController, IncomeController, CardController, AuthPublicController],
     providers: [],
     exports: [],
-    imports: [UserModule, FileModule, CustomerModule, OtherInfoModule, WorkCustomerModule, AssetModule,ParentModule, CompanyModule, IncomeModule, CardModule, AwsModule, AuthModule, RoleModule, PermissionModule],
+    imports: [UserModule, FileModule, CustomerModule, HistoryCustomerModule, OtherInfoModule, WorkCustomerModule, AssetModule,ParentModule, CompanyModule, IncomeModule, CardModule, AwsModule, AuthModule, RoleModule, PermissionModule],
 })
 export class RouterPublicModule {}

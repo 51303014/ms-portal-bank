@@ -199,6 +199,7 @@ export class CustomerService {
                      productServiceSystemBillElectricUNCAuto,
                      productServiceSystemExcludeBillElectricUNCAuto,
                      productServiceSystemTotalProductUse,
+                     createdDate
                  }: ICustomerCreate): Promise<CustomerDocument> {
         const customerEntity: CustomerEntity = {
             cif,
@@ -210,6 +211,7 @@ export class CustomerService {
             balanceDebtEndDay,
             balanceDebtLastYear,
             birthday,
+            createdDate,
             birthPlace,
             brandCifOpen,
             creditBalanceSegment,
@@ -340,6 +342,7 @@ export class CustomerService {
             debtGroup,
             incomeBrandYearly,
             incomeTotalYearly,
+            createdDate
         }: ICustomerCreate
     ): Promise<CustomerDocument> {
         const customerModel: CustomerDocument = await this.customerModel.findOne({cif: id});
@@ -362,6 +365,7 @@ export class CustomerService {
         customerModel.debtGroup = debtGroup;
         customerModel.incomeBrandYearly = incomeBrandYearly;
         customerModel.incomeTotalYearly = incomeTotalYearly;
+        customerModel.createdDate = createdDate;
         return customerModel.save();
     }
 

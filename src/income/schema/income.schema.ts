@@ -423,6 +423,18 @@ export class IncomeEntity {
         trim: true,
     })
     fullName?: string;
+
+    @Prop({
+        type: Date,
+        required: false
+    })
+    incomeCreateDated?: Date;
+
+    @Prop({
+        type: Date,
+        required: false
+    })
+    incomeCreateDatedLastYear?: Date;
 }
 
 export const IncomeDatabaseName = 'incomes';

@@ -6,6 +6,8 @@ export interface IIncomeDocument extends Omit<IncomeDocument, 'user'> {
 }
 
 export interface IIncomeCreate {
+    incomeCreateDated?: Date;
+    incomeCreateDatedLastYear?: Date;
     cif?: string;
     customerId?: string;
     fullName?: string;
