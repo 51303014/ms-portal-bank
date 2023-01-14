@@ -20,6 +20,7 @@ export class PaginationService {
     }
 
     async totalPage(totalData: number, limit: number): Promise<number> {
+        console.log('dd', totalData, limit);
         return Math.ceil(totalData / limit);
     }
 }

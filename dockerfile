@@ -4,7 +4,10 @@ LABEL maintainer "binhpham"
 
 WORKDIR /app
 COPY package.json yarn.lock ./
-
+RUN yarn config set http-proxy http://proxy.bidv.com.vn:8080
+RUN yarn config set https-proxy http://proxy.bidv.com.vn:8080
+RUN yarn config set "strict-ssl" false
+RUN set NODE_TLS_REJECT_UNAUTHORIZED=0
 RUN set -x && yarn --production=false
 
 COPY . .
@@ -23,6 +26,10 @@ EXPOSE 3000
 
 COPY package.json yarn.lock ./
 RUN touch .env
+RUN yarn config set http-proxy http://proxy.bidv.com.vn:8080
+RUN yarn config set https-proxy http://proxy.bidv.com.vn:8080
+RUN yarn config set "strict-ssl" false
+RUN set NODE_TLS_REJECT_UNAUTHORIZED=0
 
 RUN set -x && yarn --production=true
 

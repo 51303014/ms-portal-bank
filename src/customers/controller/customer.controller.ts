@@ -345,6 +345,7 @@ export class CustomerController {
                                 age: +this.fileHelperService.getCellValue(row, 13),
                                 email: this.fileHelperService.getCellValue(row, 14),
                                 mobile: this.fileHelperService.getCellValue(row, 15),
+                                gender: this.fileHelperService.getCellValue(row, 16),
                                 job: this.fileHelperService.getCellValue(row, 18),
                                 relationshipBank: this.fileHelperService.getCellValue(row, 19),
                                 currentStatus: this.fileHelperService.getCellFormulaValue(row, 20) ? this.fileHelperService.getCellFormulaValue(row, 20) : this.fileHelperService.getCellValue(row, 20),

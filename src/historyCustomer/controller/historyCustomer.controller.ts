@@ -1,5 +1,6 @@
 import {
     Controller,
+    ForbiddenException,
     Get,
     InternalServerErrorException, NotFoundException,
     Query,
@@ -74,7 +75,10 @@ export class HistoryCustomerController {
             skip: skip,
         });
         if (user?.role?.name !== 'admin') {
-
+            throw new ForbiddenException({
+                statusCode: ENUM_USER_STATUS_CODE_ERROR.USER_IS_INACTIVE_ERROR,
+                message: 'role.error.invalid',
+            });
         }
         if (!customerInfo.length) {
             throw new NotFoundException({
@@ -83,10 +87,10 @@ export class HistoryCustomerController {
             });
         }
         try {
-            const totalData: number = customerInfo.length;
+            const totalData: number = filter === 'all' ?  await this.historyCustomerService.getTotal(find) : customerInfo.length;
             const totalPage: number = await this.paginationService.totalPage(
                 totalData,
-                perPage,
+                +perPage,
             );
 
             const data: HistoryCustomerListSerialization[] =
