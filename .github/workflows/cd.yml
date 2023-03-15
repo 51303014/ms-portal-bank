@@ -11,9 +11,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env: 
-      APP_NAME: ms-portal-bank
+      APP_NAME: portal-ms
       APP_PORT: 3000
       APP_NETWORK: app-network
+      AZURE_WEBAPP_PACKAGE_PATH: 'ms-portal-bank'
 
     steps:
 
@@ -44,4 +45,11 @@ jobs:
       - name: Build a Node.js project with Yarn
         run: |
             yarn install
-            yarn run build:production
+            yarn run build
+
+      - name: Deploy
+        uses: azure/webapps-deploy@v2
+        with:
+        app-name: ${{ env.APP_NAME }}
+        publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_E0BF72CF2DCB4F00A7D838045CFB96F1 }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
