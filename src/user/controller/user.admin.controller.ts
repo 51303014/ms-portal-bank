@@ -563,7 +563,7 @@ export class UserAdminController {
                                 codeDepartmentLevelSix: this.fileHelperService.getCellValue(row, 11)
                             };
                             const role = await this.handleRole(bodyUser);
-                            let codeLevelSix: CodeDepartmentLevelSixDocument[] = await this.codeLevelSix.findAll({
+                            const codeLevelSix: CodeDepartmentLevelSixDocument[] = await this.codeLevelSix.findAll({
                                 code: this.fileHelperService.getCellValue(row, 11)
                             });
                             if (role) {

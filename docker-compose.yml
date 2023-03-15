@@ -21,8 +21,8 @@ services:
     ports:
       - 27017:27017
     environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_ROOT_USERNAME: user
+      MONGO_INITDB_ROOT_PASSWORD: GFbipJz26JjCTYg
       MONGO_INITDB_DATABASE: portal
     volumes:
       - dbdata:/data/db
