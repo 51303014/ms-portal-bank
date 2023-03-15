@@ -13,7 +13,7 @@
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "set NODE_OPTIONS=--max-old-space-size=8192 && nest build",
+    "build": "set NODE_OPTIONS=--max-old-space-size=4096 && nest build",
     "format": "prettier --write '{src,test,e2e,integration}/**/*.ts'",
     "format:src": "prettier --write src/**/*.ts",
     "format:test": "prettier --write test/**/*.ts",
