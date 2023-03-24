@@ -23,8 +23,8 @@ jobs:
 
       - name: yarn install and build
         run: |
-          npm install
-          npm run build
+          yarn
+          yarn build
 
       - name: Zip all files for upload between jobs
         run: zip --symlinks -r nest.zip ./*
