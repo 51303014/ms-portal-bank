@@ -14,17 +14,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - name: Set up Node.js version
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: '16.x'
 
       - name: yarn install and build
         run: |
-          yarn
-          yarn build
+          npm install
+          npm run build
 
       - name: Zip all files for upload between jobs
         run: zip --symlinks -r nest.zip ./*
@@ -40,7 +40,7 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+      url: $
 
     steps:
       - name: Download artifact from build job
@@ -54,7 +54,7 @@ jobs:
         with:
           app-name: 'portal-bank'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C0F1509F45EF4C808D396E02C5EC06F2 }}
+          publish-profile: $
           package: nest.zip
 
       - name: Delete zip file
