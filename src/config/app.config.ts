@@ -12,7 +12,7 @@ export default registerAs(
 
         http: {
             host: process.env.APP_HOST || 'localhost',
-            port: Number.parseInt(process.env.APP_PORT) || 3000,
+            port: Number.parseInt(process.env.APP_PORT) || 8080,
         },
         globalPrefix: '/api',
         versioning: {
@@ -32,7 +32,7 @@ export default registerAs(
             },
         },
 
-        httpOn: process.env.APP_HTTP_ON === 'true' ? true : false,
+        httpOn: process.env.APP_HTTP_ON === 'true',
         taskOn: process.env.APP_TASK_ON === 'true' || false,
     })
 );
