@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     env: 
       APP_NAME: portal-ms
-      APP_PORT: 8080
+      APP_PORT: 3000
       APP_NETWORK: app-network
       AZURE_WEBAPP_PACKAGE_PATH: 'ms-portal-bank'
 

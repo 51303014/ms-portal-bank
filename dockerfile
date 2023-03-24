@@ -22,7 +22,7 @@ ARG NODE_ENV=production
 ENV NODE_ENV=${NODE_ENV}
 
 WORKDIR /app
-EXPOSE 8080
+EXPOSE 3000
 
 COPY package.json yarn.lock ./
 RUN touch .env

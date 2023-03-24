@@ -12,7 +12,7 @@ export default registerAs(
 
         http: {
             host: process.env.APP_HOST || 'localhost',
-            port: Number.parseInt(process.env.APP_PORT) || 8080,
+            port: Number.parseInt(process.env.APP_PORT) || 3000,
         },
         globalPrefix: '/api',
         versioning: {
