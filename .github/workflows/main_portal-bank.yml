@@ -40,8 +40,7 @@ jobs:
     needs: build
     environment:
       name: 'Production'
-      url: $
-
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
@@ -54,7 +53,7 @@ jobs:
         with:
           app-name: 'portal-bank'
           slot-name: 'Production'
-          publish-profile: $
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_C0F1509F45EF4C808D396E02C5EC06F2 }}
           package: nest.zip
 
       - name: Delete zip file
