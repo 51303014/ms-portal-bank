@@ -9,8 +9,8 @@ async function bootstrap() {
     const configService = app.get(ConfigService);
     const env: string = configService.get<string>('app.env');
     const tz: string = configService.get<string>('app.timezone');
-    const host: string = configService.get<string>('app.http.host');
-    const port: string = process.env.PORT;
+    // const host: string = configService.get<string>('app.http.host');
+    const port: number = configService.get<number>('app.http.port');
     const globalPrefix: string = configService.get<string>('app.globalPrefix');
     const versioning: boolean = configService.get<boolean>('app.versioning.on');
     const versioningPrefix: string = configService.get<string>(
@@ -24,7 +24,6 @@ async function bootstrap() {
     // Global
     app.setGlobalPrefix(globalPrefix);
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
-
     // Versioning
     if (versioning) {
         app.enableVersioning({
@@ -35,7 +34,7 @@ async function bootstrap() {
     }
 
     // Listen
-    await app.listen(port, host);
+    await app.listen(port, `0.0.0.0`);
 
     logger.log(`==========================================================`);
     logger.log(`App Environment is ${env}`, 'NestApplication');
