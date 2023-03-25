@@ -10,7 +10,7 @@ async function bootstrap() {
     const env: string = configService.get<string>('app.env');
     const tz: string = configService.get<string>('app.timezone');
     const host: string = configService.get<string>('app.http.host');
-    const port: number = configService.get<number>('app.http.port');
+    const port: string = process.env.PORT;
     const globalPrefix: string = configService.get<string>('app.globalPrefix');
     const versioning: boolean = configService.get<boolean>('app.versioning.on');
     const versioningPrefix: string = configService.get<string>(
